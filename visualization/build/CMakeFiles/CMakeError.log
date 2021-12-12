@@ -1,0 +1,127 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_7ea96 && [1/2] Building C object CMakeFiles/cmTC_7ea96.dir/src.c.o
+[2/2] Linking C executable cmTC_7ea96
+FAILED: : && /usr/bin/x86_64-linux-gnu-gcc-5  -rdynamic CMakeFiles/cmTC_7ea96.dir/src.c.o -o cmTC_7ea96   && :
+CMakeFiles/cmTC_7ea96.dir/src.c.o: In function `main':
+src.c:(.text+0x3c): undefined reference to `pthread_create'
+src.c:(.text+0x48): undefined reference to `pthread_detach'
+src.c:(.text+0x54): undefined reference to `pthread_cancel'
+src.c:(.text+0x65): undefined reference to `pthread_join'
+src.c:(.text+0x79): undefined reference to `pthread_atfork'
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_d46ec && [1/2] Building C object CMakeFiles/cmTC_d46ec.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_d46ec
+FAILED: : && /usr/bin/x86_64-linux-gnu-gcc-5 -DCHECK_FUNCTION_EXISTS=pthread_create -rdynamic CMakeFiles/cmTC_d46ec.dir/CheckFunctionExists.c.o -o cmTC_d46ec  -lpthreads && :
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+
+Determining if the Q_WS_WIN exist failed with the following output:
+Change Dir: /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_30014 && [1/2] Building CXX object CMakeFiles/cmTC_30014.dir/CheckSymbolExists.cxx.o
+FAILED: /usr/bin/x86_64-linux-gnu-g++-5  -I/usr/include/qt4  -o CMakeFiles/cmTC_30014.dir/CheckSymbolExists.cxx.o -c /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_WIN’ was not declared in this scope
+   return ((int*)(&Q_WS_WIN))[argc];
+                   ^
+ninja: build stopped: subcommand failed.
+
+
+File /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_WIN
+  return ((int*)(&Q_WS_WIN))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the Q_WS_QWS exist failed with the following output:
+Change Dir: /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_becd6 && [1/2] Building CXX object CMakeFiles/cmTC_becd6.dir/CheckSymbolExists.cxx.o
+FAILED: /usr/bin/x86_64-linux-gnu-g++-5  -I/usr/include/qt4  -o CMakeFiles/cmTC_becd6.dir/CheckSymbolExists.cxx.o -c /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_QWS’ was not declared in this scope
+   return ((int*)(&Q_WS_QWS))[argc];
+                   ^
+ninja: build stopped: subcommand failed.
+
+
+File /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_QWS
+  return ((int*)(&Q_WS_QWS))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the Q_WS_MAC exist failed with the following output:
+Change Dir: /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_0c94c && [1/2] Building CXX object CMakeFiles/cmTC_0c94c.dir/CheckSymbolExists.cxx.o
+FAILED: /usr/bin/x86_64-linux-gnu-g++-5  -I/usr/include/qt4  -o CMakeFiles/cmTC_0c94c.dir/CheckSymbolExists.cxx.o -c /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_MAC’ was not declared in this scope
+   return ((int*)(&Q_WS_MAC))[argc];
+                   ^
+ninja: build stopped: subcommand failed.
+
+
+File /home/zhjd/qtros_ws/src/ex3/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_MAC
+  return ((int*)(&Q_WS_MAC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}

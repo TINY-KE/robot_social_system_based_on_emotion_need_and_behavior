@@ -51,10 +51,10 @@ find_package(Threads)
 
 # ) 
 
-# catkin_package(
-#         LIBRARIES need_model
-#         CATKIN_DEPENDS  message_runtime
-# )
+catkin_package(
+        LIBRARIES need_model
+        CATKIN_DEPENDS  message_runtime
+)
 
 
 #可执行文件

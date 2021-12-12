@@ -25,7 +25,7 @@ int main(int argc,char **argv)
     //名称talker必须唯1
     ros::init(argc,argv,"test_node");
     ros::NodeHandle n;
-    ros::Publisher chatter_pub=n.advertise<social_msg::need_msg>("needlist",1);
+    ros::Publisher chatter_pub=n.advertise<social_msg::need_msg>("need_lists",1);
 
     ros::Rate loop_rate(1); //loop_rate 发送数据频率10Hz
     int count=0;

@@ -105,11 +105,13 @@ void Insert(Queue_para* ptr, int n, social_msg::bhvPara content)
 }
 void LoclistInit(LocalList &list){
     list.n = 11;
+    // 需求类型：Greet  、MeasureTempareture、Answer、ParentIdentity、KeepOrder、StopStranger、Wander、Doubt、Chat、Charge、Remind、
+    //情感类型：高兴、信任、期待、悲伤、愤怒、害怕、厌恶、无聊
     list.bhv[0].Needs = "Greet";
     list.bhv[0].TotalTime = 20;
     list.bhv[1].Needs = "Doubt";
     list.bhv[1].TotalTime = 15;
-    list.bhv[2].Needs = "TempCheck";
+    list.bhv[2].Needs = "MeasureTempareture";
     list.bhv[2].TotalTime = 60;
     list.bhv[3].Needs = "Wander";
     list.bhv[3].TotalTime = 255;
@@ -119,7 +121,7 @@ void LoclistInit(LocalList &list){
     list.bhv[5].TotalTime = 20;
     list.bhv[6].Needs = "Answer";
     list.bhv[6].TotalTime = 20;
-    list.bhv[7].Needs = "Parentldentity";
+    list.bhv[7].Needs = "ParentIdentity";
     list.bhv[7].TotalTime = 30;
     list.bhv[8].Needs = "KeepOrder";
     list.bhv[8].TotalTime = 20;
@@ -717,7 +719,7 @@ void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList li
         temp_Qpara.speech.content = temp_list.speech;
         temp_Qpara.weight = temp_list.weight;
         ParaInsert(Q_para,temp_Qpara);
-        ROS_INFO("Qs nums:%d", Q_para->count);
+        ROS_INFO("Qs nums:%d", Q_para->count);   /* ?? */
         chatterCallbackFlag = 0;    
     }
 }
@@ -770,7 +772,7 @@ int main(int argc,char **argv)
 
     LoclistInit(List);
 
-    ros::Publisher chatter_pub=n.advertise<social_msg::bhvPara>("bhv_pub",1000);
+    ros::Publisher chatter_pub=n.advertise<social_msg::bhvPara>("behavior_pub",1000);
     ros::Rate loop_rate(10); //loop_rate 发送数据频率10Hz
     ros::Subscriber list_sub=n.subscribe<social_msg::need_msg>("need_lists",10,   needCallback);
     ros::Subscriber reply_sub=n.subscribe<social_msg::bhvReply>("bhvReply",10,  replyCallback);

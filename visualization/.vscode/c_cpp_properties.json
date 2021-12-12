@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/zhjd/qtros_ws/devel/include/**",
+        "/opt/ros/kinetic/include/**",
+        "/home/zhjd/qtros_ws/src/ros-qt/code03-btn/include/**",
+        "/home/zhjd/qtros_ws/src/ros-qt/code04-ddialog/include/**",
+        "/home/zhjd/qtros_ws/src/ros-qt/code02-msg/include/**",
+        "/home/zhjd/qtros_ws/src/qtros/include/**",
+        "/home/zhjd/qtros_ws/src/ros-qt/code07-robomap/include/**",
+        "/home/zhjd/qtros_ws/src/ros-qt/code06-test3/include/**",
+        "/home/zhjd/qtros_ws/src/ros-qt/code05-tortoise/include/**",
+        "/home/zhjd/qtros_ws/src/ex3/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}
