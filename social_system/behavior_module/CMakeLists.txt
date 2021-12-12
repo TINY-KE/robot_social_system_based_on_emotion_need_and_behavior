@@ -39,10 +39,10 @@ find_package(Threads)
 #   DEPENDENCIES
 #   std_msgs
 # )
-# catkin_package(
-#   LIBRARIES manage_pkg
-#   CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
-# )
+catkin_package(
+  LIBRARIES behavior_module
+  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+)
 
 
 ## 编译

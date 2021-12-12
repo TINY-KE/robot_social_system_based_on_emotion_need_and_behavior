@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: social_msg
-Description: Description of social_msg
-Version: 0.0.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib -lsocial_msg
-Requires: message_runtime

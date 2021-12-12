@@ -1,2 +1,0 @@
-set(interface_sim_MESSAGE_FILES "/home/zhjd/catkin_ws/src/interface_sim/msg/perception_msg.msg;/home/zhjd/catkin_ws/src/interface_sim/msg/need_msg.msg;/home/zhjd/catkin_ws/src/interface_sim/msg/robot_emotion.msg;/home/zhjd/catkin_ws/src/interface_sim/msg/robot_status.msg")
-set(interface_sim_SERVICE_FILES "")
