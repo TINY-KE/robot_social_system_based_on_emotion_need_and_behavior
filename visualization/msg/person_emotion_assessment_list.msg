@@ -1,1 +1,0 @@
-need_model/person_emotion_assessment  person1

@@ -105,7 +105,9 @@ void QNode::Callback_body(const social_msg::robot_status &msg){
   body8 = msg.idleState;
   Q_EMIT loggingUpdated_body();
 }
+
 void QNode::Callback_percetion(const social_msg::perception_msg &msg){
+
   std::cout << "QNode::Callback_perception" << std::endl;
   per_time = msg.time;
   per_person = msg.person_name;
