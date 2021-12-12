@@ -1,0 +1,41 @@
+\subsubsection usage Usage
+\verbatim
+<node name="sim" pkg="sim" type="sim">
+  <param name="publish" type="bool" value="False" />
+  <param name="per_switch" type="bool" value="False" />
+  <param name="per_time" type="double" value="0.0" />
+  <param name="per_person_IDtype" type="str" value="Teacher" />
+  <param name="per_person_name" type="str" value="Teacher Li" />
+  <param name="per_intention" type="str" value="EnterSchool" />
+  <param name="per_p" type="double" value="0.9" />
+  <param name="per_speech" type="str" value="" />
+  <param name="per_emotion" type="str" value="Happy" />
+  <param name="emotion_switch" type="bool" value="False" />
+  <param name="emotion_1_happy" type="double" value="0.8" />
+  <param name="emotion_2_angry" type="double" value="0.8" />
+  <param name="emotion_3_sad" type="double" value="0.8" />
+  <param name="emotion_4_boring" type="double" value="0.8" />
+  <param name="emotion_5_" type="double" value="0.0" />
+  <param name="emotion_6_" type="double" value="0.0" />
+  <param name="emotion_7_" type="double" value="0.0" />
+  <param name="emotion_8_" type="double" value="0.0" />
+  <param name="body_switch" type="bool" value="False" />
+  <param name="body_1_energy" type="double" value="1.0" />
+  <param name="body_2_gaze" type="double" value="1.0" />
+  <param name="body_3_expression" type="double" value="1.0" />
+  <param name="body_4_body" type="double" value="1.0" />
+  <param name="body_5_arm" type="double" value="1.0" />
+  <param name="body_6_leg" type="double" value="1.0" />
+  <param name="body_7_blank" type="double" value="1.0" />
+  <param name="body_idleState" type="bool" value="True" />
+  <param name="need_switch" type="bool" value="False" />
+  <param name="need_person_name" type="str" value="Teacher_Li" />
+  <param name="need_person_IDtype" type="str" value="Teacher" />
+  <param name="need_rob_emotion" type="str" value="Happy" />
+  <param name="need_person_emotion" type="str" value="Happy" />
+  <param name="need_name" type="str" value="Greet" />
+  <param name="need_weight" type="double" value="0.9" />
+  <param name="need_speech" type="str" value="" />
+</node>
+\endverbatim
+

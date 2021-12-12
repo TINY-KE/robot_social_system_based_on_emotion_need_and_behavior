@@ -1,0 +1,105 @@
+#include "ros/ros.h"
+#include <dynamic_reconfigure/server.h>
+#include <interface_sim/simConfig.h>
+#include "social_msg/need_msg.h"
+#include "social_msg/robot_emotion.h"
+#include "social_msg/robot_status.h"
+#include "social_msg/perception_msg.h"
+ros::Publisher pub_perception;
+ros::Publisher pub_attitude;
+ros::Publisher pub_body;
+ros::Publisher pub_emotion;
+ros::Publisher pub_needlist;
+ros::Publisher pub_needsatisfied;
+
+
+void callback(sim::simConfig &config, uint32_t level)
+{
+// ros::Rate loop_rate(1);
+
+// while ( ros::ok() ) {
+  if(config.publish == true)     
+        {
+                //感知信息 v
+                if(config.per_switch == true)
+                {
+                social_msg::perception_msg perception;
+                perception.time = config.per_time;
+                perception.person_name = config.per_person_name;
+                perception.IDtype = config.per_person_IDtype;
+                perception.intention = config.per_intention;
+                perception.p = config.per_p;
+                perception.speech = config.per_speech;
+                perception.person_emotion = config.per_emotion;
+                pub_perception.publish(perception);
+                }
+                //态度信息
+
+
+                //身体状况 v
+                if(config.body_switch == true)
+                {
+                social_msg::robot_status robot_status;
+                robot_status.body1 = config.body_1_energy ; 
+                robot_status.body2 = config.body_2_gaze ; 
+                robot_status.body3 = config.body_3_expression ; 
+                robot_status.body4 = config.body_4_body ; 
+                robot_status.body5 = config.body_5_arm ; 
+                robot_status.body6 = config.body_6_leg ; 
+                robot_status.body7 = config.body_7_blank ; 
+                robot_status.idleState = config.body_idleState ; 
+                pub_body.publish(robot_status);
+                }
+                //内部：情感向量 v
+                if(config.emotion_switch == true)
+                {
+                social_msg::robot_emotion  robot_emotion ;
+                robot_emotion.emotion1 = config.emotion_1_happy;
+                robot_emotion.emotion2 = config.emotion_2_angry;
+                robot_emotion.emotion3 = config.emotion_3_sad;
+                robot_emotion.emotion4 = config.emotion_4_boring;
+                robot_emotion.emotion5 = config.emotion_5_;
+                robot_emotion.emotion6 = config.emotion_6_;
+                robot_emotion.emotion7 = config.emotion_7_;
+                robot_emotion.emotion8 = config.emotion_8_;
+                pub_emotion.publish(robot_emotion);
+                }
+
+                //内部：需求
+                if(config.need_switch == true)
+                {
+                social_msg::need_msg  need ;
+                need.need_name = config.need_name;
+                need.person_name = config.need_person_name;
+                need.IDtype = config.need_person_IDtype;
+                need.weight = config.need_weight;
+                need.person_emotion = config.need_person_emotion;
+                need.rob_emotion = config.need_rob_emotion;
+                need.speech = config.need_speech;
+
+                pub_needlist.publish(need);
+                }
+                //内部：需求满足状况
+
+        }
+
+}
+ 
+int main(int argc, char **argv)
+{
+        ros::init(argc, argv, "need_model_dynamic_reconfigure");
+        ros::NodeHandle n;
+        pub_perception  = n.advertise<social_msg::perception_msg>("perceptions", 10);
+        // pub_attitude  = n.advertise<social_msg::perception_msg>("attitude", 10);
+        pub_body  = n.advertise<social_msg::robot_status>("robot_status", 10);
+        pub_emotion  = n.advertise<social_msg::robot_emotion>("robot_emotion", 10);
+        pub_needlist  = n.advertise<social_msg::need_msg>("need_lists", 10);
+        // pub_needsatisfied  = n.advertise<social_msg::perception_msg>("need_satisfied", 10);
+
+        dynamic_reconfigure::Server<sim::simConfig> server;
+        dynamic_reconfigure::Server<sim::simConfig>::CallbackType f;
+        f = boost::bind(&callback, _1, _2);
+        server.setCallback(f);
+        ros::spin();
+        return 0;
+}

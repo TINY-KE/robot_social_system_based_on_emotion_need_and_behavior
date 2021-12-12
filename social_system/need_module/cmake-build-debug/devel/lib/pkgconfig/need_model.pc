@@ -1,0 +1,8 @@
+prefix=/home/zhjd/ws/src/social_system/need_module/cmake-build-debug/devel
+
+Name: need_model
+Description: Description of need_model
+Version: 0.0.0
+Cflags: -I/home/zhjd/ws/src/social_system/need_module/cmake-build-debug/devel/include
+Libs: -L/home/zhjd/ws/src/social_system/need_module/cmake-build-debug/devel/lib -lneed_model
+Requires: message_runtime

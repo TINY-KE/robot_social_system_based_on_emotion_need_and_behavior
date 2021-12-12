@@ -1,0 +1,11 @@
+int16 num
+int32 time
+string intention
+int8 CurOrder
+int8 TotalOrder
+int8 Actuator_enable
+manage_pkg/Gaze gaze
+manage_pkg/Emotion emotion
+manage_pkg/Arms arms
+manage_pkg/Speech speech
+manage_pkg/Legs legs

@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/zhjd/catkin_ws/src/interface_sim/build/devel/setup.sh

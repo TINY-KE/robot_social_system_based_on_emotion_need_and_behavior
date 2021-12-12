@@ -1,0 +1,2 @@
+set(interface_sim_MESSAGE_FILES "msg/perception_msg.msg;msg/need_msg.msg;msg/robot_emotion.msg;msg/robot_status.msg")
+set(interface_sim_SERVICE_FILES "")

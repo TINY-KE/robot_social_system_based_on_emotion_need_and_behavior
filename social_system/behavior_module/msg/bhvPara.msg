@@ -1,0 +1,12 @@
+int16 num
+int64 time
+string Needs
+int8 CurOrder
+int8 TotalOrder
+float64 weight
+int8 TotalTime
+manage_pkg/Gaze gaze
+manage_pkg/Emotion emotion
+manage_pkg/Arms arms
+manage_pkg/Speech speech
+manage_pkg/Legs legs

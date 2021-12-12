@@ -1,0 +1,8 @@
+prefix=/home/zhjd/social_ws/src/behavior_system_based_on_emotion_and_need/behavior_module/build/devel
+
+Name: manage_pkg
+Description: Description of manage_pkg
+Version: 0.0.0
+Cflags: -I/home/zhjd/social_ws/src/behavior_system_based_on_emotion_and_need/behavior_module/build/devel/include
+Libs: -L/home/zhjd/social_ws/src/behavior_system_based_on_emotion_and_need/behavior_module/build/devel/lib -lmanage_pkg
+Requires: roscpp rospy std_msgs message_runtime
