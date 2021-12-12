@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: need_model
-Description: Description of need_model
-Version: 0.0.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib -lneed_model
-Requires: message_runtime

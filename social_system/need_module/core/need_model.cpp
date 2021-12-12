@@ -6,13 +6,13 @@
 #include "std_msgs/String.h"
 #include <sstream>
 #include <perception.h>
-#include "need_model/perception_msg.h"
-#include "need_model/need_msg.h"
-#include "need_model/robot_emotion.h"
-#include "need_model/robot_status.h"
-#include "need_model/need_compare.h"
+#include "social_msg/perception_msg.h"
+#include "social_msg/need_msg.h"
+#include "social_msg/robot_emotion.h"
+#include "social_msg/robot_status.h"
+#include "social_msg/need_compare.h"
 #include "dynamic_reconfigure/server.h" 
-// #include "need_model/DynamicParamConfig.h" 
+// #include "social_msg/DynamicParamConfig.h" 
 //内部头文件
 #include "Adaptive.h"
 #include "perception.h"
@@ -30,7 +30,7 @@ ros::Subscriber sub_robot_status;
 ros::Subscriber sub_needCompare;
 ros::Publisher pub;
 //运算符
-void operator >> (const need_model::need_msg& msg, need_wu & need) {
+void operator >> (const social_msg::need_msg& msg, need_wu & need) {
     need.need_name = msg.need_name;
     need.IDtype = msg.IDtype;
     need.weight = msg.weight;
@@ -46,7 +46,7 @@ void run_PriorNeed(){
             printf( GREEN "Run %dth PriorNeed（运行先验模型） !!\n"NONE, i);            
             vector<need> need_lists = PriorNeed.need_compute_all();
             for(int i =0 ; i< need_lists.size(); i++){
-                need_model::need_msg need_output;
+                social_msg::need_msg need_output;
                 need_output.IDtype = need_lists[i].IDtype;
                 need_output.rob_emotion = "";//need_lists[i].rob_emotion;
                 need_output.person_emotion = need_lists[i].person_emotion;//need_lists[i].person_emotion
@@ -91,7 +91,7 @@ void run_adaptive(){
 
 
 // 需求模型
-void PerceptionUpdate(const need_model::perception_msg& msg){
+void PerceptionUpdate(const social_msg::perception_msg& msg){
     
     perception per;
     per.p_ = msg.p;
@@ -106,7 +106,7 @@ void PerceptionUpdate(const need_model::perception_msg& msg){
     Monitor.emotionUpdate(per);
     
 }
-void RobotEmotionUpdate(const need_model::robot_emotion& msg){
+void RobotEmotionUpdate(const social_msg::robot_emotion& msg){
     
     double emotion[8];
     emotion[0] = msg.emotion1;
@@ -120,7 +120,7 @@ void RobotEmotionUpdate(const need_model::robot_emotion& msg){
     PriorNeed.RobotEmotionUpdate(emotion);  
     adaptiveModel.RobotEmotionUpdate(emotion);
 }
-void RobotStatusUpdate(const need_model::robot_status& msg){
+void RobotStatusUpdate(const social_msg::robot_status& msg){
     
     double status[8] ;
     status[0] = msg.body1;
@@ -133,7 +133,7 @@ void RobotStatusUpdate(const need_model::robot_status& msg){
     status[7] = msg.idleState;  
     PriorNeed.RobotStatusUpdate(status);
 }
-void AdaptiveUpdate(const need_model::need_compare& msg){
+void AdaptiveUpdate(const social_msg::need_compare& msg){
     need_wu need_win , need_lose ;
     msg.need_win    >>    need_win;
     msg.need_lose   >>    need_lose;
@@ -146,7 +146,7 @@ int main(int argc, char** argv){
     if(0)
         std::thread adaptiveThread(run_adaptive);
     // ROS
-    ros::init(argc, argv, "need_model");
+    ros::init(argc, argv, "social_msg");
     ros::NodeHandle n;
     cout<< "Start to Subscribe（接收ROS信息） !!\n";
     //状态更新
@@ -156,7 +156,7 @@ int main(int argc, char** argv){
     // 自适应模型
     sub_needCompare = n.subscribe("needCompare", 10, AdaptiveUpdate);
     // 需求发布
-    pub = n.advertise<need_model::need_msg>("need_lists", 10);  
+    pub = n.advertise<social_msg::need_msg>("need_lists", 10);  
     
     ros::spin();    //库是节点读取数据道消息响应循环，当消息到达的时候，回调函数就会被调用。当按下Ctrl+C时，节点会退出消息循环，于是循环结束。
     return 0;

@@ -40,9 +40,9 @@ add_message_files( FILES
         need_msg.msg  
         
         #自适应模块输入
-        # need_compare.msg
-        # person_emotion_assessment.msg
-        # person_emotion_assessment_list.msg
+        need_compare.msg
+        person_emotion_assessment.msg
+        person_emotion_assessment_list.msg
 
         #行为模块输出
         Arms.msg

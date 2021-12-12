@@ -3,22 +3,22 @@
 #include "ros/duration.h"
 #include "std_msgs/String.h"
 #include <sstream>
-#include "manage_pkg/Arms.h"
-#include "manage_pkg/Emotion.h"
-#include "manage_pkg/Gaze.h"
-#include "manage_pkg/Legs.h"
-#include "manage_pkg/Speech.h"
-#include "manage_pkg/bhvGet.h"
-#include "manage_pkg/bhvPara.h"
-#include "manage_pkg/bhvIssue.h"
-#include "manage_pkg/bhvReply.h"
-#include "manage_pkg/NeedList.h"
+#include "social_msg/Arms.h"
+#include "social_msg/Emotion.h"
+#include "social_msg/Gaze.h"
+#include "social_msg/Legs.h"
+#include "social_msg/Speech.h"
+#include "social_msg/bhvGet.h"
+#include "social_msg/bhvPara.h"
+#include "social_msg/bhvIssue.h"
+#include "social_msg/bhvReply.h"
+#include "social_msg/need_msg.h"
 
 typedef struct queue_para{
     int count;
     int front;
     int rear;
-    manage_pkg::bhvPara data[20];
+    social_msg::bhvPara data[20];
 }Queue_para;
 
 Queue_para* Q = (Queue_para*)malloc(sizeof(Queue_para));
@@ -37,7 +37,7 @@ bool QueueEmpty(Queue_para* ptr) {   //判断队列是否为空
     return ptr->count <= 0;
 }
  
-void Append(Queue_para* ptr, manage_pkg::bhvPara item) {    //入队
+void Append(Queue_para* ptr, social_msg::bhvPara item) {    //入队
     if (QueueFull(ptr)) {
         ROS_INFO("Queue Full!!");
         return;
@@ -72,9 +72,9 @@ void reply_process(void)
 
 }
 
-void chatterCallback(const manage_pkg::bhvPara::ConstPtr& msg)
+void chatterCallback(const social_msg::bhvPara::ConstPtr& msg)
 {
-    manage_pkg::bhvPara temp_para = *msg;
+    social_msg::bhvPara temp_para = *msg;
     ROS_INFO("current task:%s", msg->Needs.c_str());
     ROS_INFO("current order:%d", msg->CurOrder);
     if(msg->num%100!=0)
@@ -88,16 +88,16 @@ int main(int argc,char **argv)
     ros::init(argc,argv,"pub_node");
     ros::NodeHandle n;
     ros::Duration(1).sleep();
-    ros::Publisher chatter_pub=n.advertise<manage_pkg::bhvReply>("bhvReply",1000);
+    ros::Publisher chatter_pub=n.advertise<social_msg::bhvReply>("bhvReply",1000);
     ros::Rate loop_rate(1); //loop_rate 发送数据频率10Hz
 
 
-    ros::Subscriber task_sub=n.subscribe<manage_pkg::bhvPara>("bhv_pub",1000,chatterCallback);
+    ros::Subscriber task_sub=n.subscribe<social_msg::bhvPara>("bhv_pub",1000,chatterCallback);
     ros::spinOnce();
     int count=0;
     int i=0;
-    manage_pkg::bhvReply reply;
-    manage_pkg::bhvPara temp_para;
+    social_msg::bhvReply reply;
+    social_msg::bhvPara temp_para;
     int endtime=0;
     setlocale(LC_CTYPE, "zh_CN.utf8");
     

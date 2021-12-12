@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>manage_pkg</name>
+  <name>behavior_module</name>
   <version>0.0.0</version>
   <description>The manage_pkg package</description>
 
