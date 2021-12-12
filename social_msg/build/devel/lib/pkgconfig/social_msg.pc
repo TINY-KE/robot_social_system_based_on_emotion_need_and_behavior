@@ -1,8 +1,0 @@
-prefix=/home/zhjd/ws/src/social_system/social_msg/build/devel
-
-Name: social_msg
-Description: Description of social_msg
-Version: 0.0.0
-Cflags: -I/home/zhjd/ws/src/social_system/social_msg/build/devel/include
-Libs: -L/home/zhjd/ws/src/social_system/social_msg/build/devel/lib -lsocial_msg
-Requires: message_runtime

@@ -1,8 +1,0 @@
-prefix=/home/zhjd/qtros_ws/src/ex3/build/devel
-
-Name: visualize
-Description: Description of visualize
-Version: 0.1.0
-Cflags: -I/home/zhjd/qtros_ws/src/ex3/build/devel/include
-Libs: -L${prefix}/lib 
-Requires: 
