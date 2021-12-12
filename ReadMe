@@ -23,4 +23,9 @@
  (3)qtcreator中导入ros workspace
 	https://blog.csdn.net/a347755140/article/details/117020994
 
+3.仿真接口：
+roslaunch interface_sim interface_sim_cfg.launch
+
+4.
+
 
