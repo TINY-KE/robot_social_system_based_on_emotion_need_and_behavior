@@ -2,18 +2,18 @@
 
 ### 一、安装第三方库：
 1.  百度api： 
-    python版本2.7 
-    pip install 了setuptools 
-    cd ThirdParty/aip-python-sdk-4.15.13  &&  sudo python setup.py install 
+    python版本2.7  
+    pip install 了setuptools   
+    cd ThirdParty/aip-python-sdk-4.15.13  &&  sudo python setup.py install   
     pip install requests 
-    pip install numpy==1.11.2 pandas==0.23.0 
-2.  yaml cpp
-    cd /ThirdParty/yaml-cpp 
-    mkdir build 
-    cd build 
-    cmake -DBUILD_SHARED_LIBS=ON .. 
-    make 
-    sudo make install 
+    pip install numpy==1.11.2 pandas==0.23.0   
+2.  yaml cpp  
+    cd /ThirdParty/yaml-cpp   
+    mkdir build   
+    cd build   
+    cmake -DBUILD_SHARED_LIBS=ON ..   
+    make   
+    sudo make install   
 
 
 
