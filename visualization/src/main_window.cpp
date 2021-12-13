@@ -38,6 +38,12 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 	setWindowIcon(QIcon(":/images/icon.png"));
     QObject::connect(&qnode, SIGNAL(rosShutdown()), this, SLOT(close()));
 
+/*xiaopang robot*/
+    QImage *img=new QImage; //新建一个image对象
+    img->load(":/new/prefix1/images/xiaopang.png"); //将图像资源载入对象img，注意路径，可点进图片右键复制路径
+    ui.label_xiaopang -> setPixmap(QPixmap::fromImage(*img));
+
+
 	/*********************
 	** Logging
 	**********************/
@@ -169,103 +175,103 @@ void MainWindow::updateLoggingView_perception() {
 }
 void MainWindow::updateLoggingView_need() {
   //listWidget
-  ui.listWidget->clear();
-  need_list = qnode.need_list;
-  for(int i =0; i < need_list.size();  i ++){
-    std::string s = need_list[i].name  +" for "+ need_list[i].person  +" as "+  std::to_string(need_list[i].weight);
-    QString list = QString::fromStdString(s);
-    ui.listWidget->addItem(list);
-  }
+//  ui.listWidget->clear();
+//  need_list = qnode.need_list;
+//  for(int i =0; i < need_list.size();  i ++){
+//    std::string s = need_list[i].name  +" for "+ need_list[i].person  +" as "+  std::to_string(need_list[i].weight);
+//    QString list = QString::fromStdString(s);
+//    ui.listWidget->addItem(list);
+//  }
 
   //progressBar
-   {
-     //clear
-     ui.progressBar_need_answer->setValue(0);
-     ui.progressBar_need_charge->setValue(0);
-     ui.progressBar_need_chat->setValue(0);
-     ui.progressBar_need_greet->setValue(0);
-     ui.progressBar_need_parent_ensure->setValue(0);
-     ui.progressBar_need_question->setValue(0);
-     ui.progressBar_need_remind->setValue(0);
-     ui.progressBar_need_tempareture_check->setValue(0);
-     ui.progressBar_need_wander ->setValue(0);
-     ui.progressBar_need_KeepOrder ->setValue(0);
-     ui.progressBar_need_StopStranger ->setValue(0);
+//   {
+//     //clear
+//     ui.progressBar_need_answer->setValue(0);
+//     ui.progressBar_need_charge->setValue(0);
+//     ui.progressBar_need_chat->setValue(0);
+//     ui.progressBar_need_greet->setValue(0);
+//     ui.progressBar_need_parent_ensure->setValue(0);
+//     ui.progressBar_need_question->setValue(0);
+//     ui.progressBar_need_remind->setValue(0);
+//     ui.progressBar_need_tempareture_check->setValue(0);
+//     ui.progressBar_need_wander ->setValue(0);
+//     ui.progressBar_need_KeepOrder ->setValue(0);
+//     ui.progressBar_need_StopStranger ->setValue(0);
 
-     ui.lineEdit_need_answer  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_charge  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_chat  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_greet  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_parent_ensure  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_question  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_remind  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_tempareture_check  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_wander  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_KeepOrder  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_StopStranger  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_answer  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_charge  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_chat  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_greet  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_parent_ensure  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_question  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_remind  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_tempareture_check  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_wander  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_KeepOrder  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_StopStranger  -> setText(QString::fromStdString(""));
 
-     ui.lineEdit_need_answer_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_charge_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_chat_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_greet_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_parent_ensure_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_question_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_remind_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_tempareture_check_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_wander_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_KeepOrder_2  -> setText(QString::fromStdString(""));
-     ui.lineEdit_need_StopStranger_2  -> setText(QString::fromStdString(""));
-   }
-  {
-    //show current need
-    if(qnode.need_cur.name == "Anwser")
-        {ui.progressBar_need_answer->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_answer  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_answer_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-    if(qnode.need_cur.name == "Charge")
-        {ui.progressBar_need_charge->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_charge  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_charge_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-    if(qnode.need_cur.name == "Chat")
-        {ui.progressBar_need_chat->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_chat  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_chat_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-    if(qnode.need_cur.name == "Greet")
-        {ui.progressBar_need_greet->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_greet  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_greet_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-    if(qnode.need_cur.name == "ParentIdentity")
-        {ui.progressBar_need_parent_ensure->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_parent_ensure  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_parent_ensure_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-    if(qnode.need_cur.name == "Doubt")
-        {ui.progressBar_need_question->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_question  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_question_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-    if(qnode.need_cur.name == "MeasureTempareture")
-        {ui.progressBar_need_tempareture_check->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_tempareture_check  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_tempareture_check_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-    if(qnode.need_cur.name == "Wander")
-        {ui.progressBar_need_wander->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_wander  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_wander_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//     ui.lineEdit_need_answer_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_charge_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_chat_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_greet_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_parent_ensure_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_question_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_remind_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_tempareture_check_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_wander_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_KeepOrder_2  -> setText(QString::fromStdString(""));
+//     ui.lineEdit_need_StopStranger_2  -> setText(QString::fromStdString(""));
+//   }
+//  {
+//    //show current need
+//    if(qnode.need_cur.name == "Anwser")
+//        {ui.progressBar_need_answer->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_answer  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_answer_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//    if(qnode.need_cur.name == "Charge")
+//        {ui.progressBar_need_charge->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_charge  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_charge_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//    if(qnode.need_cur.name == "Chat")
+//        {ui.progressBar_need_chat->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_chat  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_chat_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//    if(qnode.need_cur.name == "Greet")
+//        {ui.progressBar_need_greet->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_greet  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_greet_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//    if(qnode.need_cur.name == "ParentIdentity")
+//        {ui.progressBar_need_parent_ensure->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_parent_ensure  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_parent_ensure_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//    if(qnode.need_cur.name == "Doubt")
+//        {ui.progressBar_need_question->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_question  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_question_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//    if(qnode.need_cur.name == "MeasureTempareture")
+//        {ui.progressBar_need_tempareture_check->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_tempareture_check  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_tempareture_check_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//    if(qnode.need_cur.name == "Wander")
+//        {ui.progressBar_need_wander->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_wander  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_wander_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
 
-    if(qnode.need_cur.name == "KeepOrder")
-        {ui.progressBar_need_KeepOrder->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_KeepOrder  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_KeepOrder_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//    if(qnode.need_cur.name == "KeepOrder")
+//        {ui.progressBar_need_KeepOrder->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_KeepOrder  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_KeepOrder_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
 
-    if(qnode.need_cur.name == "StopStranger")
-        {ui.progressBar_need_StopStranger->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_StopStranger  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_StopStranger_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//    if(qnode.need_cur.name == "StopStranger")
+//        {ui.progressBar_need_StopStranger->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_StopStranger  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_StopStranger_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
 
-    if(qnode.need_cur.name == "Remind")
-        {ui.progressBar_need_remind->setValue(int(qnode.need_cur.weight*100));
-        ui.lineEdit_need_remind  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-        ui.lineEdit_need_remind_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-  }
+//    if(qnode.need_cur.name == "Remind")
+//        {ui.progressBar_need_remind->setValue(int(qnode.need_cur.weight*100));
+//        ui.lineEdit_need_remind  -> setText(QString::number(qnode.need_cur.weight,'f',2));
+//        ui.lineEdit_need_remind_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
+//  }
 }
 /*****************************************************************************
 ** Implementation [Menu]

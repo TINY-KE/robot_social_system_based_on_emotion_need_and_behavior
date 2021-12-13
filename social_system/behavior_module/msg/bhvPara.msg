@@ -1,12 +1,21 @@
-int16 num
+int16 num  #flag  如果倒数第3位 为1 或 2.
 int64 time
 string Needs
 int8 CurOrder
 int8 TotalOrder
 float64 weight
 int8 TotalTime
+string ExecutingBehavior
+string ExecutingBehavior_person
+string HeadBehavior
+string HeadBehavior_person
+int8 gaze_flag   
 manage_pkg/Gaze gaze
+int8 emotion_flag
 manage_pkg/Emotion emotion
+int8 arms_flag
 manage_pkg/Arms arms
+int8 speech_flag
 manage_pkg/Speech speech
+int8 legs_flag
 manage_pkg/Legs legs

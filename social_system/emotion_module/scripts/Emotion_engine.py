@@ -17,7 +17,7 @@ for i in range(0,emtionNumber-1):
     a[i] = 0 # 幅度值
     b[i] = 0 # 衰减系数
     h1[i] = 0.1 #unaware情感阈值
-    h2[i] = 0.4
+    h2[i] = 0.4   #变成0.5, 
     h3[i] = 0.7
     h4[i] = 1
 

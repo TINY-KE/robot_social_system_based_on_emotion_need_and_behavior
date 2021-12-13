@@ -775,7 +775,7 @@ int main(int argc,char **argv)
     ros::Publisher chatter_pub=n.advertise<social_msg::bhvPara>("behavior_pub",1000);
     ros::Rate loop_rate(10); //loop_rate 发送数据频率10Hz
     ros::Subscriber list_sub=n.subscribe<social_msg::need_msg>("need_lists",10,   needCallback);
-    ros::Subscriber reply_sub=n.subscribe<social_msg::bhvReply>("bhvReply",10,  replyCallback);
+    ros::Subscriber reply_sub=n.subscribe<social_msg::bhvReply>("behavior_Reply",10,  replyCallback);
     ros::spinOnce();
 
     while(ros::ok())

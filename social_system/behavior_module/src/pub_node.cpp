@@ -88,11 +88,11 @@ int main(int argc,char **argv)
     ros::init(argc,argv,"pub_node");
     ros::NodeHandle n;
     ros::Duration(1).sleep();
-    ros::Publisher chatter_pub=n.advertise<social_msg::bhvReply>("bhvReply",1000);
+    ros::Publisher chatter_pub=n.advertise<social_msg::bhvReply>("behavior_Reply",1000);
     ros::Rate loop_rate(1); //loop_rate 发送数据频率10Hz
 
 
-    ros::Subscriber task_sub=n.subscribe<social_msg::bhvPara>("bhv_pub",1000,chatterCallback);
+    ros::Subscriber task_sub=n.subscribe<social_msg::bhvPara>("behavior_pub",1000,chatterCallback);
     ros::spinOnce();
     int count=0;
     int i=0;

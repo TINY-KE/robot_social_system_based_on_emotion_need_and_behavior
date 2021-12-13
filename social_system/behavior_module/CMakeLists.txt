@@ -17,6 +17,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   /home/zhjd/catkin_ws/devel/include/
   /home/zhjd/ws/devel/include/
+  
 )
 #thread 
 find_package(Threads) 
