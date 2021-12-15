@@ -15,7 +15,8 @@
 #include "social_msg/bhvIssue.h"
 #include "social_msg/bhvReply.h"
 #include "social_msg/need_msg.h"
-
+#include "social_msg/robot_emotion.h"
+#include "social_msg/robot_status.h"
 
 #define EnhanceFactor 1.3
 using namespace tinyxml2;
@@ -35,6 +36,7 @@ typedef struct locallist{
 
 bool chatterCallbackFlag;
 bool InsertAndConcurFlag;
+int emotionFlag;//1-积极信号 2-消极信号
 social_msg::need_msg ListBuf;
 Queue_para* Q = (Queue_para*)malloc(sizeof(Queue_para));
 //全局变量：当前执行任务
@@ -676,12 +678,17 @@ void TaskInsert(Queue_para* ptr, social_msg::bhvPara item)
 
 void shiftneedlist(social_msg::need_msg &list)
 {
-    if(list.need_name== "greet") list.need = 0;
-    else if (list.need_name == "quest") list.need = 1;
-    else if (list.need_name == "check") list.need = 2;
-    else if (list.need_name == "patrol") list.need = 3;
-    else if (list.need_name == "prevent") list.need = 4;
-    else if (list.need_name == "clap") list.need = 5;
+    if(list.need_name== "Greet") list.need = 0;
+    else if (list.need_name == "Doubt") list.need = 1;
+    else if (list.need_name == "MeasureTempareture") list.need = 2;
+    else if (list.need_name == "Wander") list.need = 3;
+    else if (list.need_name == "StopStranger") list.need = 4;
+    else if (list.need_name == "Chat") list.need = 5;
+    else if (list.need_name == "Answer") list.need = 6;
+    else if (list.need_name == "ParentIdentity") list.need = 7;
+    else if (list.need_name == "KeepOrder") list.need = 8;
+    else if (list.need_name == "Remind") list.need = 9;
+    else if (list.need_name == "Charge") list.need = 10;
 }
 //插入判断，满足条件就插队，不满足就入队
 void ParaInsert(Queue_para* ptr, social_msg::bhvPara item)
@@ -715,9 +722,24 @@ void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList li
         temp_Qpara = list.bhv[temp_list.need];
         temp_Qpara.gaze.target = temp_list.person_name;
         temp_Qpara.legs.target = temp_list.person_name;     //(1) temp_Qpara.legs.target存储的是
-//        temp_Qpara.emotion.type = temp_list.rob_emotion;    // (2)这怎么办？
+        temp_Qpara.emotion.type = temp_list.rob_emotion;    // (2)这怎么办？
         temp_Qpara.speech.content = temp_list.speech;
         temp_Qpara.weight = temp_list.weight;
+        //根据机器人心情调节动作
+        if(emotionFlag == 1)//积极影响
+        {
+            temp_Qpara.legs.rate = (temp_Qpara.legs.rate==3) ? temp_Qpara.legs.rate : (temp_Qpara.legs.rate +1);
+            temp_Qpara.arms.rate = (temp_Qpara.arms.rate==3) ? temp_Qpara.arms.rate : (temp_Qpara.arms.rate +1);
+            temp_Qpara.speech.rate = (temp_Qpara.speech.rate==3) ? temp_Qpara.speech.rate : (temp_Qpara.speech.rate +1);
+            temp_Qpara.speech.tone = (temp_Qpara.speech.tone==3) ? temp_Qpara.speech.tone : (temp_Qpara.speech.tone +1);
+        }
+        else if(emotionFlag == 2)//消极影响
+        {
+            temp_Qpara.legs.rate = (temp_Qpara.legs.rate==1) ? temp_Qpara.legs.rate : (temp_Qpara.legs.rate - 1);
+            temp_Qpara.arms.rate = (temp_Qpara.arms.rate==1) ? temp_Qpara.arms.rate : (temp_Qpara.arms.rate -1);
+            temp_Qpara.speech.rate = (temp_Qpara.speech.rate==1) ? temp_Qpara.speech.rate : (temp_Qpara.speech.rate -1);
+            temp_Qpara.speech.tone = (temp_Qpara.speech.tone==1) ? temp_Qpara.speech.tone : (temp_Qpara.speech.tone -1);
+        }
         ParaInsert(Q_para,temp_Qpara);
         ROS_INFO("Qs nums:%d", Q_para->count);   /* ?? */
         chatterCallbackFlag = 0;    
@@ -755,6 +777,32 @@ void replyCallback(const social_msg::bhvReply::ConstPtr& msg)
     }
 }
 
+int EmotionDealing(social_msg::robot_emotion temp)
+{
+    float avr_pos, avr_neg, avr_neu;
+    avr_pos = (temp.emotion1 + temp.emotion2 + temp.emotion3 + temp.emotion5)/4;
+    avr_neg = (temp.emotion4 + temp.emotion6)/2;
+    avr_neu = (temp.emotion7 + temp.emotion8)/2;
+    if(((avr_pos - avr_neg) > 0.2) && (avr_neu < 0.4))
+        return 1;
+    else if(((avr_neg - avr_pos) > 0.2) && (avr_neu < 0.4))
+        return 2;
+    else 
+        return 0;
+}
+
+void emotionCallback(const social_msg::robot_emotion::ConstPtr& msg)
+{
+    social_msg::robot_emotion temp = *msg;
+    ROS_INFO("emotion update!");
+    emotionFlag = EmotionDealing(temp);
+}
+
+void bodyCallback(const social_msg::robot_status::ConstPtr& msg)
+{
+
+}
+
 int main(int argc,char **argv)
 {
     int count=0,taskNum=0;
@@ -776,6 +824,8 @@ int main(int argc,char **argv)
     ros::Rate loop_rate(10); //loop_rate 发送数据频率10Hz
     ros::Subscriber list_sub=n.subscribe<social_msg::need_msg>("need_lists",10,   needCallback);
     ros::Subscriber reply_sub=n.subscribe<social_msg::bhvReply>("behavior_Reply",10,  replyCallback);
+    ros::Subscriber emotion_sub=n.subscribe<social_msg::robot_emotion>("robot_emotion_msg",10, emotionCallback);
+    ros::Subscriber body_sub=n.subscribe<social_msg::robot_status>("robot_status_msg",10, bodyCallback);
     ros::spinOnce();
 
     while(ros::ok())
