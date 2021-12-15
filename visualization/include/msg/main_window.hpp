@@ -33,7 +33,7 @@ Q_OBJECT
 
 public:
 	MainWindow(int argc, char** argv, QWidget *parent = 0);
-	~MainWindow();
+  ~MainWindow();
 
 	void ReadSettings(); // Load up qt program settings at startup
 	void WriteSettings(); // Save qt program settings when closing
@@ -57,11 +57,16 @@ public Q_SLOTS:
     void updateLoggingView_body();
     void updateLoggingView_perception();
     void updateLoggingView_need();
+
+    //(1.2))  progrem to update ui
+//   void updateLoggingView_behavior();
+//   void updateLoggingView_reply();
+//   void updateLoggingView_behavior_queue();
 public:
     std::vector<need> need_list;
 private:
 	Ui::MainWindowDesign ui;
-	QNode qnode;
+  QNode qnode;  //(0))node of ros
 };
 
 }  // namespace msg

@@ -67,7 +67,7 @@ void QNode::run() {
   ros::start(); // explicitly needed since our nodehandle is going out of scope.
   ros::NodeHandle n;
   // Add your ros communications here.
-  subscriber_emotion = n.subscribe("robot_emotion", 1000, &QNode::Callback_emotion, this);
+  subscriber_emotion = n.subscribe("robot_emotion", 1000, &QNode::Callback_emotion, this);   //(2))
   subscriber_body = n.subscribe("robot_status", 1000, &QNode::Callback_body, this);
   subscriber_perception = n.subscribe("perceptions", 1000, &QNode::Callback_percetion, this);
   subscriber_need = n.subscribe("need_lists", 1000, &QNode::Callback_need, this);
@@ -91,7 +91,7 @@ void QNode::Callback_emotion(const social_msg::robot_emotion &msg)
   emotion6 = msg.emotion6;
   emotion7 = msg.emotion7;
   emotion8 = msg.emotion8;
-  Q_EMIT loggingUpdated_emotion();
+  Q_EMIT loggingUpdated_emotion();      //(2.2)  singal to qt
 }
 void QNode::Callback_body(const social_msg::robot_status &msg){
   std::cout << "QNode::Callback_body" << std::endl;

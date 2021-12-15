@@ -67,30 +67,38 @@ public:
 //	void log( const LogLevel &level, const std::string &msg);
 //  QStringListModel* loggingModel_sub() { return &logging_model_sub; } //add
 //  void log_sub( const LogLevel &level, const std::string &msg); //add
-  void Callback_emotion(const social_msg::robot_emotion &msg);
+  void Callback_emotion(const social_msg::robot_emotion &msg);   //(1,2)call back  program
   void Callback_body(const social_msg::robot_status &msg);
   void Callback_percetion(const social_msg::perception_msg &msg);
   void Callback_need(const social_msg::need_msg &msg);
-
-
-Q_SIGNALS:
+//  void Callback_behavior(const social_msg::behavior &msg);
+//  void Callback_reply(const social_msg::behavior &msg);
+//  void Callback_behavior_queue(const social_msg::behavior &msg);
+Q_SIGNALS:    //(2)  connect  ros and  qt
 	void loggingUpdated();
   void rosShutdown();
   void loggingUpdated_emotion();  //add
   void loggingUpdated_body();  //add
-  void loggingUpdated_perception();  //add
+  void loggingUpdated_perception();  //add   (2.1)
   void loggingUpdated_need();  //add
+//  void loggingUpdated_body();  //add
+//  void loggingUpdated_perception();  //add
+//  void loggingUpdated_need();  //add
 private:
 	int init_argc;
 	char** init_argv;
 	ros::Publisher chatter_publisher;
   ros::Subscriber subscriber_emotion;
-  ros::Subscriber subscriber_body;
+  ros::Subscriber subscriber_body;    //(1.1))
   ros::Subscriber subscriber_perception;
   ros::Subscriber subscriber_need;
+//  ros::Subscriber subscriber_perception;
+//  ros::Subscriber subscriber_need;
+//  ros::Subscriber subscriber_perception;
+//  ros::Subscriber subscriber_need;
 
 public:
-  //emotion status
+  //emotion status   (3))通过sub  callback函数   把topic的内容 存储到成员变量中。
   double emotion1;
   double emotion2;
   double emotion3;

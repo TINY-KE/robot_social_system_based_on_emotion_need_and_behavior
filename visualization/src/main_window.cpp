@@ -44,7 +44,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     ui.label_xiaopang -> setPixmap(QPixmap::fromImage(*img));
 
 
-	/*********************
+
+  /*********************
 	** Logging
 	**********************/
 
@@ -54,6 +55,10 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     QObject::connect(&qnode, SIGNAL(loggingUpdated_body()), this, SLOT(updateLoggingView_body()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_perception()), this, SLOT(updateLoggingView_perception()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_need()), this, SLOT(updateLoggingView_need()));
+
+    //(1.1)qt  connect   ros singal  and  ui_progrem
+//    QObject::connect(&qnode, SIGNAL(loggingUpdated_need()), this, SLOT(updateLoggingView_need()));
+
     /*********************
     ** Auto Start
     **********************/
@@ -124,8 +129,12 @@ void MainWindow::on_checkbox_use_environment_stateChanged(int state) {
  * this will drop the cursor down to the last line in the QListview to ensure
  * the user can always see the latest log message.
  */
-void MainWindow::updateLoggingView() {
+//(2))  progrem to update ui
+//void updateLoggingView_behavior(){}
+//void updateLoggingView_reply(){}
+//void updateLoggingView_behavior_queue(){}
 
+void MainWindow::updateLoggingView() {
 }
 
 //add
