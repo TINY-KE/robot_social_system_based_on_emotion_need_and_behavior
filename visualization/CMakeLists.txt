@@ -5,6 +5,7 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(visualization)
 add_compile_options(-std=c++11)
+set(CMAKE_BUILD_TYPE "Debug")
 ##############################################################################
 # Catkin
 ##############################################################################
