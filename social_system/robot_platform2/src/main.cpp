@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: sueRimn
- * @LastEditTime: 2021-12-18 21:08:03
+ * @LastEditTime: 2021-12-18 20:31:50
  */
 //
 // Created by zhjd on 2021/5/11.
@@ -13,7 +13,7 @@
 #include <ros/ros.h>
 #include "std_msgs/String.h"
 #include <sstream>
-
+#include <perception.h>
 #include "social_msg/perception_msg.h"
 #include "social_msg/need_msg.h"
 #include "social_msg/robot_emotion.h"
@@ -23,12 +23,9 @@
 #include "dynamic_reconfigure/server.h" 
 #include <thread>
 //肢体 头文件
-
-#include "Gaze_pub.h"
-#include "Screen_pub.h"
 #include "Arm_pub.h"
-#include "Sounder_pub.h"
-#include "Leg_pub.h"
+
+
 /* 
 4）行为的发布：
 a.以1为一个扫描周期。
@@ -63,8 +60,7 @@ ros::Subscriber sub_behavior;
 
 ros::Publisher pub;
 
-int period_num;
-
+// 
 
 void run_PriorNeed(){
     cout<< "Wait to run PriorNeed !!\n";
@@ -73,17 +69,15 @@ void run_PriorNeed(){
 
 
 // 需求模型
-void BehaviorUpdate(const social_msg::bhvPara& behvior){
-        period_num = behvior.TotalTime;
-
+void BehaviorUpdate(const social_msg::bhvPara& msg){
+        
 }
 
 int main(int argc, char** argv){
     // 为需求模型的运行  创建单独的线程 。  
-    Arm_pub  arm;
-    arm.flag = 10;
-    std::thread PriorNeedThread(arm);
-    cout<< arm.flag;
+    Arm 
+    std::thread PriorNeedThread(run_PriorNeed);
+
     // ROS
     ros::init(argc, argv, "social_msg");
     ros::NodeHandle n;

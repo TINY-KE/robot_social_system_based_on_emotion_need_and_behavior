@@ -13,28 +13,28 @@ find_package(catkin REQUIRED COMPONENTS
         std_msgs
         geometry_msgs
 )
-MESSAGE("****catkin dir :${catkin_INCLUDE_DIRS} ")
+MESSAGE("catkin dir :${catkin_INCLUDE_DIRS} ")
 include_directories(
         include/robot_platform
         ${catkin_INCLUDE_DIRS}
         include
+        
         /home/zhjd/ws/devel/include/
-
         # /home/zhjd/ws/src/social_system/robot_platform/include/
 )
 
 
 #yaml cpp
-# find_package(yaml-cpp REQUIRED)
-# include_directories(${YAML_CPP_INCLUDE_DIR})
-# MESSAGE("yaml cpp dir : ${YAML_CPP_INCLUDE_DIR} ")
+find_package(yaml-cpp REQUIRED)
+include_directories(${YAML_CPP_INCLUDE_DIR})
+MESSAGE("yaml cpp dir : ${YAML_CPP_INCLUDE_DIR} ")
 #thread 
 find_package(Threads) 
 
 
 catkin_package(
-        LIBRARIES robot_platform
-        # CATKIN_DEPENDS  message_runtime
+        LIBRARIES need_model
+        CATKIN_DEPENDS  message_runtime
 )
 
 
