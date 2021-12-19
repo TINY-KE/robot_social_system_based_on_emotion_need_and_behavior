@@ -25,24 +25,29 @@ include_directories(
 
 #ros massage自定义
 add_message_files( FILES 
+
         #由课题124生成
         perception_msg.msg
         attitude_msg.msg
         robot_status.msg
         
+
+
         #由行为模块生成
         need_satisfy_msg.msg
-
         # 情感模块输出
         robot_emotion.msg
         
+
+
         #需求模块输出
         need_msg.msg  
-        
         #自适应模块输入
         need_compare.msg
         person_emotion_assessment.msg
         person_emotion_assessment_list.msg
+
+
 
         #行为模块输出
         Arms.msg
@@ -50,11 +55,48 @@ add_message_files( FILES
         Gaze.msg
         Legs.msg
         Speech.msg
+        
         bhvPara.msg     #分步
         bhvIssue.msg    #分步
         bhvGet.msg
         bhvReply.msg
         # NeedList.msg
+
+# #由课题124生成
+        # /OtherProject/perception_msg.msg
+        # /OtherProject/attitude_msg.msg
+        # /OtherProject/robot_status.msg
+        
+
+
+        # #由行为模块生成
+        # /EmotionModule/need_satisfy_msg.msg
+        # # 情感模块输出
+        # /EmotionModule/robot_emotion.msg
+        
+
+
+        # #需求模块输出
+        # /NeedModule/need_msg.msg  
+        # #自适应模块输入
+        # /NeedModule/need_compare.msg
+        # /NeedModule/person_emotion_assessment.msg
+        # /NeedModule/person_emotion_assessment_list.msg
+
+
+
+        # #行为模块输出
+        # /BehaviorModule/Arms.msg
+        # /BehaviorModule/Emotion.msg
+        # /BehaviorModule/Gaze.msg
+        # /BehaviorModule/Legs.msg
+        # /BehaviorModule/Speech.msg
+        
+        # /BehaviorModule/bhvPara.msg     #分步
+        # /BehaviorModule/bhvIssue.msg    #分步
+        # /BehaviorModule/bhvGet.msg
+        # /BehaviorModule/bhvReply.msg
+        # # NeedList.msg
 )
 generate_messages( DEPENDENCIES    roscpp  std_msgs geometry_msgs )
 
