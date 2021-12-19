@@ -74,7 +74,7 @@ void  PeriodDetection(){
     social_msg::bhvReply behavior_reply;
     behavior_reply.num = behavior_cur.num;
     behavior_reply.time = behavior_cur.time;
-    while( period_total != period_cur){
+    while( period_cur  <  period_total){
         // if(period_num == period_num_cur)
         // if(    (gaze.flag == 1)  &&  screen.flag == 1  &&  arm.flag == 1  &&  sounder.flag == 1  &&  arm.flag == 1 ){
         //     period_cur ++ ;
@@ -83,18 +83,12 @@ void  PeriodDetection(){
         //     // sounder.period = period_cur;
         //     // arm.period = period_cur;
         //     // leg.period = period_cur;  
-        //     // gaze.run(       period_cur  );
-        //     // screen.run(     period_cur  );
-        //     // std::thread Gaze_Thread(  gaze.run( period_cur) );
-        //     // std::thread Screen_Thread(  screen.run( period_cur) );
-        //     // std::thread Sounder_Thread(  Sounder_pub::run  ,  sounder);
-        //     // std::thread Arm_Thread(  Arm_pub::run  ,  arm);
-        //     // std::thread Leg_Thread(  Leg_pub::run  ,  leg);
+
         //     behavior_reply.reply = (int)(period_cur/period_total);
         // }
     }
 
-    period_cur = 1;
+    period_cur = 1;  //?
 
 }
 
@@ -115,6 +109,11 @@ void BehaviorUpdate(const social_msg::bhvPara& behavior){
         behavior_cur = behavior;
         period_total = behavior.TotalTime;
         
+        // gaze -> parameter  = behavior.gaze;
+        // gaze -> update = true;
+        social_msg::Gaze gaze = behavior.gaze;
+        gaze -> updatePara( gaze   );
+        
         // gaze.parameter      = behavior.gaze;
         // screen.parameter    = behavior.emotion;
         
@@ -122,8 +121,8 @@ void BehaviorUpdate(const social_msg::bhvPara& behavior){
 
 int main(int argc, char** argv){
     // 为各肢体  创建单独的线程 。  
-    
-    
+    gaze = new Gaze_pub();
+    std::thread Gaze_Thread(  &Gaze_pub::run ,  gaze);
     // std::thread Gaze_Thread(  gaze.run( period_cur) );
     // std::thread Screen_Thread(  screen.run( period_cur) );
     // std::thread Sounder_Thread(  Sounder_pub::run  ,  sounder);
@@ -135,8 +134,8 @@ int main(int argc, char** argv){
     // std::thread Gaze_Thread(  Gaze_pub::run  ,  gaze);
     // std::thread Screen_Thread(  Screen_pub::run  ,  screen);
     // std::thread Sounder_Thread(  Sounder_pub::run  ,  sounder);
-    arm =new Arm_pub();
-    std::thread Arm_Thread(  &Arm_pub::run  ,  arm);
+    // arm =new Arm_pub();
+    // std::thread Arm_Thread(  &Arm_pub::run  ,  arm);
     // std::thread Arm_Thread(  Arm_pub::run  ,  arm);
     // std::thread Leg_Thread(  &/Leg_pub::run  ,  &leg);
     

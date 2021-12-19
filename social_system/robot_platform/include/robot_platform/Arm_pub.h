@@ -6,6 +6,7 @@
  * @LastEditors: Zhang Jiadong
  * @LastEditTime: 2021-12-19 18:05:06
  */
+#include "common_include.h"
 
 class Arm_pub {
     public:

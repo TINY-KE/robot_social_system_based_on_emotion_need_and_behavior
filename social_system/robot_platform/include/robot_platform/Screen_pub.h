@@ -11,6 +11,7 @@
 // Sounder_pub  sounder;
 // Arm_pub  arm;
 // Leg_pub  leg;
+#include "common_include.h"
 
 class Screen_pub {
     public:
@@ -31,30 +32,42 @@ class Screen_pub {
 
     public:  
         bool flag;
+        bool update  = true;
         // int period;
-        social_msg::Emotion  parameter;
+        int period_cur;
+        social_msg::Emotion parameter;
 
-        void run( int period_cur){
-            std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-            flag = 0;
-            publish();
-            sleep(10);
-            std::cout<< "Screen_pub 运行成功 "<<std::endl;
-            /* if(  (period_cur >= parameter.startTime)  &&   (period_cur < parameter.endTime) ){
-                 publish();
-                 std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-                 while(  (t2-t1) < 1    ){
-                    std::cout<< (t2 -t1) <<std::endl;
-                    if(    recall()     ){
-                        flag = 1;
-                    }         
-                    t2 = std::chrono::steady_clock::now();
-                 }
-                 flag = 1;
+        void updatePara(    social_msg::Emotion& para  )  {
+            parameter = para;
+            update = true;
+        }
+        
+        void run( /* int period_cur */){
+            if( update ){
+                
+                flag = 0;
+                publish();
+                sleep(10);
+                std::cout<< "Screen_pub 运行成功 "<<std::endl;
+                /* 
+                std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+                if(  (period_cur >= parameter.startTime)  &&   (period_cur < parameter.endTime) ){
+                    publish();
+                    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+                    while(  (t2-t1) < 1    ){
+                        std::cout<< (t2 -t1) <<std::endl;
+                        if(    recall()     ){
+                            flag = 1;
+                        }         
+                        t2 = std::chrono::steady_clock::now();
+                    }
+                    flag = 1;
+                }
+                else if(    period_cur == parameter.endTime  ){
+                    while(  !recall()   ){  }        
+                    flag = 1;
+                } */
             }
-            else if(    period_cur == parameter.endTime  ){
-                while(  !recall()   ){  }        
-                flag = 1;
-            } */
+            
         }
 };
