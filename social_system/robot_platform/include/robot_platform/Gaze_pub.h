@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-18 20:42:25
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-20 17:48:50
+ * @LastEditTime: 2021-12-20 22:48:01
  */
 // Gaze_pub  gaze;
 // Screen_pub  screen;
@@ -70,7 +70,7 @@ class Gaze_pub {
                     if( wheather_run ){
 
                     flag = 0;
-                    publish();
+                    // publish();
                     // sleep(10);
                     // time_t now = time(0); char* dt = ctime(&now);  std::cout << "Gaze_pub 本地日期和时间：" << dt << std::endl;
                     // std::cout<< "Gaze_pub 运行成功 "<<std::endl;
@@ -96,6 +96,7 @@ class Gaze_pub {
                         flag = 1;
                     }
                     else if(    period_cur == parameter.endTime  ){
+                        publish();
                         while(  !recall()   ){  }        
                         flag = 1;
                     }

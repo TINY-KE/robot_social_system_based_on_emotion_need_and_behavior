@@ -60,6 +60,7 @@ add_message_files( FILES
         bhvIssue.msg    #分步
         bhvGet.msg
         bhvReply.msg
+        bhvQueue.msg
         # NeedList.msg
 
 # #由课题124生成

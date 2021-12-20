@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-20 20:42:25
+ * @LastEditTime: 2021-12-20 22:38:27
  */
 //
 // Created by zhjd on 2021/5/11.
@@ -93,10 +93,15 @@ void  PeriodDetection(){
         insert_behavior = false;
         while( period_cur  <=  period_total)
         {
-            // if(period_num == period_num_cur)
+            // 更新 当前的周期序号  到5个肢体中
             gaze -> updatePeriodCur(period_cur);
+            screen -> updatePeriodCur(period_cur);
+            sounder -> updatePeriodCur(period_cur);
+            arm -> updatePeriodCur(period_cur);
+            leg -> updatePeriodCur(period_cur);
+
             sleep(0.5);// TODO: 要不要延迟半秒钟 ? 
-            if(    (gaze->flag == 1)  ){  //&&  screen->flag == 1  &&  arm->flag == 1  &&  sounder->flag == 1  &&  arm->flag == 1 
+            if(    (gaze->flag == 1) &&  screen->flag == 1  &&  arm->flag == 1  &&  sounder->flag == 1  &&  arm->flag == 1   ){  //
                 period_cur_temp = period_cur;
                 period_cur ++ ;
                 behavior_reply.reply = (int)(period_cur*100/period_total);
@@ -131,13 +136,18 @@ void BehaviorUpdate(const social_msg::bhvPara& behavior){
         //关闭 当前行为的 周期检测，即 中断当前的行为。
         wheather_run = false;
         insert_behavior = true;
+        
         // 将 新行为  更新到“周期检测”函数中
         behavior_cur = behavior;
         period_total = behavior.TotalTime;
         behavior_name = behavior.Needs;
+        
         // 将 新行为  更新到“5个肢体”中
         gaze -> updatePara( behavior.gaze   );
-        // screen -> updatePara( behavior.emotion  );
+        screen -> updatePara( behavior.emotion  );
+        sounder -> updatePara( behavior.speech   );
+        arm -> updatePara( behavior.arms   );
+        leg -> updatePara( behavior.legs );
         
         // 重新启动  周期检测
         run_PeriodDetection();
@@ -155,6 +165,12 @@ int main(int argc, char** argv){
     std::thread Gaze_Thread(  &Gaze_pub::run ,  gaze);
     screen = new Screen_pub();
     std::thread Screen_Thread(  &Screen_pub::run ,  screen);
+    sounder = new Sounder_pub();
+    std::thread Sounder_Thread(  &Screen_pub::run ,  sounder);
+    arm = new Arm_pub();
+    std::thread Arm_Thread(  &Arm_pub::run ,  arm);
+    leg = new Leg_pub();
+    std::thread Leg_Thread(  &Leg_pub::run ,  leg);
 
 
     // ROS
