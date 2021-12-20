@@ -7,3 +7,4 @@ float64 weight
 string speech
 int8 need   #?
 bool flag   #?
+int8 qt_order

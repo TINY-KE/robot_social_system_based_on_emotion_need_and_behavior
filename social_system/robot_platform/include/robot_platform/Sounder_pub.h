@@ -12,7 +12,8 @@
 // Arm_pub  arm;
 // Leg_pub  leg;
 
-// b)音响：进入start周期次数后，开始播放文字的音频。一般情况下，flag不先置为。只有进入end周期次数时，flag先置为0 。等音频播放完毕，flag置为1 。
+// b)音响：进入start周期次数后，开始播放文字的音频。一般情况下，flag不先置0 (先值为1)。每个周期  都要publish一次文本内容，如果安卓接收的文本内容没有变，则不再处理（防止覆盖）。
+// 进入end周期次数时， 必须等音频播放完毕，才能flag置为1 。
 
 #include "common_include.h"
 class Sounder_pub {
@@ -61,15 +62,20 @@ class Sounder_pub {
         }
         void run( ){/* int period_cur */
             while(1){
-                    if( wheather_run ){
+                if( wheather_run ){
 
                     flag = 0;
                     // publish();
                     // sleep(10);
                     // time_t now = time(0); char* dt = ctime(&now);  std::cout << "Sounder_pub 本地日期和时间：" << dt << std::endl;
                     // std::cout<< "Sounder_pub 运行成功 "<<std::endl;
-                    std::cout<< "[1]当前为...行为的第 "<< period_cur<<" 周期"<<std::endl;
+                    std::cout<< "[3]当前为...行为的第 "<< period_cur<<" 周期"<<std::endl;
                     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+                    // if(period_cur == parameter.startTime){
+                    //     publish();
+                    //     flag = 1;
+                    // }
+                    // else 
                     if(  (period_cur >= parameter.startTime)  &&   (period_cur < parameter.endTime) ){
                         publish();
                         std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();

@@ -45,15 +45,16 @@ void run_PriorNeed(){
         {
             printf( GREEN "Run %dth PriorNeed（运行先验模型） !!\n"NONE, i);            
             vector<need> need_lists = PriorNeed.need_compute_all();
-            for(int i =0 ; i< need_lists.size(); i++){
+            for(int j =0 ; j< need_lists.size(); j++){
                 social_msg::need_msg need_output;
-                need_output.IDtype = need_lists[i].IDtype;
+                need_output.IDtype = need_lists[j].IDtype;
                 need_output.rob_emotion = "";//need_lists[i].rob_emotion;
-                need_output.person_emotion = need_lists[i].person_emotion;//need_lists[i].person_emotion
-                need_output.need_name = need_lists[i].need_name;  
-                need_output.weight = need_lists[i].weight;
-                need_output.speech = need_lists[i].speech;
-                need_output.person_name =  need_lists[i].person_name;
+                need_output.person_emotion = need_lists[j].person_emotion;//need_lists[i].person_emotion
+                need_output.need_name = need_lists[j].need_name;  
+                need_output.weight = need_lists[j].weight;
+                need_output.speech = need_lists[j].speech;
+                need_output.person_name =  need_lists[j].person_name;
+                need_output.qt_order = i;
                 pub.publish(need_output);
             }
             sleep(10); i++;

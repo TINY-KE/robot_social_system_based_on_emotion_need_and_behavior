@@ -12,8 +12,9 @@
 // Arm_pub  arm;
 // Leg_pub  leg;
 #include "common_include.h"
-//轮子：进入start周期次数后，开始靠近或远离用户。一般情况下，flag不先置为。只有进入end周期次数时，flag先置为0 。轮子目标成功后，flag置为1.
-// 【因此如果想让机器人先到人身边，在说话，就得让 轮子的end time早于音响的start time】
+//轮子：进入start周期次数后，开始靠近或远离用户。一般情况下，flag不先置为。只有进入end周期次数时，flag先置为0 。轮子目标成功后，flag置为1.  
+// 同sounder
+// 【因此如果想让机器人先到人身边，再说话，就得让 轮子的end time早于音响的start time】
 class Leg_pub {
         public:
         Leg_pub(){
