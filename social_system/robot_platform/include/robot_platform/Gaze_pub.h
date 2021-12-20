@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-18 20:42:25
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-20 11:55:16
+ * @LastEditTime: 2021-12-20 17:48:50
  */
 // Gaze_pub  gaze;
 // Screen_pub  screen;
@@ -23,7 +23,9 @@
 #include <chrono>
 class Gaze_pub {
     public:
-        Gaze_pub(){}
+        Gaze_pub(){
+            wheather_run  = false;
+        }
         Gaze_pub( social_msg::Gaze& para  ){
             parameter = para;
         }
@@ -35,13 +37,14 @@ class Gaze_pub {
 
         bool recall(){
             /* 检测行为的目标 是否到达 */ 
+            return false;
         }
 
     public:  
-        bool flag;
-        bool wheather_run  = false;
+        std::atomic_bool flag;
+        std::atomic_bool wheather_run;
         // int period;
-        int period_cur;
+        int period_cur = -1;
         social_msg::Gaze parameter;
 
         void updatePara(  const  social_msg::Gaze& para  )  {
@@ -50,46 +53,61 @@ class Gaze_pub {
         }
 
         void updatePeriodCur( int period_cur_  ){
-            period_cur = period_cur_;
-            wheather_run = true;
+            if(period_cur < period_cur_){
+                period_cur = period_cur_;
+                wheather_run = true;
+            }
         }
         
+        bool compare( double delay_){
+            if(delay_ > 1.0)  
+                return true;
+            else 
+                return  false; 
+        }
         void run( ){/* int period_cur */
-            if( wheather_run ){
+            while(1){
+                    if( wheather_run ){
 
-                flag = 0;
-                publish();
-                // sleep(10);
-                time_t now = time(0); char* dt = ctime(&now);  std::cout << "Gaze_pub 本地日期和时间：" << dt << std::endl;
-                // std::cout<< "Gaze_pub 运行成功 "<<std::endl;
-                
-                std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-                if(  (period_cur >= parameter.startTime)  &&   (period_cur < parameter.endTime) ){
+                    flag = 0;
                     publish();
-                    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-                    double delay = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
-                    std::cout<< delay <<std::endl;
-                    while(  delay < 1   ){
-                        std::cout<< delay <<std::endl;
-                        if(    recall()     ){
-                            flag = 1;
-                        }         
-                        t2 = std::chrono::steady_clock::now();
+                    // sleep(10);
+                    // time_t now = time(0); char* dt = ctime(&now);  std::cout << "Gaze_pub 本地日期和时间：" << dt << std::endl;
+                    // std::cout<< "Gaze_pub 运行成功 "<<std::endl;
+                    std::cout<< "[1]当前为...行为的第 "<< period_cur<<" 周期"<<std::endl;
+                    std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+                    if(  (period_cur >= parameter.startTime)  &&   (period_cur < parameter.endTime) ){
+                        publish();
+                        std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
                         double delay = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
+                        // std::cout<< delay <<std::endl;
+                        while( 1 ){
+                            // std::cout << "Gaze_pub 当前处于第：" << period_cur << "周期， delay为：" <<  delay << "秒"  << std::endl;
+                            
+                            if(    recall()     ){
+                                flag = 1;
+                            }
+                            sleep(0.2)         ;
+                            t2 = std::chrono::steady_clock::now();
+                            double delay = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
+                            // std::cout << "Gaze_pub delay为：" <<  delay << "秒,  判断为" << compare(delay) << std::endl;
+                            if(compare(delay))  break;
+                        }
+                        flag = 1;
                     }
-                    flag = 1;
-                }
-                else if(    period_cur == parameter.endTime  ){
-                    while(  !recall()   ){  }        
-                    flag = 1;
-                }
-                else{
-                    flag = 1;
-                }
-            
-            
+                    else if(    period_cur == parameter.endTime  ){
+                        while(  !recall()   ){  }        
+                        flag = 1;
+                    }
+                    else{
+                        flag = 1;
+                    }
+                
+                
+                }  
+                /* if 结束,代表 gaze的当前周期  执行完毕。等待新的周期开始，即“周期检测函数”中period+1 并赋值wheather_run为true时，开启该肢体的新的周期。 */
+                wheather_run = false;
             }
-            wheather_run = false;
             
         }
         

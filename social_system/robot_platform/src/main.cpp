@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-20 12:10:32
+ * @LastEditTime: 2021-12-20 20:42:25
  */
 //
 // Created by zhjd on 2021/5/11.
@@ -22,6 +22,7 @@
 #include "Arm_pub.h"
 #include "Sounder_pub.h"
 #include "Leg_pub.h"
+
 
 //肢体定义
 Gaze_pub  *gaze;            
@@ -59,11 +60,14 @@ e.以上的类函数中，给机器人的无线控制命令  在一个周期内�
  */
 
 // 全局变量
-int period_total;
-int period_cur;
+std::atomic_int period_total;
+std::atomic_int period_cur;
+int period_cur_temp;
 // int period_num_cur;
-bool wheather_run;
-
+// bool wheather_run;
+std::atomic_bool wheather_run;
+std::atomic_bool insert_behavior;
+string behavior_name;
 //全局函数
 void PeriodUpdate(  int period){
     
@@ -74,30 +78,38 @@ void  run_PeriodDetection(){
     wheather_run = true;
 }
 void  PeriodDetection(){
-    if( wheather_run )
+    
+    while( 1 )
     {
-        cout<< "Period Detection !!\n";
+    std::cout<< "等待 运行 Period Detection !!\n";   
+    if(wheather_run){ 
+        std::cout<< "Period Detection !!\n";   
         // int8 num
         // int64 time 
         // int8 reply
         social_msg::bhvReply behavior_reply;
         behavior_reply.num = behavior_cur.num;
         behavior_reply.time = behavior_cur.time;
+        insert_behavior = false;
         while( period_cur  <=  period_total)
         {
             // if(period_num == period_num_cur)
             gaze -> updatePeriodCur(period_cur);
-
             sleep(0.5);// TODO: 要不要延迟半秒钟 ? 
-            if(    (gaze->flag == 1)  &&  screen->flag == 1  &&  arm->flag == 1  &&  sounder->flag == 1  &&  arm->flag == 1 ){
+            if(    (gaze->flag == 1)  ){  //&&  screen->flag == 1  &&  arm->flag == 1  &&  sounder->flag == 1  &&  arm->flag == 1 
+                period_cur_temp = period_cur;
                 period_cur ++ ;
-                behavior_reply.reply = (int)(period_cur/period_total);
+                behavior_reply.reply = (int)(period_cur*100/period_total);
+                pub_reply.publish(behavior_reply);
             }
+            if(insert_behavior)  break;
+            if(period_cur_temp != (int)period_cur)  std::cout<< "[0]当前为 "<<behavior_name<<" 行为的第 "<< period_cur<<" 周期"<< std::endl;
         }
 
         //周期数 到达period_total，当前行为执行完毕，不再执行。
         wheather_run = false;
         // period_cur = 1;  //TODO: ?
+    }
     }
 }
 
@@ -118,17 +130,18 @@ void BehaviorUpdate(const social_msg::bhvPara& behavior){
         
         //关闭 当前行为的 周期检测，即 中断当前的行为。
         wheather_run = false;
-
+        insert_behavior = true;
         // 将 新行为  更新到“周期检测”函数中
         behavior_cur = behavior;
         period_total = behavior.TotalTime;
-        
+        behavior_name = behavior.Needs;
         // 将 新行为  更新到“5个肢体”中
         gaze -> updatePara( behavior.gaze   );
-        screen -> updatePara( behavior.emotion  );
-
+        // screen -> updatePara( behavior.emotion  );
+        
         // 重新启动  周期检测
         run_PeriodDetection();
+        cout << "能否运行 PeriodDetection ：" <<  wheather_run << std::endl;
 
 }
 
@@ -145,7 +158,7 @@ int main(int argc, char** argv){
 
 
     // ROS
-    ros::init(argc, argv, "social_msg");
+    ros::init(argc, argv, "robot_platform");
     ros::NodeHandle n;
     cout<< "Start to Subscribe Behavior Parameter（接收ROS信息） !!\n";
     //行为参数的接收

@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-18 20:42:26
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-20 11:08:13
+ * @LastEditTime: 2021-12-20 14:33:05
  */
 // Gaze_pub  gaze;
 // Screen_pub  screen;
@@ -50,7 +50,7 @@ class Screen_pub {
                 
                 flag = 0;
                 publish();
-                sleep(10);
+                // sleep(10);
                 // std::cout<< "Screen_pub 运行成功 "<<std::endl;
                 time_t now = time(0); char* dt = ctime(&now);  std::cout << "Screen_pub 本地日期和时间：" << dt << std::endl;
                 
@@ -58,12 +58,14 @@ class Screen_pub {
                 if(  (period_cur >= parameter.startTime)  &&   (period_cur < parameter.endTime) ){
                     publish();
                     std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
-                    while(  (t2-t1) < 1    ){
-                        std::cout<< (t2 -t1) <<std::endl;
+                    double delay = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
+                    std::cout<< delay <<std::endl;
+                    while(  delay < 1    ){
                         if(    recall()     ){
                             flag = 1;
                         }         
                         t2 = std::chrono::steady_clock::now();
+                        double delay = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
                     }
                     flag = 1;
                 }
