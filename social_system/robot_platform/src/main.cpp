@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-19 23:18:09
+ * @LastEditTime: 2021-12-20 12:10:32
  */
 //
 // Created by zhjd on 2021/5/11.
@@ -25,15 +25,17 @@
 
 //肢体定义
 Gaze_pub  *gaze;            
-Screen_pub  screen;         
-Sounder_pub  sounder;
+Screen_pub  *screen;         
+Sounder_pub  *sounder;
 Arm_pub  *arm;
-Leg_pub  leg;
+Leg_pub  *leg;
 
 // ros node
 ros::Subscriber sub_behavior;
 ros::Publisher pub_reply;
 social_msg::bhvPara behavior_cur;
+
+using namespace  std;
 /* 
 4）行为的发布：
 a.以1为一个扫描周期。
@@ -56,44 +58,51 @@ e.以上的类函数中，给机器人的无线控制命令  在一个周期内�
 
  */
 
-using namespace  std;
-// time_t inner_need::time_for_wandor  =  0;
+// 全局变量
 int period_total;
-int period_cur = 1;
+int period_cur;
 // int period_num_cur;
+bool wheather_run;
 
+//全局函数
 void PeriodUpdate(  int period){
     
 }
 
+void  run_PeriodDetection(){
+    period_cur = 0;
+    wheather_run = true;
+}
 void  PeriodDetection(){
-    cout<< "PeriodDetection !!\n";
-    // int8 num
-    // int64 time 
-    // int8 reply
-    social_msg::bhvReply behavior_reply;
-    behavior_reply.num = behavior_cur.num;
-    behavior_reply.time = behavior_cur.time;
-    while( period_cur  <  period_total){
-        // if(period_num == period_num_cur)
-        // if(    (gaze.flag == 1)  &&  screen.flag == 1  &&  arm.flag == 1  &&  sounder.flag == 1  &&  arm.flag == 1 ){
-        //     period_cur ++ ;
-        //     // gaze.period = period_cur;
-        //     // screen.period = period_cur;
-        //     // sounder.period = period_cur;
-        //     // arm.period = period_cur;
-        //     // leg.period = period_cur;  
+    if( wheather_run )
+    {
+        cout<< "Period Detection !!\n";
+        // int8 num
+        // int64 time 
+        // int8 reply
+        social_msg::bhvReply behavior_reply;
+        behavior_reply.num = behavior_cur.num;
+        behavior_reply.time = behavior_cur.time;
+        while( period_cur  <=  period_total)
+        {
+            // if(period_num == period_num_cur)
+            gaze -> updatePeriodCur(period_cur);
 
-        //     behavior_reply.reply = (int)(period_cur/period_total);
-        // }
+            sleep(0.5);// TODO: 要不要延迟半秒钟 ? 
+            if(    (gaze->flag == 1)  &&  screen->flag == 1  &&  arm->flag == 1  &&  sounder->flag == 1  &&  arm->flag == 1 ){
+                period_cur ++ ;
+                behavior_reply.reply = (int)(period_cur/period_total);
+            }
+        }
+
+        //周期数 到达period_total，当前行为执行完毕，不再执行。
+        wheather_run = false;
+        // period_cur = 1;  //TODO: ?
     }
-
-    period_cur = 1;  //?
-
 }
 
 
-// 需求模型
+// 行为更新
 void BehaviorUpdate(const social_msg::bhvPara& behavior){
         // int16 num
         // int32 time
@@ -106,42 +115,34 @@ void BehaviorUpdate(const social_msg::bhvPara& behavior){
         // social_msg/Arms arms
         // social_msg/Speech speech
         // social_msg/Legs legs
+        
+        //关闭 当前行为的 周期检测，即 中断当前的行为。
+        wheather_run = false;
+
+        // 将 新行为  更新到“周期检测”函数中
         behavior_cur = behavior;
         period_total = behavior.TotalTime;
         
-        // gaze -> parameter  = behavior.gaze;
-        // gaze -> update = true;
-        social_msg::Gaze gaze = behavior.gaze;
-        gaze -> updatePara( gaze   );
-        
-        // gaze.parameter      = behavior.gaze;
-        // screen.parameter    = behavior.emotion;
-        
+        // 将 新行为  更新到“5个肢体”中
+        gaze -> updatePara( behavior.gaze   );
+        screen -> updatePara( behavior.emotion  );
+
+        // 重新启动  周期检测
+        run_PeriodDetection();
+
 }
 
 int main(int argc, char** argv){
+       
+    // 为周期检测  创建线程
+    std::thread Period_Thread(  PeriodDetection  );
+
     // 为各肢体  创建单独的线程 。  
     gaze = new Gaze_pub();
     std::thread Gaze_Thread(  &Gaze_pub::run ,  gaze);
-    // std::thread Gaze_Thread(  gaze.run( period_cur) );
-    // std::thread Screen_Thread(  screen.run( period_cur) );
-    // std::thread Sounder_Thread(  Sounder_pub::run  ,  sounder);
-    // std::thread Arm_Thread(  Arm_pub::run  ,  arm);
-    // std::thread Leg_Thread(  Leg_pub::run  ,  leg);
-    // std::thread PeriodDetection_Thread(PeriodDetection);
-    // gaze = new Gaze_pub();
-    // std::thread Gaze_Thread(  &Gaze_pub::run  ,  gaze);
-    // std::thread Gaze_Thread(  Gaze_pub::run  ,  gaze);
-    // std::thread Screen_Thread(  Screen_pub::run  ,  screen);
-    // std::thread Sounder_Thread(  Sounder_pub::run  ,  sounder);
-    // arm =new Arm_pub();
-    // std::thread Arm_Thread(  &Arm_pub::run  ,  arm);
-    // std::thread Arm_Thread(  Arm_pub::run  ,  arm);
-    // std::thread Leg_Thread(  &/Leg_pub::run  ,  &leg);
-    
+    screen = new Screen_pub();
+    std::thread Screen_Thread(  &Screen_pub::run ,  screen);
 
-//    mpLoopCloser = new LoopClosing(mpMap, mpKeyFrameDatabase, mpVocabulary, mSensor!=MONOCULAR);
-    // mptLoopClosing = new thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
 
     // ROS
     ros::init(argc, argv, "social_msg");
