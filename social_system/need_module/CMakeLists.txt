@@ -27,6 +27,7 @@ include_directories(
 
 
 #yaml cpp
+set(YAML_CPP_DIR "/home/zhjd/ws/src/ThirdParty/yaml-cpp-release-0.5.1/build")   
 find_package(yaml-cpp REQUIRED)
 include_directories(${YAML_CPP_INCLUDE_DIR})
 MESSAGE("yaml cpp dir : ${YAML_CPP_INCLUDE_DIR} ")

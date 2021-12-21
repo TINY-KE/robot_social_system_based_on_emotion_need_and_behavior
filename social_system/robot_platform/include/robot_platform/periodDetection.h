@@ -7,6 +7,8 @@
  * @LastEditTime: 2021-12-21 23:26:30
  */
 #include "common_include.h"
+#include "ros/ros.h"
+ros::Publisher pub_reply;
 
 class periodDetection
 {
@@ -16,7 +18,10 @@ private:
     social_msg::bhvPara& behavior;
 
     double single_period_time;
+    
     bool flag;
+    
+    ros::Publisher pub_reply;
 
     int behavior_type;
     // int startTime；
@@ -40,12 +45,15 @@ private:
 
 public:
     
-    periodDetection( social_msg::bhvPara& behavior_):
+    periodDetection( social_msg::bhvPara& behavior_,  ros::NodeHandle& n):
         behavior(behavior_)
     {
         insert_new_behavihor = false;
         single_period_time = behavior_.TotalTime / 100.0;
         behavior_type = behavior_.num / 100%10;	
+
+        //行为进度
+        pub_reply = n.advertise<social_msg::bhvReply>("behavior_Reply", 10);  
     }
 
     
@@ -173,6 +181,7 @@ private:
 
 public:
     void  PeriodDetection(){
+        
         if( behavior_type == 0 ){
         // 
             int period_total =  100;
@@ -191,6 +200,11 @@ public:
                 if( flag == false ) {}
                 else{
                     /* TODO:  reply的编写 */
+                    social_msg::bhvReply behavior_reply;
+                    behavior_reply.num = behavior.num;
+                    behavior_reply.time = behavior.time;
+                    behavior_reply.reply = 100;
+                    pub_reply.publish(behavior_reply);
                     period_cur++;         
                 }
             }
@@ -198,7 +212,11 @@ public:
         else if( behavior_type == 1 ){
             
             std::cout<< "当前为 "<<behavior.Needs<< " 行为的过渡中断行为"<< std::endl;
-            /* TODO:  reply的编写 */
+            social_msg::bhvReply behavior_reply;
+            behavior_reply.num = behavior.num;
+            behavior_reply.time = behavior.time;
+            behavior_reply.reply = 100;
+            pub_reply.publish(behavior_reply);
         }    
     }
 

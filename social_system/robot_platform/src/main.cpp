@@ -57,8 +57,10 @@ periodDetection  *period_detection;
 
 // ros node
 ros::Subscriber sub_behavior;
-ros::Publisher pub_reply;
+
 social_msg::bhvPara behavior_cur;
+ros::init("robot_platform");
+ros::NodeHandle n;
 
 // 线程
 std::thread* period_Thread;
@@ -93,7 +95,7 @@ void BehaviorUpdate(const social_msg::bhvPara& behavior){
         //创建一个“周期检测函数”的线程
         //     mpLocalMapper = new LocalMapping(mpMap, mSensor==MONOCULAR, flag);
         // mptLocalMapping = new thread(&ORB_SLAM2::LocalMapping::Run,mpLocalMapper);
-        period_detection = new periodDetection( behavior_cur );
+        period_detection = new periodDetection( behavior_cur , n);
         period_Thread = new  thread(  &periodDetection::PeriodDetection , period_detection);
         
 
@@ -101,14 +103,11 @@ void BehaviorUpdate(const social_msg::bhvPara& behavior){
 
 int main(int argc, char** argv){
     // ROS
-    ros::init(argc, argv, "robot_platform");
-    ros::NodeHandle n;
+    
     cout<< "Start to Subscribe Behavior Parameter（接收ROS信息） !!\n";
     sub_behavior  = n.subscribe("behavior_pub", 10, BehaviorUpdate);
     
-    //行为进度
-    pub_reply = n.advertise<social_msg::bhvReply>("behavior_Reply", 10);  
-    
+      
     ros::spin();    //库是节点读取数据道消息响应循环，当消息到达的时候，回调函数就会被调用。当按下Ctrl+C时，节点会退出消息循环，于是循环结束。
     return 0;
 }
