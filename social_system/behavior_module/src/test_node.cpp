@@ -3,8 +3,8 @@
  * @version: 
  * @Author: sueRimn
  * @Date: 2021-12-08 09:34:12
- * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-21 11:14:27
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2021-12-08 09:44:40
  */
 #include "ros/ros.h"
 #include "std_msgs/String.h"
@@ -267,7 +267,7 @@ int main(int argc,char **argv)
 
     while(ros::ok())
     {
-        int nn = 2;//1 测试 2 跑脚本
+        int nn = 1;//1 测试 2 跑脚本
         if(nn == 1){
             if(count==2)// 111
             // if(count==23)

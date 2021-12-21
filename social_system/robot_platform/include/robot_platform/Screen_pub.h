@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-18 20:42:26
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-20 22:51:12
+ * @LastEditTime: 2021-12-21 14:41:30
  */
 // Gaze_pub  gaze;
 // Screen_pub  screen;
@@ -91,7 +91,9 @@ class Screen_pub {
                     }
                     else if(    period_cur == parameter.endTime  ){
                         publish();
-                        while(  !recall()   ){  }        
+                        while(  !recall()   ){ 
+                            std::cout<< "[2]："<< period_cur<<" 周期，最后时刻，循环等待完结。"<<std::endl;
+                         }        
                         flag = 1;   /* 似乎没用上 */
                     }
                     else{

@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-18 20:42:25
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-20 22:48:01
+ * @LastEditTime: 2021-12-21 14:59:02
  */
 // Gaze_pub  gaze;
 // Screen_pub  screen;
@@ -37,7 +37,13 @@ class Gaze_pub {
 
         bool recall(){
             /* 检测行为的目标 是否到达 */ 
-            return false;
+                return false;
+        }
+
+        bool recall_debug(){
+            /* 检测行为的目标 是否到达 */ 
+            sleep(2);
+            return true;
         }
 
     public:  
@@ -97,7 +103,15 @@ class Gaze_pub {
                     }
                     else if(    period_cur == parameter.endTime  ){
                         publish();
-                        while(  !recall()   ){  }        
+                        while(  
+                            #ifdef DEBUG
+                                !recall_debug() 
+                            #else
+                                !recall() 
+                            #endif 
+                        ){ 
+                            std::cout<< "[1]："<< period_cur<<" 周期，最后时刻，循环等待完结。"<<std::endl;
+                         }        
                         flag = 1;
                     }
                     else{

@@ -114,15 +114,15 @@ void LoclistInit(LocalList &list){
     // 需求类型：Greet  、MeasureTempareture、Answer、ParentIdentity、KeepOrder、StopStranger、Wander、Doubt、Chat、Charge、Remind、
     //情感类型：高兴、信任、期待、悲伤、愤怒、害怕、厌恶、无聊
     list.bhv[0].Needs = "Greet";
-    list.bhv[0].TotalTime = 20;
+    list.bhv[0].TotalTime = 20;//100;
     list.bhv[1].Needs = "Doubt";
     list.bhv[1].TotalTime = 15;
     list.bhv[2].Needs = "MeasureTempareture";
-    list.bhv[2].TotalTime = 60;
+    list.bhv[2].TotalTime = 60; //100;
     list.bhv[3].Needs = "Wander";
     list.bhv[3].TotalTime = 255;
     list.bhv[4].Needs = "StopStranger";
-    list.bhv[4].TotalTime = 30;
+    list.bhv[4].TotalTime = 30; //100;
     list.bhv[5].Needs = "Chat";
     list.bhv[5].TotalTime = 20;
     list.bhv[6].Needs = "Answer";
@@ -933,8 +933,10 @@ int main(int argc,char **argv)
             int m = Q->front;
         for(int i=0; i< temp2.n; i++)
         {
-            temp2.need[i] = Q->data[m].Needs;
-            temp2.obj[i] = Q->data[m].gaze.target;
+            // string Qdata_need = (string)Q->data[m].Needs;
+            temp2.need[i] =  Q->data[m].Needs;  //Qdata_need;( std_msgs::String ) 
+            // string Qdata_target = Q->data[m].gaze.target;
+            temp2.obj[i] = Q->data[m].gaze.target ; //Qdata_target;
             m = (m+1)%20;
         }
          chatterQ_pub.publish(temp2);

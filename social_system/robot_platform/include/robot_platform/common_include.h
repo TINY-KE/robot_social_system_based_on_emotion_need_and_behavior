@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-19 20:22:40
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-20 15:47:37
+ * @LastEditTime: 2021-12-21 16:02:13
  */
 
 
@@ -32,3 +32,6 @@
 #include <algorithm>
 #include <fstream>
 #include <chrono>
+#include <functional>
+#include <pthread.h>
+#define DEBUG
