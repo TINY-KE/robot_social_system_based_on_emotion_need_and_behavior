@@ -1,3 +1,3 @@
 int8 n
-string[] need
-string[] obj
+string[10] need
+string[10] obj
