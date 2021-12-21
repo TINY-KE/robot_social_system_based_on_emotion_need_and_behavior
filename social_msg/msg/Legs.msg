@@ -6,3 +6,5 @@ int8 rate
 int8 distance
 int8 startTime
 int8 endTime
+
+bool IsYellow

@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-20 22:38:27
+ * @LastEditTime: 2021-12-21 10:54:57
  */
 //
 // Created by zhjd on 2021/5/11.
@@ -149,7 +149,9 @@ void BehaviorUpdate(const social_msg::bhvPara& behavior){
         arm -> updatePara( behavior.arms   );
         leg -> updatePara( behavior.legs );
         
+
         // 重新启动  周期检测
+        sleep(1);  //TODO: 是否有必要？
         run_PeriodDetection();
         cout << "能否运行 PeriodDetection ：" <<  wheather_run << std::endl;
 
@@ -166,7 +168,7 @@ int main(int argc, char** argv){
     screen = new Screen_pub();
     std::thread Screen_Thread(  &Screen_pub::run ,  screen);
     sounder = new Sounder_pub();
-    std::thread Sounder_Thread(  &Screen_pub::run ,  sounder);
+    std::thread Sounder_Thread(  &Sounder_pub::run ,  sounder);
     arm = new Arm_pub();
     std::thread Arm_Thread(  &Arm_pub::run ,  arm);
     leg = new Leg_pub();
