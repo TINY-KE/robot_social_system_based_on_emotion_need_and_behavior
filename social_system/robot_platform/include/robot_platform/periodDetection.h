@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-21 19:27:27
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-21 23:26:30
+ * @LastEditTime: 2021-12-22 12:03:25
  */
 #include "common_include.h"
 #include "ros/ros.h"
@@ -23,7 +23,9 @@ private:
     
     ros::Publisher pub_reply;
 
-    int behavior_type;
+    int behavior_type_1;
+    int behavior_type_10;
+    int behavior_type_100;
     // int startTime；
     // int endTime;
 
@@ -50,8 +52,18 @@ public:
     {
         insert_new_behavihor = false;
         single_period_time = behavior_.TotalTime / 100.0;
-        behavior_type = behavior_.num / 100%10;	
-
+        behavior_type_1 = behavior_.num / 1%10;	
+        behavior_type_10 = behavior_.num / 10%10;
+        behavior_type_100 = behavior_.num / 100%10;
+        // 个位
+        // num % 10 == num / 1 % 10
+        // 十位
+        // num / 10 % 10
+        // 百位
+        // num / 100 % 10
+        // 千位
+        // num / 1000 % 10
+        // 依次类推
         //行为进度
         pub_reply = n.advertise<social_msg::bhvReply>("behavior_Reply", 10);  
     }
@@ -181,8 +193,16 @@ private:
 
 public:
     void  PeriodDetection(){
-        
-        if( behavior_type == 0 ){
+        if( (behavior_type_100 == 1) && ((behavior_type_10 != 0) || (behavior_type_1 != 0)) ){
+            
+            std::cout<< "当前为 "<<behavior.Needs<< " 行为的过渡中断行为"<< std::endl;
+            social_msg::bhvReply behavior_reply;
+            behavior_reply.num = behavior.num;
+            behavior_reply.time = behavior.time;
+            behavior_reply.reply = 100;
+            pub_reply.publish(behavior_reply);
+        }   
+        else {
         // 
             int period_total =  100;
             int period_cur = 0;
@@ -203,21 +223,13 @@ public:
                     social_msg::bhvReply behavior_reply;
                     behavior_reply.num = behavior.num;
                     behavior_reply.time = behavior.time;
-                    behavior_reply.reply = 100;
+                    behavior_reply.reply = (int)period_cur;
                     pub_reply.publish(behavior_reply);
                     period_cur++;         
                 }
             }
         }
-        else if( behavior_type == 1 ){
-            
-            std::cout<< "当前为 "<<behavior.Needs<< " 行为的过渡中断行为"<< std::endl;
-            social_msg::bhvReply behavior_reply;
-            behavior_reply.num = behavior.num;
-            behavior_reply.time = behavior.time;
-            behavior_reply.reply = 100;
-            pub_reply.publish(behavior_reply);
-        }    
+         
     }
 
 };

@@ -472,13 +472,13 @@ void MainWindow::updateLoggingView_bhvReply() {
 void MainWindow::updateLoggingView_bhvQueue() {
     QStringList list;
     int temp = qnode.bhvQueue_num;
-    ui.listWidget->clear();
+    ui.listWidget_bhvQueue->clear();
     for(int i=0; i<temp; i++){
         std::string s = qnode.bhvQueue_need[i] + "  for  " + qnode.bhvQueue_obj[i];
         //list<<QString::fromStdString(qnode.bhvQueue_need[i])<<QString::fromStdString(qnode.bhvQueue_obj[i]);
         list<<QString::fromStdString(s);
     }
-    ui.listWidget->addItems(list);
+    ui.listWidget_bhvQueue->addItems(list);
 }
 //add
 void MainWindow::updateLoggingView_emotion() {
@@ -527,6 +527,23 @@ void MainWindow::updateLoggingView_perception() {
   ui.lineEdit_per_personEmotion -> setText(QString::fromStdString(qnode.per_personEmotion));
 }
 void MainWindow::updateLoggingView_need() {
+  QFont list_font;
+  list_font.setPointSize(9);
+  list_font.setBold(false);
+  list_font.setWeight(50);
+  ui.listWidget_newest_need->setFont(list_font);
+
+
+  //  listWidget_newest
+  ui.listWidget_newest_need->clear();
+  need_list = qnode.need_list;
+  for(int i =0; i < need_list.size();  i ++){
+    std::string s = need_list[i].name  +" for "+ need_list[i].person  +" as "+  std::to_string(need_list[i].weight);
+    QString list = QString::fromStdString(s);
+    ui.listWidget_newest_need->addItem(list);
+  }
+
+
   //listWidget
 //  ui.listWidget->clear();
 //  need_list = qnode.need_list;

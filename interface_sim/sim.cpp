@@ -76,7 +76,7 @@ void callback(sim::simConfig &config, uint32_t level)
                 need.person_emotion = config.need_person_emotion;
                 need.rob_emotion = config.need_rob_emotion;
                 need.speech = config.need_speech;
-
+                need.qt_order = config.qt_order;
                 pub_needlist.publish(need);
                 }
                 //内部：需求满足状况

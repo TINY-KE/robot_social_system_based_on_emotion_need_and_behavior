@@ -30,7 +30,7 @@ class inner_need{
     public:
         inner_need( ){
             /* 生成need */
-            YAML::Node inner_doc = YAML::LoadFile( "/home/zhjd/catkin_ws/src/NeedModel/cfg/InnerNeed.yaml" );
+            YAML::Node inner_doc = YAML::LoadFile( "/home/zhjd/ws/src/social_system/personality_template/need/InnerNeed.yaml" );
             std::cout <<  "Read parameter for Inner Need !! 类型如下： " << "\n"; 
             inner_doc["Doubt_factor"] >> Doubt_factor ;
             inner_doc["Doubt_weight"] >> Doubt_weight ;

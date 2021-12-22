@@ -3,8 +3,8 @@
  * @version: 
  * @Author: sueRimn
  * @Date: 2021-09-21 21:16:50
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-09-29 11:07:02
+ * @LastEditors: Zhang Jiadong
+ * @LastEditTime: 2021-12-22 11:19:01
  */
 #include "perception.h"
 #include "task_paremeter_rw.h"
@@ -20,7 +20,7 @@ class task_need{
         std::vector<double> rob_emotion_;
         std::string person_emotion_;
         std::vector<double> rob_status_;
-        string yaml_name = "/home/zhjd/catkin_ws/src/NeedModel/cfg/TaskNeed.yaml" ;
+        string yaml_name = "/home/zhjd/ws/src/social_system/personality_template/need/TaskNeed.yaml" ;
         string speech_; 
     public:
         task_need( ){

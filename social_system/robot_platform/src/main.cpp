@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-21 23:25:39
+ * @LastEditTime: 2021-12-22 10:24:56
  */
 /* 
 4）行为的发布：
@@ -42,25 +42,16 @@ e)轮子：进入start周期次数后，开始靠近或远离用户。一般情�
 #include "common_include.h"
 
 #include "periodDetection.h"
-//肢体 头文件
-#include "Gaze_pub.h"
-#include "Screen_pub.h"
-// #include "Arm_pub.h"
-// #include "Sounder_pub.h"
-// #include "Leg_pub.h"
+
 using namespace  std;
 
-// 肢体定义
-Gaze_pub  *gaze;            
-Screen_pub  *screen;         
+// 肢体定义       
 periodDetection  *period_detection;
 
 // ros node
 ros::Subscriber sub_behavior;
 
 social_msg::bhvPara behavior_cur;
-ros::init("robot_platform");
-ros::NodeHandle n;
 
 // 线程
 std::thread* period_Thread;
@@ -83,11 +74,11 @@ string behavior_name;
 bool first_behavior = true;
 
 // 行为更新
-void BehaviorUpdate(const social_msg::bhvPara& behavior){
-        std::cout<< "××××××××××××××××××××××××××××××××××××××××××××××××××××××"<< std::endl << "接收到 "<<behavior.Needs<< " 行为, num为： "<< behavior.num<< " , type为： "<< behavior.num / 100%10 << std::endl<< "××××××××××××××××××××××××××××××××××××××××××××××××××××××"<< std::endl;
+void BehaviorUpdate(const social_msg::bhvPara::ConstPtr& behavior ,  ros::NodeHandle*  n){
+        std::cout<< "××××××××××××××××××××××××××××××××××××××××××××××××××××××"<< std::endl << "接收到 "<<behavior->Needs<< " 行为, num为： "<< behavior->num<< " , type为： "<< behavior->num / 100%10 << std::endl<< "××××××××××××××××××××××××××××××××××××××××××××××××××××××"<< std::endl;
         //保存 当前行为的信息         
-        behavior_cur = behavior;
-        behavior_name = behavior.Needs;
+        behavior_cur = *behavior;
+        behavior_name = behavior->Needs;
         
         if(!first_behavior)
             period_detection -> interrupt_last_behavior();
@@ -95,19 +86,23 @@ void BehaviorUpdate(const social_msg::bhvPara& behavior){
         //创建一个“周期检测函数”的线程
         //     mpLocalMapper = new LocalMapping(mpMap, mSensor==MONOCULAR, flag);
         // mptLocalMapping = new thread(&ORB_SLAM2::LocalMapping::Run,mpLocalMapper);
-        period_detection = new periodDetection( behavior_cur , n);
+        period_detection = new periodDetection( behavior_cur , *n);
         period_Thread = new  thread(  &periodDetection::PeriodDetection , period_detection);
+        // cout<<"数字传入："<< n;
         
 
 }
 
 int main(int argc, char** argv){
     // ROS
-    
+    ros::init(argc, argv, "robot_platform");
+    ros::NodeHandle n;
     cout<< "Start to Subscribe Behavior Parameter（接收ROS信息） !!\n";
-    sub_behavior  = n.subscribe("behavior_pub", 10, BehaviorUpdate);
+    int nn =1;
+    sub_behavior  = n.subscribe<social_msg::bhvPara> ("behavior_pub", 10,  boost::bind(&BehaviorUpdate, _1, &n));
     
-      
+    //<social_msg::bhvPara> 
+
     ros::spin();    //库是节点读取数据道消息响应循环，当消息到达的时候，回调函数就会被调用。当按下Ctrl+C时，节点会退出消息循环，于是循环结束。
     return 0;
 }

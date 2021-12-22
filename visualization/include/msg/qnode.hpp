@@ -81,13 +81,18 @@ public:
 Q_SIGNALS:
 	void loggingUpdated();
   void rosShutdown();
-  void loggingUpdated_emotion();  //add
-  void loggingUpdated_body();  //add
-  void loggingUpdated_perception();  //add
-  void loggingUpdated_need();  //add
-  void loggingUpdated_bhvPara();  //add
-  void loggingUpdated_bhvReply();  //add
-  void loggingUpdated_bhvQueue();  //add
+  void loggingUpdated_emotion();
+  void loggingUpdated_body();
+  void loggingUpdated_perception();
+
+  void loggingUpdated_need();
+  void loggingUpdated_need_newest();
+  void loggingUpdated_need_prior();
+
+  void loggingUpdated_bhvPara();
+  void loggingUpdated_bhvReply();
+  void loggingUpdated_bhvQueue();
+
 private:
 	int init_argc;
 	char** init_argv;
@@ -95,10 +100,15 @@ private:
   ros::Subscriber subscriber_emotion;
   ros::Subscriber subscriber_body;
   ros::Subscriber subscriber_perception;
+
   ros::Subscriber subscriber_need;
+  ros::Subscriber subscriber_need_newest;
+  ros::Subscriber subscriber_need_prior;
+
   ros::Subscriber subscriber_bhvPara;
   ros::Subscriber subscriber_bhvReply;
   ros::Subscriber subscriber_bhvQueue;
+
 public:
   //emotion status
   double emotion1;
@@ -109,6 +119,7 @@ public:
   double emotion6;
   double emotion7;
   double emotion8;
+
   //body status
   double body1;
   double body2;
@@ -118,6 +129,7 @@ public:
   double body6;
   double body7;
   double body8;
+
   //perception
   double per_time;
   std::string per_person;
@@ -126,11 +138,14 @@ public:
   double per_p;
   std::string per_personEmotion;
   std::string per_speech;
+
   //need
   std::vector<need> need_list;
+  int qt_order_largest = 0;
 //  std::string need_name;
 //  double need_weight;
 //  std::string need_person;
+
   //bhvPara
   std::string gaze_target;
   std::string arm_action;

@@ -70,7 +70,10 @@ void QNode::run() {
   subscriber_emotion = n.subscribe("robot_emotion", 1000, &QNode::Callback_emotion, this);   //(2))
   subscriber_body = n.subscribe("robot_status", 1000, &QNode::Callback_body, this);
   subscriber_perception = n.subscribe("perceptions", 1000, &QNode::Callback_percetion, this);
+
   subscriber_need = n.subscribe("need_lists", 1000, &QNode::Callback_need, this);
+//  subscriber_need_newest =  no use
+
   subscriber_bhvPara = n.subscribe("behavior_pub", 1000, &QNode::Callback_bhvPara, this);
   subscriber_bhvReply = n.subscribe("behavior_Reply", 1000, &QNode::Callback_bhvReply, this);
   subscriber_bhvQueue = n.subscribe("behaviorQ_pub", 1000, &QNode::Callback_bhvQueue, this);
@@ -125,11 +128,22 @@ void QNode::Callback_need(const social_msg::need_msg &msg){
   need_cur.name  = msg.need_name;
   need_cur.weight = msg.weight;
   need_cur.person = msg.person_name;
-  need_list.push_back(need_cur);
-  need_list_sort();
+
+  //  原来展示 need序列的。但现在 有了行为序列 不需要了
+  //  need_list.push_back(need_cur);
+  //  need_list_sort();
+
+  if( msg.qt_order == qt_order_largest){
+      need_list.push_back(need_cur);
+  }
+  else  if(msg.qt_order > qt_order_largest){
+      qt_order_largest = msg.qt_order;
+      need_list.clear();
+      need_list.push_back(need_cur);
+  }
 
   Q_EMIT loggingUpdated_need();
-  sleep(3);
+//  sleep(3);
 }
 
 void QNode::Callback_bhvPara(const social_msg::bhvPara &msg){

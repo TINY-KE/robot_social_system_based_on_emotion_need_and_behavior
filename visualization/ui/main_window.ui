@@ -1899,7 +1899,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="listWidget_bhvQueue">
     <property name="geometry">
      <rect>
       <x>590</x>
@@ -1908,11 +1908,16 @@
       <height>241</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
     <property name="layoutMode">
      <enum>QListView::SinglePass</enum>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget_2">
+   <widget class="QListWidget" name="listWidget_prior_need">
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -1921,16 +1926,116 @@
       <height>401</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
     <property name="layoutMode">
      <enum>QListView::SinglePass</enum>
     </property>
+    <item>
+     <property name="text">
+      <string>Greet for Teacher</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Greet for Parent</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>StopStranger for Stranger</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>MeasureTempareture for Teacher</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>MeasureTempareture for Student</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>MeasureTempareture for Parent</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ParentIdentity for Parent</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Anwser for Teacher</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Anwser for Student</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Anwser for Parent</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>KeepOrder for Teacher</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>KeepOrder for Student</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>KeepOrder for Parent</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Remind for Teacher</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Remind for Student</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Doubt </string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Wander </string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Chat</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Charge </string>
+     </property>
+    </item>
    </widget>
    <widget class="QLabel" name="label_57">
     <property name="geometry">
      <rect>
-      <x>690</x>
+      <x>660</x>
       <y>350</y>
-      <width>111</width>
+      <width>141</width>
       <height>31</height>
      </rect>
     </property>
@@ -1940,10 +2045,10 @@
      </font>
     </property>
     <property name="text">
-     <string>Last Need</string>
+     <string>Newest Need</string>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget_3">
+   <widget class="QListWidget" name="listWidget_newest_need">
     <property name="geometry">
      <rect>
       <x>590</x>
