@@ -2300,8 +2300,8 @@
    <widget class="QLabel" name="label_59">
     <property name="geometry">
      <rect>
-      <x>980</x>
-      <y>250</y>
+      <x>1030</x>
+      <y>320</y>
       <width>61</width>
       <height>21</height>
      </rect>
@@ -2477,8 +2477,8 @@
    <widget class="QLineEdit" name="lineEdit_behavior_leg_action">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>310</y>
+      <x>1030</x>
+      <y>380</y>
       <width>91</width>
       <height>25</height>
      </rect>
@@ -2490,8 +2490,8 @@
    <widget class="QLabel" name="label_61">
     <property name="geometry">
      <rect>
-      <x>940</x>
-      <y>310</y>
+      <x>980</x>
+      <y>380</y>
       <width>51</width>
       <height>25</height>
      </rect>
@@ -2506,9 +2506,9 @@
    <widget class="QLineEdit" name="lineEdit_behavior_leg_rate">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>340</y>
-      <width>91</width>
+      <x>1170</x>
+      <y>380</y>
+      <width>41</width>
       <height>25</height>
      </rect>
     </property>
@@ -2519,8 +2519,8 @@
    <widget class="QLabel" name="label_62">
     <property name="geometry">
      <rect>
-      <x>950</x>
-      <y>340</y>
+      <x>1130</x>
+      <y>380</y>
       <width>41</width>
       <height>25</height>
      </rect>
@@ -2535,8 +2535,8 @@
    <widget class="QLineEdit" name="lineEdit_behavior_leg_target">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>280</y>
+      <x>1030</x>
+      <y>350</y>
       <width>91</width>
       <height>25</height>
      </rect>
@@ -2548,8 +2548,8 @@
    <widget class="QLabel" name="label_63">
     <property name="geometry">
      <rect>
-      <x>940</x>
-      <y>280</y>
+      <x>980</x>
+      <y>350</y>
       <width>51</width>
       <height>25</height>
      </rect>
@@ -2564,9 +2564,9 @@
    <widget class="QLineEdit" name="lineEdit_behavior_leg_distance">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>370</y>
-      <width>91</width>
+      <x>1290</x>
+      <y>380</y>
+      <width>41</width>
       <height>25</height>
      </rect>
     </property>
@@ -2577,8 +2577,8 @@
    <widget class="QLabel" name="label_64">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>370</y>
+      <x>1220</x>
+      <y>380</y>
       <width>71</width>
       <height>25</height>
      </rect>
@@ -2880,7 +2880,7 @@
     <property name="geometry">
      <rect>
       <x>1080</x>
-      <y>330</y>
+      <y>320</y>
       <width>61</width>
       <height>20</height>
      </rect>

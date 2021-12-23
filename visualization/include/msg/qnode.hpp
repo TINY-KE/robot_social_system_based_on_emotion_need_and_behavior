@@ -34,6 +34,7 @@
 #include "social_msg/bhvPara.h"
 #include "social_msg/bhvReply.h"
 #include "social_msg/bhvQueue.h"
+#include "sensor_msgs/Image.h"
 #include "common.h"
 /*****************************************************************************
 ** Namespaces
@@ -70,6 +71,7 @@ public:
 //  QStringListModel* loggingModel_sub() { return &logging_model_sub; } //add
 //  void log_sub( const LogLevel &level, const std::string &msg); //add
   void Callback_emotion(const social_msg::robot_emotion &msg);
+  void Callback_emotion_image(const sensor_msgs::Image &msg);
   void Callback_body(const social_msg::robot_status &msg);
   void Callback_percetion(const social_msg::perception_msg &msg);
   void Callback_need(const social_msg::need_msg &msg);
@@ -81,9 +83,11 @@ public:
 Q_SIGNALS:
 	void loggingUpdated();
   void rosShutdown();
-  void loggingUpdated_emotion();
   void loggingUpdated_body();
   void loggingUpdated_perception();
+
+  void loggingUpdated_emotion();
+  void loggingUpdated_emotion_image();
 
   void loggingUpdated_need();
   void loggingUpdated_need_newest();
@@ -97,9 +101,11 @@ private:
 	int init_argc;
 	char** init_argv;
 	ros::Publisher chatter_publisher;
-  ros::Subscriber subscriber_emotion;
   ros::Subscriber subscriber_body;
   ros::Subscriber subscriber_perception;
+
+  ros::Subscriber subscriber_emotion;
+  ros::Subscriber subscriber_emotion_image;//  sensor_msgs/Image
 
   ros::Subscriber subscriber_need;
   ros::Subscriber subscriber_need_newest;
@@ -119,6 +125,7 @@ public:
   double emotion6;
   double emotion7;
   double emotion8;
+
 
   //body status
   double body1;

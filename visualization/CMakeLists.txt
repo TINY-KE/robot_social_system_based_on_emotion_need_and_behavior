@@ -15,8 +15,15 @@ find_package(catkin REQUIRED COMPONENTS qt_build roscpp
       std_msgs
       geometry_msgs
       message_generation
+      cv_bridge
       )
-include_directories(${catkin_INCLUDE_DIRS}
+
+#/home/zhjd/thirdparty/opencv3.4.10/opencv-3.4.10/build
+#set(OpenCV_DIR "/home/zhjd/thirdparty/opencv3.4.10/opencv-3.4.10/build")
+find_package(OpenCV REQUIRED)
+
+  include_directories(${catkin_INCLUDE_DIRS}
+      /include/msg/
      /home/zhjd/ws/devel/include/
      /home/kod/robot_ws/devel/include/
     )
@@ -63,6 +70,6 @@ file(GLOB_RECURSE QT_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINK
 ##############################################################################
 
 add_executable(main ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
-target_link_libraries(main ${QT_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(main ${QT_LIBRARIES} ${catkin_LIBRARIES}  ${OpenCV_LIBS})
 install(TARGETS main RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 

@@ -4,6 +4,7 @@
         <file>images/xiaopang.png</file>
         <file>images.qrc</file>
         <file>images/emotion.png</file>
+        <file>main.qml</file>
     </qresource>
     <qresource prefix="/new/prefix1">
         <file>images/xiaopang.png</file>

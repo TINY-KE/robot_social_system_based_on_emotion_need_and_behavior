@@ -34,7 +34,7 @@ def publish_image(imgdata):
 
 if __name__ == '__main__':
     try:
-        img=cv2.imread('/home/zzzane/robot_empathy/src/emotion_module/image/emotion_img')
+        img=cv2.imread('/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png')
         publish_image(img)
     except rospy.ROSInterruptException:
         pass

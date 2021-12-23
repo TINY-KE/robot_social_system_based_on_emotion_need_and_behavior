@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-21 19:27:27
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-22 12:03:25
+ * @LastEditTime: 2021-12-23 10:29:28
  */
 #include "common_include.h"
 #include "ros/ros.h"
@@ -106,11 +106,13 @@ private:
 
 
     void publish( int period_ ){
-        publish_gaze( period_ );
-        publish_screen( period_ );
-        publish_sounder( period_ );
-        publish_arm( period_ );
-        publish_leg( period_ );
+//        string ss ;
+//        behavior.arms.rate;
+        // publish_gaze( period_ );
+        // publish_screen( period_ );
+        // publish_sounder( period_ );
+        // publish_arm( period_ );
+        // publish_leg( period_ );
     }
 
     bool recall_gaze(  int period_  ){      /* 检测 gaze 行为的目标 是否到达 */ 

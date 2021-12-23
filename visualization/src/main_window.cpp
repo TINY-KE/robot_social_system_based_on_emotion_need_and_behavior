@@ -13,6 +13,13 @@
 #include <QMessageBox>
 #include <iostream>
 #include "../include/msg/main_window.hpp"
+
+#include <QtCore/QDebug>
+#include <QtGui/QImage>
+#include "opencv2/core/core.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/opencv.hpp"
+
 //QTextCodec::setCodecForCStrings(QTextCodec::codecForName("GB2312"));
 /*****************************************************************************
 ** Namespaces
@@ -35,25 +42,60 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     QObject::connect(ui.actionAbout_Qt, SIGNAL(triggered(bool)), qApp, SLOT(aboutQt())); // qApp is a global variable for the application
 
     ReadSettings();
-	setWindowIcon(QIcon(":/images/icon.png"));
+    setWindowIcon(QIcon(":/images/icon.png"));
     QObject::connect(&qnode, SIGNAL(rosShutdown()), this, SLOT(close()));
 
 /*xiaopang robot*/
-    QImage *img=new QImage; //新建一个image对象
-    img->load(":/new/prefix1/images/xiaopang.png"); //将图像资源载入对象img，注意路径，可点进图片右键复制路径
-    ui.label_xiaopang -> setPixmap(QPixmap::fromImage(*img));
+    QImage *img2=new QImage; //新建一个image对象
+    img2->load(":/new/prefix1/images/xiaopang.png"); //将图像资源载入对象img，注意路径，可点进图片右键复制路径
+    ui.label_xiaopang -> setPixmap(QPixmap::fromImage(*img2));
 
+//    emotion_image = new Emotion_image( &ui );
 
+/*emotion image*/
+//    QString page_1 = "/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png";
+//    cv::Mat srcImage_1 = cv::imread(page_1.toLatin1().data());      // 读取图片数据
+//    cv::cvtColor(srcImage_1, srcImage_1, CV_BGR2GRAY);        // 图像格式转换
+//    QImage disImage_2  =  cvMat2QImage( srcImage_1 );
+//    cv::imshow("cvMat2QImage RGB32", srcImage_1);
+//    QImage disImage_1 = QImage((const unsigned char*)(srcImage_1.data), srcImage_1.cols, srcImage_1.rows, QImage::Format_RGB888);
+//    ui.label_emotion_image->setPixmap(QPixmap::fromImage(   disImage_1.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)    ));  // label 显示图像
+//    QString filename("../../../src/social_system/emotion_module/image/emotion_img.png");
+    QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
+    QImage* img=new QImage;
+    if(! ( img->load(filename) ) ) //加载图像
+    {
+    QMessageBox::information(this,
+    tr("打开图像失败"),
+     tr("打开图像失败!"));
+    delete img;
+    return;
+    }
+    int width = (*img).width();      int height =  (*img).height();
+//    QRect rect(width-height/2,0, height,height);
+    qDebug() << width << " " <<  height ;
+    int width_new = height*4.8/5;
+    QRect rect( (width/2 - width_new/2),0, width_new,height);
+    QImage img_cut = (*img).copy(rect);
+    ui.label_emotion_image->setPixmap(QPixmap::fromImage(
+                                                          img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
+                                                        )
+                                      );
+//.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
 
   /*********************
 	** Logging
 	**********************/
 
     QObject::connect(&qnode, SIGNAL(loggingUpdated()), this, SLOT(updateLoggingView()));
-    QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion()), this, SLOT(updateLoggingView_emotion()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_body()), this, SLOT(updateLoggingView_body()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_perception()), this, SLOT(updateLoggingView_perception()));
+
+    QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion()), this, SLOT(updateLoggingView_emotion()));
+    QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion_image()), this, SLOT(updateLoggingView_emotion_image()));
+
     QObject::connect(&qnode, SIGNAL(loggingUpdated_need()), this, SLOT(updateLoggingView_need()));
+
     QObject::connect(&qnode, SIGNAL(loggingUpdated_bhvPara()), this, SLOT(updateLoggingView_bhvPara()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_bhvReply()), this, SLOT(updateLoggingView_bhvReply()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_bhvQueue()), this, SLOT(updateLoggingView_bhvQueue()));
@@ -317,6 +359,101 @@ void MainWindow::slt_valueChanged_leg(int value, int breakpoint1, int breakpoint
 }
 
 
+
+
+void MainWindow::updateLoggingView_body() {
+  ui.progressBar_body1->setValue(int(qnode.body1*100));
+  ui.lineEdit_body1->setText(QString::number(qnode.body1,'f',2));
+  ui.progressBar_body2->setValue(int(qnode.body2*100));
+  ui.lineEdit_body2->setText(QString::number(qnode.body2,'f',2));
+  ui.progressBar_body3->setValue(int(qnode.body3*100));
+  ui.lineEdit_body3->setText(QString::number(qnode.body3,'f',2));
+  ui.progressBar_body4->setValue(int(qnode.body4*100));
+  ui.lineEdit_body4->setText(QString::number(qnode.body4,'f',2));
+  ui.progressBar_body5->setValue(int(qnode.body5*100));
+  ui.lineEdit_body5->setText(QString::number(qnode.body5,'f',2));
+  ui.progressBar_body6->setValue(int(qnode.body6*100));
+  ui.lineEdit_body6->setText(QString::number(qnode.body6,'f',2));
+  ui.progressBar_body7->setValue(int(qnode.body7*100));
+  ui.lineEdit_body7->setText(QString::number(qnode.body7,'f',2));
+  ui.progressBar_body8_atwork->setValue(int(qnode.body8*100));
+  ui.lineEdit_body8->setText(QString::number(qnode.body8,'f',2));
+}
+void MainWindow::updateLoggingView_perception() {
+  ui.lineEdit_per_time -> setText(QString::number(qnode.per_time,'f',2));
+  ui.lineEdit_per_person -> setText(QString::fromStdString(qnode.per_person_IDtype));
+  ui.lineEdit_per_person_name -> setText(QString::fromStdString(qnode.per_person));
+  ui.lineEdit_per_intention -> setText(QString::fromStdString(qnode.per_intention));
+  ui.lineEdit_per_p -> setText(QString::number(qnode.per_p,'f',2));
+  ui.lineEdit_per_speech -> setText(QString::fromStdString(qnode.per_speech));
+  ui.lineEdit_per_personEmotion -> setText(QString::fromStdString(qnode.per_personEmotion));
+}
+
+
+
+//add
+void MainWindow::updateLoggingView_emotion() {
+  ui.progressBar_emotion1->setValue(int(qnode.emotion1*100));
+  ui.lineEdit_emotion1->setText(QString::number(qnode.emotion1,'f',2));
+  ui.progressBar_emotion2->setValue(int(qnode.emotion2*100));
+  ui.lineEdit_emotion2->setText(QString::number(qnode.emotion2,'f',2));
+  ui.progressBar_emotion3->setValue(int(qnode.emotion3*100));
+  ui.lineEdit_emotion3->setText(QString::number(qnode.emotion3,'f',2));
+  ui.progressBar_emotion4->setValue(int(qnode.emotion4*100));
+  ui.lineEdit_emotion4->setText(QString::number(qnode.emotion4,'f',2));
+  ui.progressBar_emotion5->setValue(int(qnode.emotion5*100));
+  ui.lineEdit_emotion5->setText(QString::number(qnode.emotion5,'f',2));
+  ui.progressBar_emotion6->setValue(int(qnode.emotion6*100));
+  ui.lineEdit_emotion6->setText(QString::number(qnode.emotion6,'f',2));
+  ui.progressBar_emotion7->setValue(int(qnode.emotion7*100));
+  ui.lineEdit_emotion7->setText(QString::number(qnode.emotion7,'f',2));
+  ui.progressBar_emotion8->setValue(int(qnode.emotion8*100));
+  ui.lineEdit_emotion8->setText(QString::number(qnode.emotion8,'f',2));
+  sleep(0.5);
+  QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
+  QImage* img=new QImage;
+  if(! ( img->load(filename) ) ) //加载图像
+  {
+  QMessageBox::information(this,
+  tr("打开图像失败"),
+   tr("打开图像失败!"));
+  delete img;
+  return;
+  }
+  int width = (*img).width();      int height =  (*img).height();
+//    QRect rect(width-height/2,0, height,height);
+  qDebug() << width << " " <<  height ;
+  QRect rect( (width/2 - height/2),0, height,height);
+  QImage img_cut = (*img).copy(rect);
+  ui.label_emotion_image->setPixmap(QPixmap::fromImage(
+                                                        img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
+                                                      )
+                                    );
+
+}
+
+
+
+
+void MainWindow::updateLoggingView_need() {
+  QFont list_font;
+  list_font.setPointSize(9);
+  list_font.setBold(false);
+  list_font.setWeight(50);
+  ui.listWidget_newest_need->setFont(list_font);
+
+
+  //  listWidget_newest
+  ui.listWidget_newest_need->clear();
+  need_list = qnode.need_list;
+  for(int i =0; i < need_list.size();  i ++){
+    std::string s = need_list[i].name  +" for "+ need_list[i].person  +" as "+  std::to_string(need_list[i].weight);
+    QString list = QString::fromStdString(s);
+    ui.listWidget_newest_need->addItem(list);
+  }
+
+}
+
 void MainWindow::updateLoggingView_bhvPara() {
   //QPalette pal =ui.lineEdit_executing_behavior_type->QPalette();
 //  QPalette palette_green,palette_orange,palette_black;
@@ -480,169 +617,7 @@ void MainWindow::updateLoggingView_bhvQueue() {
     }
     ui.listWidget_bhvQueue->addItems(list);
 }
-//add
-void MainWindow::updateLoggingView_emotion() {
-  ui.progressBar_emotion1->setValue(int(qnode.emotion1*100));
-  ui.lineEdit_emotion1->setText(QString::number(qnode.emotion1,'f',2));
-  ui.progressBar_emotion2->setValue(int(qnode.emotion2*100));
-  ui.lineEdit_emotion2->setText(QString::number(qnode.emotion2,'f',2));
-  ui.progressBar_emotion3->setValue(int(qnode.emotion3*100));
-  ui.lineEdit_emotion3->setText(QString::number(qnode.emotion3,'f',2));
-  ui.progressBar_emotion4->setValue(int(qnode.emotion4*100));
-  ui.lineEdit_emotion4->setText(QString::number(qnode.emotion4,'f',2));
-  ui.progressBar_emotion5->setValue(int(qnode.emotion5*100));
-  ui.lineEdit_emotion5->setText(QString::number(qnode.emotion5,'f',2));
-  ui.progressBar_emotion6->setValue(int(qnode.emotion6*100));
-  ui.lineEdit_emotion6->setText(QString::number(qnode.emotion6,'f',2));
-  ui.progressBar_emotion7->setValue(int(qnode.emotion7*100));
-  ui.lineEdit_emotion7->setText(QString::number(qnode.emotion7,'f',2));
-  ui.progressBar_emotion8->setValue(int(qnode.emotion8*100));
-  ui.lineEdit_emotion8->setText(QString::number(qnode.emotion8,'f',2));
-}
-void MainWindow::updateLoggingView_body() {
-  ui.progressBar_body1->setValue(int(qnode.body1*100));
-  ui.lineEdit_body1->setText(QString::number(qnode.body1,'f',2));
-  ui.progressBar_body2->setValue(int(qnode.body2*100));
-  ui.lineEdit_body2->setText(QString::number(qnode.body2,'f',2));
-  ui.progressBar_body3->setValue(int(qnode.body3*100));
-  ui.lineEdit_body3->setText(QString::number(qnode.body3,'f',2));
-  ui.progressBar_body4->setValue(int(qnode.body4*100));
-  ui.lineEdit_body4->setText(QString::number(qnode.body4,'f',2));
-  ui.progressBar_body5->setValue(int(qnode.body5*100));
-  ui.lineEdit_body5->setText(QString::number(qnode.body5,'f',2));
-  ui.progressBar_body6->setValue(int(qnode.body6*100));
-  ui.lineEdit_body6->setText(QString::number(qnode.body6,'f',2));
-  ui.progressBar_body7->setValue(int(qnode.body7*100));
-  ui.lineEdit_body7->setText(QString::number(qnode.body7,'f',2));
-  ui.progressBar_body8_atwork->setValue(int(qnode.body8*100));
-  ui.lineEdit_body8->setText(QString::number(qnode.body8,'f',2));
-}
-void MainWindow::updateLoggingView_perception() {
-  ui.lineEdit_per_time -> setText(QString::number(qnode.per_time,'f',2));
-  ui.lineEdit_per_person -> setText(QString::fromStdString(qnode.per_person_IDtype));
-  ui.lineEdit_per_person_name -> setText(QString::fromStdString(qnode.per_person));
-  ui.lineEdit_per_intention -> setText(QString::fromStdString(qnode.per_intention));
-  ui.lineEdit_per_p -> setText(QString::number(qnode.per_p,'f',2));
-  ui.lineEdit_per_speech -> setText(QString::fromStdString(qnode.per_speech));
-  ui.lineEdit_per_personEmotion -> setText(QString::fromStdString(qnode.per_personEmotion));
-}
-void MainWindow::updateLoggingView_need() {
-  QFont list_font;
-  list_font.setPointSize(9);
-  list_font.setBold(false);
-  list_font.setWeight(50);
-  ui.listWidget_newest_need->setFont(list_font);
 
-
-  //  listWidget_newest
-  ui.listWidget_newest_need->clear();
-  need_list = qnode.need_list;
-  for(int i =0; i < need_list.size();  i ++){
-    std::string s = need_list[i].name  +" for "+ need_list[i].person  +" as "+  std::to_string(need_list[i].weight);
-    QString list = QString::fromStdString(s);
-    ui.listWidget_newest_need->addItem(list);
-  }
-
-
-  //listWidget
-//  ui.listWidget->clear();
-//  need_list = qnode.need_list;
-//  for(int i =0; i < need_list.size();  i ++){
-//    std::string s = need_list[i].name  +" for "+ need_list[i].person  +" as "+  std::to_string(need_list[i].weight);
-//    QString list = QString::fromStdString(s);
-//    ui.listWidget->addItem(list);
-//  }
-
-  //progressBar
-//   {
-//     //clear
-//     ui.progressBar_need_answer->setValue(0);
-//     ui.progressBar_need_charge->setValue(0);
-//     ui.progressBar_need_chat->setValue(0);
-//     ui.progressBar_need_greet->setValue(0);
-//     ui.progressBar_need_parent_ensure->setValue(0);
-//     ui.progressBar_need_question->setValue(0);
-//     ui.progressBar_need_remind->setValue(0);
-//     ui.progressBar_need_tempareture_check->setValue(0);
-//     ui.progressBar_need_wander ->setValue(0);
-//     ui.progressBar_need_KeepOrder ->setValue(0);
-//     ui.progressBar_need_StopStranger ->setValue(0);
-
-//     ui.lineEdit_need_answer  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_charge  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_chat  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_greet  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_parent_ensure  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_question  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_remind  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_tempareture_check  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_wander  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_KeepOrder  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_StopStranger  -> setText(QString::fromStdString(""));
-
-//     ui.lineEdit_need_answer_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_charge_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_chat_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_greet_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_parent_ensure_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_question_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_remind_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_tempareture_check_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_wander_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_KeepOrder_2  -> setText(QString::fromStdString(""));
-//     ui.lineEdit_need_StopStranger_2  -> setText(QString::fromStdString(""));
-//   }
-//  {
-//    //show current need
-//    if(qnode.need_cur.name == "Anwser")
-//        {ui.progressBar_need_answer->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_answer  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_answer_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-//    if(qnode.need_cur.name == "Charge")
-//        {ui.progressBar_need_charge->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_charge  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_charge_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-//    if(qnode.need_cur.name == "Chat")
-//        {ui.progressBar_need_chat->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_chat  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_chat_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-//    if(qnode.need_cur.name == "Greet")
-//        {ui.progressBar_need_greet->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_greet  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_greet_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-//    if(qnode.need_cur.name == "ParentIdentity")
-//        {ui.progressBar_need_parent_ensure->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_parent_ensure  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_parent_ensure_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-//    if(qnode.need_cur.name == "Doubt")
-//        {ui.progressBar_need_question->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_question  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_question_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-//    if(qnode.need_cur.name == "MeasureTempareture")
-//        {ui.progressBar_need_tempareture_check->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_tempareture_check  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_tempareture_check_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-//    if(qnode.need_cur.name == "Wander")
-//        {ui.progressBar_need_wander->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_wander  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_wander_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-
-//    if(qnode.need_cur.name == "KeepOrder")
-//        {ui.progressBar_need_KeepOrder->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_KeepOrder  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_KeepOrder_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-
-//    if(qnode.need_cur.name == "StopStranger")
-//        {ui.progressBar_need_StopStranger->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_StopStranger  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_StopStranger_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-
-//    if(qnode.need_cur.name == "Remind")
-//        {ui.progressBar_need_remind->setValue(int(qnode.need_cur.weight*100));
-//        ui.lineEdit_need_remind  -> setText(QString::number(qnode.need_cur.weight,'f',2));
-//        ui.lineEdit_need_remind_2  -> setText(QString::fromStdString(qnode.need_cur.person));}
-//  }
-}
 /*****************************************************************************
 ** Implementation [Menu]
 *****************************************************************************/

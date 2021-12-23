@@ -16,6 +16,10 @@
 #include "ui_main_window.h"
 #include "qnode.hpp"
 
+//#include "emotion_image.h"
+
+//#include "cv2qimage.h"s
+
 /*****************************************************************************
 ** Namespace
 *****************************************************************************/
@@ -53,9 +57,13 @@ public Q_SLOTS:
     ** Manual connections
     *******************************************/
     void updateLoggingView(); // no idea why this can't connect automatically
-    void updateLoggingView_emotion(); //add
+
     void updateLoggingView_body();
     void updateLoggingView_perception();
+
+    void updateLoggingView_emotion(); //add
+    void updateLoggingView_emotion_image(){} //add
+
     void updateLoggingView_need();
     void updateLoggingView_bhvPara();
     void updateLoggingView_bhvReply();
@@ -73,6 +81,7 @@ public:
 private:
 	Ui::MainWindowDesign ui;
 	QNode qnode;
+//  Emotion_image emotion_image;
 };
 
 }  // namespace msg
