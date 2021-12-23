@@ -12,8 +12,7 @@ from Emotion_engine import *
 from social_msg.msg import robot_emotion
 from collections import deque
 
-# csv_path = Emotion_engine.csv_path
-csv_path = '/home/zhjd/ws/src/social_system/emotion_module/image/'
+
 ##### 全局参数初始化
 need_eval=[]
 attitude_eval=[]
@@ -32,23 +31,23 @@ client = AipNlp(APP_ID, API_KEY, SECRET_KEY)
 
 
 ##### 发布话题 
-pub = rospy.Publisher('robot_emotion_msg', robot_emotion, queue_size=10)
+pub = rospy.Publisher('robot_emotion', robot_emotion, queue_size=10)
 def publish():
        '''
        robot_emotion消息发布
        '''
-       eval=robot_emotion
+       eval=robot_emotion()
        global current_e
-       eval.emotion0 = current_e[0]
-       eval.emotion1 = current_e[1]
-       eval.emotion2 = current_e[2]
-       eval.emotion3 = current_e[3]
-       eval.emotion4 = current_e[4]
-       eval.emotion5 = current_e[5]
-       eval.emotion6 = current_e[6]
-       eval.emotion7 = current_e[7]
+       eval.emotion1 = current_e[0]
+       eval.emotion2 = current_e[1]
+       eval.emotion3 = current_e[2]
+       eval.emotion4 = current_e[3]
+       eval.emotion5 = current_e[4]
+       eval.emotion6 = current_e[5]
+       eval.emotion7 = current_e[6]
+       eval.emotion8 = current_e[7]
        pub.publish(eval)
-       rospy.loginfo("机器人情感：%f,%f,%f,%f,%f,%f,%f,%f\n", eval.emotion0,eval.emotion1,eval.emotion2,eval.emotion3,eval.emotion4,eval.emotion5,eval.emotion6,eval.emotion7 )
+       rospy.loginfo("机器人情感：%f,%f,%f,%f,%f,%f,%f,%f\n", eval.emotion1,eval.emotion2,eval.emotion3,eval.emotion4,eval.emotion5,eval.emotion6,eval.emotion7,eval.emotion8 )
 
 
 def caculate_edelta(csv_name,index_name,index_val,column_val):
@@ -169,13 +168,13 @@ def callback_need(need_satisfy_msg):
        :output need_eval：自我需求满足引起的情绪变化列表[ float_情绪种类，float_情绪变化强度... ]
        '''
        #rospy.loginfo( "I heard %s %d", need_satisfy_msg.need_name,need_satisfy_msg.satisfy_value)
-       ##global need_eval,msg_list    #1]]]
+
        ### 更新msg列表
        msg_list.append(need_satisfy_msg.need_name) 
        msg_list.append(need_satisfy_msg.satisfy_value)  
 
        #### 自我满足信息处理，通过查找dataframe实现值映射
-       csv_name  = csv_path + '/need_satisfy.csv'
+       csv_name  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'need_satisfy.csv'
        index_name = "satisfy_value"
        index_val = str(need_satisfy_msg.satisfy_value)
        column_val = need_satisfy_msg.need_name
@@ -193,12 +192,19 @@ def callback_a_p(attitude_msg,perception_msg):
        '''
        #rospy.loginfo( "I heard %s %s %s %s %s",perception_msg.person_name,perception_msg.speech,\
               #perception_msg.person_emotion,attitude_msg.person_name,attitude_msg.attitude)
-       
+
        #### 更新msg列表
-       global msg_list,current_e,current_m,delta_e,delta_epre
+       global msg_list
        msg_list.extend([perception_msg.person_name,attitude_msg.person_name,\
                                           perception_msg.person_emotion,attitude_msg.attitude,perception_msg.speech])
        msg_list.insert(0,perception_msg.time)
+       
+
+
+def data_process():
+       global msg_list,current_e,current_m,delta_e,delta_epre
+       if  (not msg_list):
+              msg_list=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
        print("Msg list: ",msg_list)
        flag=unique_judge(msg_list)
        print("Whether_work: ",flag)
@@ -208,7 +214,7 @@ def callback_a_p(attitude_msg,perception_msg):
               #print('Internal_eval: ',need_eval)
               ### 社交态度信息处理
               if msg_list[3] == msg_list[4]:
-                     csv_name  = csv_path + '/attitude.csv'
+                     csv_name  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'attitude.csv'
                      index_name = "person_emotion"
                      index_val = msg_list[5]
                      column_val = msg_list[6]
@@ -218,12 +224,19 @@ def callback_a_p(attitude_msg,perception_msg):
                      #print ('PeopleEmotionTransfer_eval: ',attitude_eval)                
               else:
                      print("The social attitude object is different from the conversation object ! ")
-              print ('******  msg_list: ',msg_list)   
+
               ### 他人评价信息处理
-              text = msg_list[7]    # 2]]]
-              charset="UTF-8"
-              eclass=client.sentimentClassify(text)[u'items'][0][u'sentiment'] #文本对应情感类别标签
-              csv_name1  = csv_path + '/perception.csv'
+              if msg_list[7]=='None':
+                     eclass= 'none'
+              else:
+                     text = msg_list[7]
+                     charset="UTF-8"
+                     try:
+                            eclass=client.sentimentClassify(text)[u'items'][0][u'sentiment'] #文本对应情感类别标签
+                     except:
+                            print("API failed !")
+                            eclass='none'
+              csv_name1  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'perception.csv'
               index_name1 = "speech_emotion"
               index_val1 = str(eclass)
               column_val1 = 'empathy'
@@ -243,7 +256,7 @@ def callback_a_p(attitude_msg,perception_msg):
        msg_list=[] # msg列表初始化
 
        #### 可视化
-       #main.visualization()
+       main.visualization()
 
        #### 机器人情感topic发布
        publish()

@@ -7,9 +7,6 @@ from bisect import bisect_left
 import pandas as pd
 import csv
 
-# csv_path = "/home/zhjd/ws/src/social_system/emotion_module/image/"
-csv_path = '/home/zhjd/ws/src/social_system/emotion_module/image/'
-
 
 ##### 实时参数初始化
 emtionNumber = 8
@@ -25,7 +22,7 @@ e_count=0                                                        # 记录情绪�
 
 ##### 情绪参数
 tmp_lst = []
-with open(csv_path + 'emotion_param.csv', 'r') as f:
+with open("/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'emotion_param.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
                 tmp_lst.append(row)

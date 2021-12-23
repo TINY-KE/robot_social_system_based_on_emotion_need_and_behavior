@@ -1,23 +1,40 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
+import time
 import rospy
 import math
+import threading
 import Data_processing
 import message_filters
+#import keyboard as kb
 from Emotion_engine import *
 import PIL.Image as Image
 from social_msg.msg import attitude_msg
 from social_msg.msg import need_satisfy_msg
 from social_msg.msg import perception_msg
 
-csv_path = '/home/zhjd/ws/src/social_system/emotion_module/image/'
 
-def data_process():
+class myThread(threading.Thread):
+    def __init__(self,  name, content):
+        threading.Thread.__init__(self)
+        self.name = name
+        self.content = content
+    def run(self):
+        print ("Starting ", self.name)
+        if self.content == 'listener':
+            data_get()
+        else:
+            while 1:
+                time.sleep(1)
+                Data_processing.data_process()
+                
+
+def data_get():
         '''
         *启动模块，调用Data_processing.py中的函数，订阅三个刺激信息并作处理、发布robot_emotion_msg（进入循环）
         '''
-        rospy.init_node('emotion_listener', anonymous=True)
+        rospy.init_node('emotion_listener', anonymous=True,disable_signals=True)
         t1 = message_filters.Subscriber("attitude_msg", attitude_msg)
         t2 = message_filters.Subscriber("need_satisfy_msg", need_satisfy_msg)
         t3 = message_filters.Subscriber("perception_msg", perception_msg)
@@ -25,7 +42,7 @@ def data_process():
         t2.registerCallback(Data_processing.callback_need)
         ts.registerCallback(Data_processing.callback_a_p)
         rospy.spin() # spin() simply keeps python from exiting until this node is stopped
-    
+
 
 def Picture_Synthesis(mother_img,son_img,coordinate):
         """
@@ -72,7 +89,7 @@ def visualization():
         e_list =['{:.4f}'.format(i) for i in current_e]
         e_list=[float(i) for i in e_list] #当前情绪强度向量
        
-        wheel_img=csv_path + "/Plutchik's_Wheel.png"
+        wheel_img="/home/zhjd/ws/src/social_system/emotion_module/image/Plutchik's_Wheel.png"
         img = Image.open(wheel_img)
         img_w, img_h = img.size
         midpoint=[img_w/2, img_h/2] #标记底图中点
@@ -81,39 +98,47 @@ def visualization():
         r_point = [(e_list[i] / h4[i]*(R[i]-r[i])+r[i]) for i in range(len(e_list))] 
         ## Joy
         cor_joy = (int(midpoint[0]),int(midpoint[1]-r_point[0]))
-        final_img=Picture_Synthesis(img,son_img=Image.open(csv_path + '/Joy_ball.png'),
+        final_img=Picture_Synthesis(img,son_img=Image.open("/home/zhjd/ws/src/social_system/emotion_module/image/Joy_ball.png"),
                   coordinate=(cor_joy))  
         ## Trust
         cor_trust = (int(midpoint[0]+r_point[1]/math.sqrt(2)),int(midpoint[1]-r_point[1]/math.sqrt(2)))
-        final_img=Picture_Synthesis(final_img,son_img=Image.open(csv_path + '/Trust_ball.png'),
+        final_img=Picture_Synthesis(final_img,son_img=Image.open("/home/zhjd/ws/src/social_system/emotion_module/image/Trust_ball.png"),
                   coordinate=(cor_trust))
         ## Surprise
         cor_surprise = (int(midpoint[0]-r_point[2]/math.sqrt(2)),int(midpoint[1]-r_point[2]/math.sqrt(2)))
-        final_img=Picture_Synthesis(final_img,son_img=Image.open(csv_path + '/Surprise_ball.png'),
+        final_img=Picture_Synthesis(final_img,son_img=Image.open("/home/zhjd/ws/src/social_system/emotion_module/image/Surprise_ball.png"),
                   coordinate=(cor_surprise))
         ## Sadness
         cor_sadness = (int(midpoint[0]),int(midpoint[1]+r_point[3]))
-        final_img=Picture_Synthesis(final_img,son_img=Image.open(csv_path + '/Sadness_ball.png'),
+        final_img=Picture_Synthesis(final_img,son_img=Image.open("/home/zhjd/ws/src/social_system/emotion_module/image/Sadness_ball.png"),
                   coordinate=(cor_sadness))
         ## Anger
         cor_anger = (int(midpoint[0]-r_point[4]),int(midpoint[1]))
-        final_img=Picture_Synthesis(final_img,son_img=Image.open(csv_path + '/Anger_ball.png'),
+        final_img=Picture_Synthesis(final_img,son_img=Image.open("/home/zhjd/ws/src/social_system/emotion_module/image/Anger_ball.png"),
                   coordinate=(cor_anger))
         ## Fear
         cor_fear = (int(midpoint[0]+r_point[5]),int(midpoint[1]))
-        final_img=Picture_Synthesis(final_img,son_img=Image.open(csv_path + '/Fear_ball.png'),
+        final_img=Picture_Synthesis(final_img,son_img=Image.open("/home/zhjd/ws/src/social_system/emotion_module/image/Fear_ball.png"),
                   coordinate=(cor_fear))
         ## Disgust
         cor_disgust = (int(midpoint[0]-r_point[6]/math.sqrt(2)),int(midpoint[1]+r_point[6]/math.sqrt(2)))
-        final_img=Picture_Synthesis(final_img,son_img=Image.open(csv_path + '/Disgust_ball.png'),
+        final_img=Picture_Synthesis(final_img,son_img=Image.open("/home/zhjd/ws/src/social_system/emotion_module/image/Disgust_ball.png"),
                   coordinate=(cor_disgust))
         ## Boring
         cor_boring = (int(midpoint[0]+r_point[7]/math.sqrt(2)),int(midpoint[1]+r_point[7]/math.sqrt(2)))
-        final_img=Picture_Synthesis(final_img,son_img=Image.open(csv_path + '/Boring_ball.png'),
+        final_img=Picture_Synthesis(final_img,son_img=Image.open("/home/zhjd/ws/src/social_system/emotion_module/image/Boring_ball.png"),
                   coordinate=(cor_boring))
 
-        final_img.save(csv_path + '/emotion_img.png')
+        final_img.save("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png")
 
 
 if __name__ == '__main__':
-    data_process()
+    
+    thread1=myThread("Listener-thread",'listener')
+    thread2=myThread("Publisher-thread",'publisher')
+    thread1.start()
+    thread2.start()
+  
+    # while True:
+    #     if kb.is_pressed("Ctrll+C"):
+    #         (threading.Thread).exit()

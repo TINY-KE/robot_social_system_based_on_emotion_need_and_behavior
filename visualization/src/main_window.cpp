@@ -409,7 +409,7 @@ void MainWindow::updateLoggingView_emotion() {
   ui.lineEdit_emotion7->setText(QString::number(qnode.emotion7,'f',2));
   ui.progressBar_emotion8->setValue(int(qnode.emotion8*100));
   ui.lineEdit_emotion8->setText(QString::number(qnode.emotion8,'f',2));
-  sleep(0.5);
+  sleep(0);
   QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
   QImage* img=new QImage;
   if(! ( img->load(filename) ) ) //加载图像

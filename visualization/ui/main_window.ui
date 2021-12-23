@@ -69,7 +69,7 @@
      <item row="3" column="0">
       <widget class="QLabel" name="label_8">
        <property name="text">
-        <string>Sad</string>
+        <string>Sadness</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -109,7 +109,7 @@
         <enum>Qt::ActionsContextMenu</enum>
        </property>
        <property name="text">
-        <string>Angry</string>
+        <string>Anger</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -179,7 +179,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Happy</string>
+        <string>Joy</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -225,7 +225,7 @@
         <enum>Qt::ActionsContextMenu</enum>
        </property>
        <property name="text">
-        <string>Disgusted</string>
+        <string>Disgust</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -235,7 +235,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Trustful</string>
+        <string>Trust</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -258,7 +258,7 @@
         <enum>Qt::ActionsContextMenu</enum>
        </property>
        <property name="text">
-        <string>Scared</string>
+        <string>Fear</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
