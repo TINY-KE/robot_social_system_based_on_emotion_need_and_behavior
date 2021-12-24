@@ -107,13 +107,13 @@ public:
 
 
 
-    void task_wu(need_wu n){
-        task_model -> weightUpdate(n);
-    }
+    // void task_wu(need_wu n){
+    //     task_model -> weightUpdate(n);
+    // }
 
-    void inner_wu(need_wu n){
-        inner_model -> weightUpdate(n);
-    }
+    // void inner_wu(need_wu n){
+    //     inner_model -> weightUpdate(n);
+    // }
 
 };
 #endif //TEST_CHECKRULE_H

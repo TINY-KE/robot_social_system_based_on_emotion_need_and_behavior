@@ -6,6 +6,7 @@
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.9
+  satisfy_value: 1
 - need_name: Greet
   intention: EnterSchool
   IDtype: Student
@@ -14,6 +15,7 @@
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.88
+  satisfy_value: 1
 - need_name: Greet
   intention: EnterSchool
   IDtype: Parent
@@ -22,6 +24,7 @@
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.86 
+  satisfy_value: 1
   
 - need_name: StopStranger
   intention: EnterSchool
@@ -30,7 +33,8 @@
   rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
-  weight: 1 
+  weight: 1
+  satisfy_value: 2 
 
 
 - need_name: MeasureTempareture
@@ -41,6 +45,7 @@
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
+  satisfy_value: 1
 - need_name: MeasureTempareture
   intention: EnterSchool
   IDtype: Student
@@ -49,6 +54,7 @@
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
+  satisfy_value: 1
 - need_name: MeasureTempareture
   intention: EnterSchool
   IDtype: Parent
@@ -57,8 +63,35 @@
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
+  satisfy_value: 1
 
-
+- need_name: Pass
+  intention: Pass
+  IDtype: Teacher
+  person_emotion: Happy
+  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
+  time: 0
+  weight: 0.95
+  satisfy_value: 1
+- need_name: Pass
+  intention: Pass
+  IDtype: Student
+  person_emotion: Happy
+  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
+  time: 0
+  weight: 0.95
+  satisfy_value: 1
+- need_name: Pass
+  intention: Pass
+  IDtype: Parent
+  person_emotion: Happy
+  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
+  time: 0
+  weight: 0.95
+  satisfy_value: 1
 
 - need_name: ParentIdentity
   intention: EnterSchool
@@ -67,34 +100,38 @@
   rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
-  weight: 0.80 
+  weight: 0.80
+  satisfy_value: 1 
 
 
 
 - need_name: Anwser
   intention: Query
   IDtype: Teacher
+  person_emotion: Happy
+  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
+  time: 0.05
+  weight: 0.85
+  satisfy_value: 1 
+- need_name: Anwser
+  intention: Query
+  IDtype: Student
+  person_emotion: Happy
+  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
+  time: 0.05
+  weight: 0.85
+  satisfy_value: 1  
+- need_name: Anwser
+  intention: Query
+  IDtype: Parent
   person_emotion: Happy
   rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85 
-- need_name: Anwser
-  intention: Query
-  IDtype: Student
-  person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
-  rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
-  time: 0.05
-  weight: 0.85  
-- need_name: Anwser
-  intention: Query
-  IDtype: Parent
-  person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
-  rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
-  time: 0.05
-  weight: 0.85  
+  satisfy_value: 1 
 
 
 
@@ -102,27 +139,29 @@
   intention: Uncooperate
   IDtype: Teacher
   person_emotion: Happy
-  rob_emotion: [0, 0, 0.5, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0.5, 0, 0, 0 ]
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
-  weight: 0.85  
+  weight: 0.85 
+  satisfy_value: 2 
 - need_name: KeepOrder
   intention: Uncooperate
   IDtype: Student
   person_emotion: Happy
-  rob_emotion: [0, 0, 0.5, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0.5, 0, 0, 0 ]
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
-  weight: 0.85  
+  weight: 0.85 
+  satisfy_value: 2 
 - need_name: KeepOrder
   intention: Uncooperate
   IDtype: Parent
   person_emotion: Happy
-  rob_emotion: [0, 0, 0.5, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0.5, 0, 0, 0 ]
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
-  weight: 0.85  
-
+  weight: 0.85
+  satisfy_value: 2  
 
 
 
@@ -130,24 +169,27 @@
   intention: SendWord
   IDtype: Teacher
   person_emotion: Happy
-  rob_emotion: [0, 0, 0.5, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
-  weight: 0.85  
+  weight: 0.7 
+  satisfy_value: 1 
 - need_name:  Remind
   intention: SendWord
   IDtype: Student
   person_emotion: Happy
-  rob_emotion: [0, 0, 0.5, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
-  weight: 0.85  
+  weight: 0.7
+  satisfy_value: 1  
 - need_name:  Remind
   intention: SendWord
   IDtype: Parent
   person_emotion: Happy
-  rob_emotion: [0, 0, 0.5, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
-  weight: 0.85  
+  weight: 0.7
+  satisfy_value: 1 
 

@@ -5,6 +5,8 @@
 #include "social_msg/robot_emotion.h"
 #include "social_msg/robot_status.h"
 #include "social_msg/perception_msg.h"
+#include "social_msg/attitude_msg.h"
+#include "social_msg/need_satisfy_msg.h"
 ros::Publisher pub_perception;
 ros::Publisher pub_attitude;
 ros::Publisher pub_body;
@@ -20,7 +22,8 @@ void callback(sim::simConfig &config, uint32_t level)
 // while ( ros::ok() ) {
   if(config.publish == true)     
         {
-                //感知信息 v
+        //感知信息 
+                // 意图
                 if(config.per_switch == true)
                 {
                 social_msg::perception_msg perception;
@@ -33,10 +36,23 @@ void callback(sim::simConfig &config, uint32_t level)
                 perception.person_emotion = config.per_emotion;
                 pub_perception.publish(perception);
                 }
-                //态度信息
-
-
-                //身体状况 v
+                //社交态度
+                if(config.attitude_switch == true)
+                {
+                social_msg::attitude_msg attitude;    
+                attitude.person_name = config.attitude_person_name;
+                attitude.attitude = config.attitude_type;
+                pub_attitude.publish(attitude);
+                }
+                //需求满足状况
+                if(config.satisfy_switch == true)
+                {
+                social_msg::need_satisfy_msg satisfy_msg;    
+                satisfy_msg.need_name = config.satisfy_need;
+                satisfy_msg.satisfy_value = config.satisfy_value;
+                pub_needsatisfied.publish(satisfy_msg);
+                }
+                //身体状况 
                 if(config.body_switch == true)
                 {
                 social_msg::robot_status robot_status;
@@ -50,22 +66,23 @@ void callback(sim::simConfig &config, uint32_t level)
                 robot_status.idleState = config.body_idleState ; 
                 pub_body.publish(robot_status);
                 }
-                //内部：情感向量 v
+        
+        //情感
                 if(config.emotion_switch == true)
                 {
                 social_msg::robot_emotion  robot_emotion ;
-                robot_emotion.emotion1 = config.emotion_1_happy;
-                robot_emotion.emotion2 = config.emotion_2_angry;
-                robot_emotion.emotion3 = config.emotion_3_sad;
-                robot_emotion.emotion4 = config.emotion_4_boring;
-                robot_emotion.emotion5 = config.emotion_5_;
-                robot_emotion.emotion6 = config.emotion_6_;
-                robot_emotion.emotion7 = config.emotion_7_;
-                robot_emotion.emotion8 = config.emotion_8_;
+                robot_emotion.emotion1 = config.emotion_1_Joy;
+                robot_emotion.emotion2 = config.emotion_2_Trust;
+                robot_emotion.emotion3 = config.emotion_3_Suprise;
+                robot_emotion.emotion4 = config.emotion_4_Sadness;
+                robot_emotion.emotion5 = config.emotion_5_Anger;
+                robot_emotion.emotion6 = config.emotion_6_Fear;
+                robot_emotion.emotion7 = config.emotion_7_Disgust;
+                robot_emotion.emotion8 = config.emotion_8_Boring;
                 pub_emotion.publish(robot_emotion);
                 }
 
-                //内部：需求
+        //需求
                 if(config.need_switch == true)
                 {
                 social_msg::need_msg  need ;
@@ -79,7 +96,7 @@ void callback(sim::simConfig &config, uint32_t level)
                 need.qt_order = config.qt_order;
                 pub_needlist.publish(need);
                 }
-                //内部：需求满足状况
+                
 
         }
 
@@ -89,12 +106,17 @@ int main(int argc, char **argv)
 {
         ros::init(argc, argv, "need_model_dynamic_reconfigure");
         ros::NodeHandle n;
+        // 感知信息
         pub_perception  = n.advertise<social_msg::perception_msg>("perceptions", 10);
-        // pub_attitude  = n.advertise<social_msg::perception_msg>("attitude", 10);
+        pub_attitude  = n.advertise<social_msg::attitude_msg>("attitude", 10);
         pub_body  = n.advertise<social_msg::robot_status>("robot_status", 10);
+        pub_needsatisfied  = n.advertise<social_msg::need_satisfy_msg>("need_satisfied", 10);
+        
+        // 情感
         pub_emotion  = n.advertise<social_msg::robot_emotion>("robot_emotion", 10);
+        // 需求
         pub_needlist  = n.advertise<social_msg::need_msg>("need_lists", 10);
-        // pub_needsatisfied  = n.advertise<social_msg::perception_msg>("need_satisfied", 10);
+        // 行为
 
         dynamic_reconfigure::Server<sim::simConfig> server;
         dynamic_reconfigure::Server<sim::simConfig>::CallbackType f;

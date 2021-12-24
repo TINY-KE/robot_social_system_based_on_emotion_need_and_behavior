@@ -10,11 +10,10 @@
 #include "social_msg/need_msg.h"
 #include "social_msg/robot_emotion.h"
 #include "social_msg/robot_status.h"
-#include "social_msg/need_compare.h"
 #include "dynamic_reconfigure/server.h" 
-// #include "social_msg/DynamicParamConfig.h" 
+
 //内部头文件
-#include "Adaptive.h"
+
 #include "perception.h"
 #include "prior_need.h"
 #include "perception_filter.h"
@@ -29,6 +28,9 @@ ros::Subscriber sub_robot_emotion;
 ros::Subscriber sub_robot_status;
 ros::Subscriber sub_needCompare;
 ros::Publisher pub;
+
+//全局变量：
+int period_cur = 0;   //每个period的周期时长，由 sleep函数 决定。
 //运算符
 void operator >> (const social_msg::need_msg& msg, need_wu & need) {
     need.need_name = msg.need_name;
@@ -37,61 +39,10 @@ void operator >> (const social_msg::need_msg& msg, need_wu & need) {
 }
 // 需求模型
 prior_need PriorNeed;
-void run_PriorNeed(){
-    cout<< "Wait to run PriorNeed !!\n";
-    int i=1 ;
-    while(1){
-        if(PriorNeed.updateInit())
-        {
-            printf( GREEN "Run %dth PriorNeed（运行先验模型） !!\n"NONE, i);            
-            vector<need> need_lists = PriorNeed.need_compute_all();
-            for(int j =0 ; j< need_lists.size(); j++){
-                social_msg::need_msg need_output;
-                need_output.IDtype = need_lists[j].IDtype;
-                need_output.rob_emotion = "";//need_lists[i].rob_emotion;
-                need_output.person_emotion = need_lists[j].person_emotion;//need_lists[i].person_emotion
-                need_output.need_name = need_lists[j].need_name;  
-                need_output.weight = need_lists[j].weight;
-                need_output.speech = need_lists[j].speech;
-                need_output.person_name =  need_lists[j].person_name;
-                need_output.qt_order = i;
-                pub.publish(need_output);
-            }
-            sleep(10); i++;
-        }
-    }
-    cout<< "End PriorNeed !!\n";
-}
-// 自适应模型 和 Monitor 
-monitor Monitor;
-Adaptive adaptiveModel(  &Monitor  );
-void run_adaptive(){
-    cout<< "Wait to run Adaptve Model!!\n";
-    
-    while(1){
-        need_wu need_win_wu, need_lose_wu;
-        if(adaptiveModel.wuReturn_flag){
-            adaptiveModel.returnWuResult (need_win_wu, need_lose_wu);
-            
-            if( NeedTypeCheck(need_win_wu.need_name) == TaskNeed )                    
-                PriorNeed.task_wu(need_win_wu);
-            else if( NeedTypeCheck(need_win_wu.need_name) == InnerNeed )       
-                PriorNeed.inner_wu(need_win_wu);
-
-            if( NeedTypeCheck(need_lose_wu.need_name) == TaskNeed)                    
-                PriorNeed.task_wu(need_lose_wu);
-            else if( NeedTypeCheck(need_lose_wu.need_name) == InnerNeed )       
-                PriorNeed.inner_wu(need_lose_wu);
-        
-        }
-        
-    }
-    cout<< "End Adaptve Model !!\n";
-}
+void run_PriorNeed();
 
 
-
-// 需求模型
+// 回调函数
 void PerceptionUpdate(const social_msg::perception_msg& msg){
     
     perception per;
@@ -102,11 +53,11 @@ void PerceptionUpdate(const social_msg::perception_msg& msg){
     per.speech_ = msg.speech;
     per.person_emotion_ = msg.person_emotion;
     
-    if( Filter->Whether_OK(per) )
+    if( Filter->Whether_OK(per) )    //如果，“感知过滤器”认为当前感知是有效的，则update
         PriorNeed.PerceptionUpdate(per);
-    Monitor.emotionUpdate(per);
-    
+    // Monitor.emotionUpdate(per);  
 }
+
 void RobotEmotionUpdate(const social_msg::robot_emotion& msg){
     
     double emotion[8];
@@ -119,8 +70,9 @@ void RobotEmotionUpdate(const social_msg::robot_emotion& msg){
     emotion[6] = msg.emotion7;
     emotion[7] = msg.emotion8;
     PriorNeed.RobotEmotionUpdate(emotion);  
-    adaptiveModel.RobotEmotionUpdate(emotion);
+    // adaptiveModel.RobotEmotionUpdate(emotion);
 }
+
 void RobotStatusUpdate(const social_msg::robot_status& msg){
     
     double status[8] ;
@@ -134,31 +86,89 @@ void RobotStatusUpdate(const social_msg::robot_status& msg){
     status[7] = msg.idleState;  
     PriorNeed.RobotStatusUpdate(status);
 }
-void AdaptiveUpdate(const social_msg::need_compare& msg){
-    need_wu need_win , need_lose ;
-    msg.need_win    >>    need_win;
-    msg.need_lose   >>    need_lose;
-    int relation = msg.relation;
-    adaptiveModel.Update(need_win , need_lose , relation);
-}
+
 int main(int argc, char** argv){
-    // 为需求模型的运行  创建单独的线程 。  
-    std::thread PriorNeedThread(run_PriorNeed);
-    if(0)
-        std::thread adaptiveThread(run_adaptive);
     // ROS
     ros::init(argc, argv, "social_msg");
     ros::NodeHandle n;
     cout<< "Start to Subscribe（接收ROS信息） !!\n";
+    
     //状态更新
     sub_perception = n.subscribe("perceptions", 10, PerceptionUpdate);
     sub_robot_emotion = n.subscribe("robot_emotion", 10, RobotEmotionUpdate);
     sub_robot_status = n.subscribe("robot_status", 10, RobotStatusUpdate);
-    // 自适应模型
-    sub_needCompare = n.subscribe("needCompare", 10, AdaptiveUpdate);
+    ros::spinOnce();
+    
     // 需求发布
     pub = n.advertise<social_msg::need_msg>("need_lists", 10);  
+    ros::Rate loop_rate(0.1);   //  TODO:  10秒 发送一次，这是由于当前是 人手打输入。
+    // 为需求模型的运行  创建单独的线程 。  
+    // std::thread PriorNeedThread(run_PriorNeed);
+    cout<< "Wait to run PriorNeed !!\n";
+    while(ros::ok){
+        run_PriorNeed();
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
     
-    ros::spin();    //库是节点读取数据道消息响应循环，当消息到达的时候，回调函数就会被调用。当按下Ctrl+C时，节点会退出消息循环，于是循环结束。
+    // ros::spin();    //库是节点读取数据道消息响应循环，当消息到达的时候，回调函数就会被调用。当按下Ctrl+C时，节点会退出消息循环，于是循环结束。
     return 0;
 }
+
+void run_PriorNeed(){
+    // while(1)
+    {
+        if(PriorNeed.updateInit())
+        {
+            printf( GREEN "Run %dth PriorNeed（运行先验模型） !!\n"NONE, period_cur);            
+            vector<need> need_lists = PriorNeed.need_compute_all();
+            for(int j =0 ; j< need_lists.size(); j++){
+                social_msg::need_msg need_output;
+                need_output.IDtype = need_lists[j].IDtype;
+                need_output.rob_emotion = "";//need_lists[i].rob_emotion;
+                need_output.person_emotion = need_lists[j].person_emotion;//need_lists[i].person_emotion
+                need_output.need_name = need_lists[j].need_name;  
+                need_output.weight = need_lists[j].weight;
+                need_output.speech = need_lists[j].speech;
+                need_output.person_name =  need_lists[j].person_name;
+                need_output.qt_order = period_cur;
+                pub.publish(need_output);
+            }
+            period_cur++;     
+        }
+    }
+    // cout<< "End PriorNeed !!\n";
+}
+
+
+
+
+
+
+
+// void run_PriorNeed(){
+//     cout<< "Running PriorNeed !!\n";
+//     int i=1 ;
+//     // while(1)
+//     {
+//         if(PriorNeed.updateInit())
+//         {
+//             printf( GREEN "Run %dth PriorNeed（运行先验模型） !!\n"NONE, i);            
+//             vector<need> need_lists = PriorNeed.need_compute_all();
+//             for(int j =0 ; j< need_lists.size(); j++){
+//                 social_msg::need_msg need_output;
+//                 need_output.IDtype = need_lists[j].IDtype;
+//                 need_output.rob_emotion = "";//need_lists[i].rob_emotion;
+//                 need_output.person_emotion = need_lists[j].person_emotion;//need_lists[i].person_emotion
+//                 need_output.need_name = need_lists[j].need_name;  
+//                 need_output.weight = need_lists[j].weight;
+//                 need_output.speech = need_lists[j].speech;
+//                 need_output.person_name =  need_lists[j].person_name;
+//                 need_output.qt_order = i;
+//                 pub.publish(need_output);
+//             }
+//             sleep(10); i++;
+//         }
+//     }
+//     // cout<< "End PriorNeed !!\n";
+// }
