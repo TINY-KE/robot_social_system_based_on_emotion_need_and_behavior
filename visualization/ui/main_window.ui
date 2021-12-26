@@ -784,7 +784,7 @@
      <rect>
       <x>70</x>
       <y>320</y>
-      <width>131</width>
+      <width>151</width>
       <height>31</height>
      </rect>
     </property>
@@ -830,7 +830,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_35">
        <property name="text">
-        <string>Attitude</string>
+        <string>Attitude Type</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -2104,7 +2104,7 @@
      </palette>
     </property>
     <property name="text">
-     <string>MeasureTempareture</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_executing_behavior_person">
@@ -2117,7 +2117,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Xiaoming</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_20">
@@ -2146,7 +2146,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Teacher_Li</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_21">
@@ -2175,7 +2175,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Greet</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_27">
@@ -2366,7 +2366,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Teacher_Li</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_22">
@@ -2511,7 +2511,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Teacher_Li</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_63">
@@ -2585,7 +2585,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>hello</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_behavior_sounder_tone">
@@ -2656,7 +2656,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>happy</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_68">

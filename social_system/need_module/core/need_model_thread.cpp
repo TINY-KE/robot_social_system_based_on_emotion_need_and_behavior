@@ -20,7 +20,7 @@
 
 using namespace  std;
 // time_t inner_need::time_for_wandor  =  0;
-perception_filter *Filter = new perception_filter(20);   //TODO: 确定合适的per过滤时长阈值。
+perception_filter *Filter = new perception_filter(120);
 
 // ros node
 ros::Subscriber sub_perception;
@@ -97,27 +97,28 @@ int main(int argc, char** argv){
     sub_perception = n.subscribe("perceptions", 10, PerceptionUpdate);
     sub_robot_emotion = n.subscribe("robot_emotion", 10, RobotEmotionUpdate);
     sub_robot_status = n.subscribe("robot_status", 10, RobotStatusUpdate);
-    ros::spinOnce();
+    ros::spin(); 
+    // ros::spinOnce();
     
     // 需求发布
     pub = n.advertise<social_msg::need_msg>("need_lists", 10);  
-    ros::Rate loop_rate(0.1);   //  TODO:  10秒 发送一次，这是由于当前是 人手打输入。
+    // ros::Rate loop_rate(0.1);   //  TODO:  10秒 发送一次，这是由于当前是 人手打输入。
     // 为需求模型的运行  创建单独的线程 。  
-    // std::thread PriorNeedThread(run_PriorNeed);
-    cout<< "Wait to run PriorNeed !!\n";
-    while(ros::ok){
-        run_PriorNeed();
-        ros::spinOnce();
-        loop_rate.sleep();
-    }
+    std::thread PriorNeedThread(run_PriorNeed);
+    // cout<< "Wait to run PriorNeed !!\n";
+    // while(ros::ok){
+    //     run_PriorNeed();
+    //     ros::spinOnce();
+    //     loop_rate.sleep();
+    // }
     
     // ros::spin();    //库是节点读取数据道消息响应循环，当消息到达的时候，回调函数就会被调用。当按下Ctrl+C时，节点会退出消息循环，于是循环结束。
     return 0;
 }
 
 void run_PriorNeed(){
-    // while(1)
-    {
+    cout<< "Wait to run PriorNeed !!\n";
+    while(1){
         if(PriorNeed.updateInit())
         {
             printf( GREEN "Run %dth PriorNeed（运行先验模型） !!\n"NONE, period_cur);            
@@ -136,10 +137,11 @@ void run_PriorNeed(){
                 pub.publish(need_output);
                 sleep(1);
             }
+            sleep(10);  
             period_cur++;     
         }
     }
-    // cout<< "End PriorNeed !!\n";
+    cout<< "End PriorNeed !!\n";
 }
 
 

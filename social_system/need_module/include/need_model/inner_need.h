@@ -11,7 +11,7 @@ class inner_need{
         bool Init = true;
         /* need的判断信息 */
         string intention_;
-        string IDtype_;
+        string IDtype_ = "itself";
         std::vector<double> rob_emotion_;
         std::string person_emotion_;
         std::vector<double> rob_status_;
@@ -26,7 +26,49 @@ class inner_need{
 
         /* 语音内容 */
         string speech_; 
-    
+    private:
+        string robot_emotion_num2string( std::vector<double> rob_emotion ){
+            double temp  =  -1; 
+            int i_temp;
+            int i = 0;
+            for(  ; i < rob_emotion.size() ; i++) {
+                if( rob_emotion[i] > temp ){
+                    temp = rob_emotion[i];
+                    i_temp = i ;
+                }
+                // else if(rob_emotion[i] == temp){
+                //     ROS_DEBUG("robot_emotion_num2string: 最大情绪值存在两个： [%d] 和 [%d] ",i_temp,i);
+                // }
+            }
+
+            switch( i_temp )
+                {
+                case 0:
+                    return "Joy"; 
+                    break;
+                case 1:
+                    return "Trust"; 
+                    break;
+                case 2:
+                    return "Suprise"; 
+                    break;
+                case 3:
+                    return "Sadness"; 
+                    break;
+                case 4:
+                    return "Anger"; 
+                    break;
+                case 5:
+                    return "Fear"; 
+                    break;
+                case 6:
+                    return "Disgust"; 
+                    break;
+                case 7:
+                    return "Boring"; 
+                    break;
+                }
+        }
     public:
         inner_need( ){
             /* 生成need */
@@ -69,7 +111,7 @@ class inner_need{
                 else if(rob_status_[7] == 1  && rob_status_last[7] == 0 )  
                     time_lastSpareStates = time(NULL);
             }
-
+    private:
         need Doubt( ){
             need temp;
             /* 信息 */
@@ -79,15 +121,19 @@ class inner_need{
             temp.intention = "";
             temp.IDtype = IDtype_; 
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-            temp.person_emotion = person_emotion_;
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
+            temp.person_name = "itself";
+            temp.IDtype = "itself";
+            temp.person_emotion = "none";            
             temp.rob_status.assign(rob_status_.begin(), rob_status_.end());
             /* 权重计算公式 */
             // temp.weight = Doubt_factor * (1 - Doubt_weight) * (1 - p_)/0.5 + Doubt_weight;   
             if(p_ > 0) 
                 {temp.weight = Doubt_weight * (-1*pow(Doubt_factor , (1-p_)*10) + 1);  }
             /* 语音内容 */
-            temp.speech = speech_;
-            
+            // temp.speech = speech_;
+            temp.speech = "请问您需要我做什么吗";
+            temp.satisfy_value = 2 ;
             return temp;
         }
 
@@ -99,7 +145,10 @@ class inner_need{
             temp.intention = "";
             temp.IDtype = ""; 
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-            temp.person_emotion = person_emotion_;
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
+            temp.person_name = "itself";
+            temp.IDtype = "itself";
+            temp.person_emotion = "none";            
             temp.rob_status.assign(rob_status_.begin(), rob_status_.end());
             /* 权重计算公式 */
             /* 更新 time */
@@ -118,8 +167,9 @@ class inner_need{
             }
             else  temp.weight = 0;
             /* 语音内容 */
-            temp.speech = speech_;
-            
+            // temp.speech = speech_;
+            temp.speech = "怎么还没有人来啊";
+            temp.satisfy_value = 1 ;
             return temp;
             }
 
@@ -131,14 +181,18 @@ class inner_need{
             temp.intention = "";
             temp.IDtype = IDtype_; 
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-            temp.person_emotion = person_emotion_;
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
+            temp.person_name = "itself";
+            temp.IDtype = "itself";
+            temp.person_emotion = "none";            
             temp.rob_status.assign(rob_status_.begin(), rob_status_.end());
             /* 权重计算公式 */
             // temp.weight = Chat_factor * (1 - Chat_weight) * rob_emotion_[3] + Chat_weight; // TODO: 第几个是"无聊"情绪。假设为：高兴、悲伤、愤怒、无聊
             temp.weight = Chat_weight * (-1*pow(Chat_factor , rob_emotion_[3]*10) + 1);
             /* 语音内容 */
-            temp.speech = speech_;
-            
+            // temp.speech = speech_;
+            temp.speech = "你来和我聊聊天吧";
+            temp.satisfy_value = 1 ;
             return temp;
             }
 
@@ -150,18 +204,22 @@ class inner_need{
             temp.intention = "";
             temp.IDtype = ""; 
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-            temp.person_emotion = person_emotion_;
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
+            temp.person_name = "itself";
+            temp.IDtype = "itself";
+            temp.person_emotion = "none";            
             temp.rob_status.assign(rob_status_.begin(), rob_status_.end());
             /* 权重计算公式 */
-            // temp.weight = Charge_factor * (1 - Charge_weight) * (1 - rob_status_[0]) + Charge_weight; // TODO: 第几个是"无聊"情绪。假设为：高兴、悲伤、愤怒、无聊
+            // temp.weight = Charge_factor * (1 - Charge_weight) * (1 - rob_status_[0]) + Charge_weight; 
             if(rob_status_[0] > Charge_factor)  temp.weight = 0;
-            else temp.weight = Charge_weight * (1 - Charge_factor * rob_status_[0]) ;
+            else temp.weight = Charge_weight * (1 - Charge_factor * rob_status_[0]) ;// TODO: 第几个 电量
             /* 语音内容 */
-            temp.speech = speech_;
-            
+            // temp.speech = speech_;
+            temp.speech = "没电了 没电了";
+            temp.satisfy_value = 2 ;
             return temp;
             }
-
+    public:
         vector<need> need_compute_and_output(){
             std::vector<need> output_need_lists;
             need temp;

@@ -24,7 +24,7 @@ void callback(sim::simConfig &config, uint32_t level)
         {
         //感知信息 
                 // 意图
-                if(config.per_switch == true)
+                if(config.O_____per_switch == true)
                 {
                 social_msg::perception_msg perception;
                 perception.time = config.per_time;
@@ -53,7 +53,7 @@ void callback(sim::simConfig &config, uint32_t level)
                 pub_needsatisfied.publish(satisfy_msg);
                 }
                 //身体状况 
-                if(config.body_switch == true)
+                if(config.O_____body_switch == true)
                 {
                 social_msg::robot_status robot_status;
                 robot_status.body1 = config.body_1_energy ; 
@@ -68,7 +68,7 @@ void callback(sim::simConfig &config, uint32_t level)
                 }
         
         //情感
-                if(config.emotion_switch == true)
+                if(config.O_____emotion_switch == true)
                 {
                 social_msg::robot_emotion  robot_emotion ;
                 robot_emotion.emotion1 = config.emotion_1_Joy;

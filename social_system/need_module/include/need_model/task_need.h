@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-09-21 21:16:50
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-22 11:19:01
+ * @LastEditTime: 2021-12-25 16:23:46
  */
 #include "perception.h"
 #include "task_paremeter_rw.h"
@@ -13,7 +13,6 @@ class task_need{
 
     public:
         std::vector<need> read_need_lists;
-        
         string intention_;
         string person_name_;
         string IDtype_;
@@ -57,8 +56,12 @@ class task_need{
                 ){
                     iter->person_name = person_name_;
                     iter->speech = speech_;
+                    // if( iter->speech == "MeasureTempareture")
+                    //     iter->speech = "请站在原地接受体温测量哦"; TODO:  交由行为管理模块完成.
                     iter->rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-                    iter->person_emotion.assign(person_emotion_.begin(), person_emotion_.end());
+                    iter->robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
+                    // iter->person_emotion.assign(person_emotion_.begin(), person_emotion_.end()); //TODO: ??
+                    iter->person_emotion = person_emotion_;
                     iter->rob_status.assign(rob_status_.begin(), rob_status_.end()); 
                     iter ++;
                 }
@@ -85,6 +88,49 @@ class task_need{
                         printf("对[%s]的[%s]需求的权重更新[%f]",iter->IDtype, iter->need_name, n.wu);
                     }
             wirte();
+        }
+    private:
+         string robot_emotion_num2string( std::vector<double> rob_emotion ){
+            int temp  =  -1; 
+            int i_temp;
+            int i = 0;
+            for(  ; i < rob_emotion.size() ; i++) {
+                if( rob_emotion[i] > temp ){
+                    temp = rob_emotion[i];
+                    i_temp = i ;
+                }
+                // else if(rob_emotion[i] == temp){
+                //     ROS_DEBUG("robot_emotion_num2string: 最大情绪值存在两个： [%d] 和 [%d] ",i_temp,i);
+                // }
+            }
+
+            switch( i_temp )
+                {
+                case 0:
+                    return "Joy"; 
+                    break;
+                case 1:
+                    return "Trust"; 
+                    break;
+                case 2:
+                    return "Suprise"; 
+                    break;
+                case 3:
+                    return "Sadness"; 
+                    break;
+                case 4:
+                    return "Anger"; 
+                    break;
+                case 5:
+                    return "Fear"; 
+                    break;
+                case 6:
+                    return "Disgust"; 
+                    break;
+                case 7:
+                    return "Boring"; 
+                    break;
+                }
         }
         
 };

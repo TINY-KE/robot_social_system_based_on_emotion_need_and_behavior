@@ -28,6 +28,9 @@ private:
     /* 结构体 ，用于发送给行为管理*/
     
     perception per_;
+    perception per_second;
+    std::vector<perception> per_list ;
+    bool first_per_undeal = false;
     double emotion_[8];
     double body_[8];
     int need_num;
@@ -40,10 +43,21 @@ public:
      }
     
     void PerceptionUpdate(perception per ){ 
+        // if( first_per_undeal) {
+        //     per_second = per;
+        //     printf(  YELLOW "     Update Peception second\n"NONE);
+        // }
+        // else{
+        //     per_ = per;
+        //     first_per_undeal = true;
+        //     printf(  YELLOW "     Update Peception first\n"NONE);
+        // }
         per_ = per;
+        per_list.push_back( per );
+        printf(  YELLOW "     Update Peception first\n"NONE);
         updateInit_perception = true;
         // cout<< "     Update Peception\n";
-        printf(  YELLOW "     Update Peception\n"NONE);
+        
     }
 
     void RobotEmotionUpdate(double emotion[8] ){ 
@@ -67,12 +81,12 @@ public:
     }
 
     void perceptionClear(){
-        
-        per_.intention_ = "";
-        per_.person_name_ = "";
-        per_.IDtype_ = "";
-        per_.person_emotion_ = "";
-        per_.speech_ = "";
+        per_list.clear();
+        // per_.intention_ = "";
+        // per_.person_name_ = "";
+        // per_.IDtype_ = "";
+        // per_.person_emotion_ = "";
+        // per_.speech_ = "";
 
     }
     
@@ -80,16 +94,27 @@ public:
     
     std::vector<need> need_compute_all(){
         cout<< "Start to Need Computation !!\n";
-        // 任务性需求
-        task_model -> update( per_, emotion_, body_ );
-        perceptionClear();
-        std::vector<need> output_need_list = task_model -> need_output();
+        std::vector<need> output_need_list;
+        std::vector<need> temp;
+        for( int i = 0 ; i < per_list.size(); i++ )
+        {
+            perception per = per_list[i];
+            // 任务性需求
+            task_model -> update( per, emotion_, body_ );
+            
+            temp = task_model -> need_output();
+            for(int j = 0 ; j < temp.size() ; j ++ )  output_need_list.push_back( temp[j] );
+
+            // 生理性需求
+            inner_model -> update(per, emotion_, body_);  
+            temp = inner_model -> need_compute_and_output();;
+            for(int k = 0 ; k < temp.size() ; k ++ )  output_need_list.push_back( temp[k] );
+        }
+
+         //清空 perception
+        perceptionClear();  //TODO: ??
         
-        // 生理性需求
-        inner_model -> update(per_, emotion_, body_);
-        
-        std::vector<need> temp = inner_model -> need_compute_and_output();;
-        for(int i = 0 ; i < temp.size() ; i ++ )  output_need_list.push_back( temp[i] );
+        // printf 当前周期中生成的需求
         if( output_need_list.size() != 0 )
             for(int i = 0; i< output_need_list.size() ; i++  )  
             {
@@ -98,8 +123,6 @@ public:
                     std::cout <<" ,for " <<output_need_list[i].person_name<<" as " <<output_need_list[i].IDtype;
                 std::cout<<std::endl;
             }     
-                
-                // printf( "    Output Need %d : %c for %c as %c, Weight:%f \n",   i+1 , output_need_list[i].need_name, output_need_list[i].person_name, output_need_list[i].IDtype, output_need_list[i].weight);
         else std::cout<<"    No need generated !\n";
         // 输出
         return output_need_list;

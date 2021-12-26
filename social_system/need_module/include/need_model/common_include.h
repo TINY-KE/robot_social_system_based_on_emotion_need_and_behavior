@@ -69,10 +69,12 @@ struct need {
     std::string IDtype = "";
     // std::string IDtype;
     std::vector<double> rob_emotion;
+    std::string robot_emotion_str = "";
     std::string person_emotion = "";
     std::vector<double> rob_status;
     /* 权重 */
     double weight = 0;
+    int satisfy_value = 0;
     /* 语音内容 */
     std::string speech;
 };

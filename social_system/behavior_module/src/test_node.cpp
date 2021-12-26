@@ -3,8 +3,8 @@
  * @version: 
  * @Author: sueRimn
  * @Date: 2021-12-08 09:34:12
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-12-08 09:44:40
+ * @LastEditors: Zhang Jiadong
+ * @LastEditTime: 2021-12-25 16:49:40
  */
 #include "ros/ros.h"
 #include "std_msgs/String.h"
@@ -47,7 +47,7 @@ int main(int argc,char **argv)
     need[1].weight = 0.62;
 
     need[2].need_name = "Wander";
-    need[2].person_name= "none";
+    need[2].person_name= "itself";
     need[2].person_emotion = "none";
     need[2].rob_emotion = "Nomal";
     need[2].speech = "怎么还没有人来";

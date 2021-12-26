@@ -949,8 +949,9 @@ int main(int argc,char **argv)
             taskNum ++;
             temp.num = taskNum*1000+temp.num;
             //调试
-            // temp.num = taskNum*1000+temp.num+100;
+            // temp.num = taskNum*1000+temp.num+100;s
             temp.time = int64_t((ros::Time::now().toSec())*1000.0);
+            
             chatter_pub.publish(temp);
             tasks.flag = 0;
             InsertAndConcurFlag = 0;

@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-24 00:57:17
+ * @LastEditTime: 2021-12-25 17:00:16
  */
 /* 
 4）行为的发布：
@@ -75,8 +75,8 @@ int behavior_type_10;
 int behavior_type_100;
 // int startTime；
 // int endTime;
-string null_check( string s){
-    string block = "null";;
+string none_check( string s){
+    string block = "none";;
     if( s == "")
         return block;
     else
@@ -95,41 +95,41 @@ void flag_set( bool flag_new,  bool& flag_){
 }
 
 void publish( int period_ ){
-    string  gaze_target = "null", screen_type = "null", 
-            sounder_tone = "null", sounder_rate = "null", sounder_content = "null", 
-            arm_aciton = "null", arm_rate = "null", 
-            leg_target = "null", leg_aciton = "null", leg_rate = "null", leg_distance = "null";
+    string  gaze_target = "none", screen_type = "none", 
+            sounder_tone = "none", sounder_rate = "none", sounder_content = "none", 
+            arm_aciton = "none", arm_rate = "none", 
+            leg_target = "none", leg_aciton = "none", leg_rate = "none", leg_distance = "none";
 
     if(  (period_ >= behavior.gaze.startTime)  &&   (period_ <= behavior.gaze.endTime) ){
-            gaze_target = null_check(behavior.gaze.target);
+            gaze_target = none_check(behavior.gaze.target);
         }
 
 // publish_screen
     if(  (period_ >= behavior.emotion.startTime)  &&   (period_ <= behavior.emotion.endTime) ){
-            screen_type = null_check(behavior.emotion.type);
+            screen_type = none_check(behavior.emotion.type);
         }
 // publish_sounder
     if(  (period_ >= behavior.speech.startTime)  &&   (period_ <= behavior.speech.endTime) ){
-            sounder_tone = null_check(to_string(behavior.speech.tone)); 
-            sounder_rate = null_check(to_string(behavior.speech.rate));
-            sounder_content = null_check(behavior.speech.content);
+            sounder_tone = none_check(to_string(behavior.speech.tone)); 
+            sounder_rate = none_check(to_string(behavior.speech.rate));
+            sounder_content = none_check(behavior.speech.content);
         }
 
 // publish_arm
     if(  (period_ >= behavior.arms.startTime)  &&   (period_ <= behavior.arms.endTime) ){
-            arm_aciton = null_check(behavior.arms.action);
-            arm_rate = null_check(to_string(behavior.arms.rate));
+            arm_aciton = none_check(behavior.arms.action);
+            arm_rate = none_check(to_string(behavior.arms.rate));
         }
 // publish_leg( period_ );
     if(  (period_ >= behavior.legs.startTime)  &&   (period_ <= behavior.legs.endTime) ){
-            leg_target = null_check(behavior.legs.target);
-            leg_aciton = null_check(behavior.legs.action);
-            leg_rate = null_check(to_string(behavior.legs.rate));
-            leg_distance = null_check(to_string(behavior.legs.distance));
+            leg_target = none_check(behavior.legs.target);
+            leg_aciton = none_check(behavior.legs.action);
+            leg_rate = none_check(to_string(behavior.legs.rate));
+            leg_distance = none_check(to_string(behavior.legs.distance));
         }
 
 
-    string block = "null";
+    string block = "none";
     string ss = gaze_target +" "+ block +" "+ block +" "+ block +" "+ block +" "+ 
                 screen_type +" "+ block +" "+ block +" "+ block +" "+ block +" "+ 
                 sounder_tone +" "+ sounder_rate +" "+ sounder_content +" "+ block +" "+ block +" "+ 

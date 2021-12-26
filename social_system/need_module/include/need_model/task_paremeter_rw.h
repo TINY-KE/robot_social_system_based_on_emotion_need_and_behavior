@@ -3,8 +3,8 @@
  * @version: 
  * @Author: sueRimn
  * @Date: 2021-09-21 21:16:50
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-09-29 11:06:12
+ * @LastEditors: Zhang Jiadong
+ * @LastEditTime: 2021-12-25 15:12:40
  */
 
 #ifndef CONFIG_H
@@ -51,6 +51,7 @@ public:
             task_doc[i]["rob_emotion"] >> temp.rob_emotion;
             task_doc[i]["rob_status"] >> temp.rob_status;
             task_doc[i]["weight"]  >> temp.weight ;
+            task_doc[i]["satisfy_value"]  >> temp.satisfy_value;
             temp.speech = "" ;
 
             need_lists.push_back(temp);
