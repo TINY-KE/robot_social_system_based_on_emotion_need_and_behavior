@@ -34,10 +34,10 @@ typedef struct locallist{
     social_msg::bhvPara bhv[100];
 }LocalList;
 
-bool chatterCallbackFlag;
+int chatterCallbackFlag;
 bool InsertAndConcurFlag;
 int emotionFlag;//1-积极信号 2-消极信号
-social_msg::need_msg ListBuf;
+social_msg::need_msg ListBuf[5];
 Queue_para* Q = (Queue_para*)malloc(sizeof(Queue_para));
 //全局变量：当前执行任务进度
 typedef struct taskmonitor{
@@ -94,7 +94,6 @@ int QueueSize(Queue_para* ptr) {    //返回队列长度
 
 void Insert(Queue_para* ptr, int n, social_msg::bhvPara content)
 {
-     int temp = ptr->front;
     // int movenum = QueueSize(ptr)-n+1;
     // while(movenum!=0)
     // {
@@ -105,8 +104,17 @@ void Insert(Queue_para* ptr, int n, social_msg::bhvPara content)
     // ptr->data[temp] = content;
     // ptr->count++;
     // ptr->rear = (ptr->rear + 1) % 20;
+    social_msg::bhvPara tempPara;
+    int temp;
+    temp = ptr->front;
+    for(int i = n; i > 1 ; i --)
+    {
+        tempPara = ptr->data[temp];
+        ptr->data[(temp+19)%20] = tempPara;
+        temp = (temp + 1)%20;
+    }
+    ptr->data[(temp+19)%20] = content;
     ptr->front = (ptr->front + 19)%20;
-    ptr->data[ptr->front] = content;
     ptr->count++;
 }
 void LoclistInit(LocalList &list){
@@ -114,15 +122,15 @@ void LoclistInit(LocalList &list){
     // 需求类型：Greet  、MeasureTempareture、Answer、ParentIdentity、KeepOrder、StopStranger、Wander、Doubt、Chat、Charge、Remind、
     //情感类型：高兴、信任、期待、悲伤、愤怒、害怕、厌恶、无聊
     list.bhv[0].Needs = "Greet";
-    list.bhv[0].TotalTime = 20;//100;
+    list.bhv[0].TotalTime = 20;
     list.bhv[1].Needs = "Doubt";
     list.bhv[1].TotalTime = 15;
     list.bhv[2].Needs = "MeasureTempareture";
-    list.bhv[2].TotalTime = 60; //100;
+    list.bhv[2].TotalTime = 60;
     list.bhv[3].Needs = "Wander";
     list.bhv[3].TotalTime = 255;
     list.bhv[4].Needs = "StopStranger";
-    list.bhv[4].TotalTime = 30; //100;
+    list.bhv[4].TotalTime = 30;
     list.bhv[5].Needs = "Chat";
     list.bhv[5].TotalTime = 20;
     list.bhv[6].Needs = "Answer";
@@ -780,33 +788,33 @@ void ParaInsert(Queue_para* ptr, social_msg::bhvPara item)
 
             }
             //并发判断
-            // else if(CanConcurrence(ptr, item, tasks.states))
-            //     TaskConcurrence(ptr, item);
+            else if(CanConcurrence(ptr, item, tasks.states))
+                TaskConcurrence(ptr, item);
             //插入判断
             else if(item.weight > EnhanceFactor * ptr->data[ptr->front].weight)
             {
                 TaskInsert(ptr, item);
             }
-            // else{
-            //     int i;
-            //     for(i=0; i<n; i++){
-            //         if(item.weight > ptr->data[(ptr->front+i)%20].weight){
-            //             Insert(ptr,i,item);
-            //             break;
-            //         }
-            //     }
-            //     if((i == n)&&(item.weight < ptr->data[(ptr->front+i-1)%20].weight))
-            //         Append(ptr,item);
-            // }
-            else
-                Append(ptr, item);
+            else{
+                int i;
+                for(i=1; i<n; i++){
+                    if(item.weight > ptr->data[(ptr->front+i)%20].weight){
+                        Insert(ptr,i+1,item);
+                        break;
+                    }
+                }
+                if((i == n)&&(item.weight <= ptr->data[(ptr->front+i-1)%20].weight))
+                    Append(ptr,item);
+            }
+            // else
+            //     Append(ptr, item);
         }
 }
 //根据行为参数将需求清单生成对应的行为
 void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList list){
     social_msg::bhvPara temp_Qpara;
     social_msg::need_msg temp_list;
-    if(chatterCallbackFlag == 1)
+    if(chatterCallbackFlag != 0)
     {
         test_j++;
         ROS_INFO("call:%d",test_j);
@@ -835,7 +843,7 @@ void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList li
         }
         ParaInsert(Q_para,temp_Qpara);
         ROS_INFO("Qs nums:%d", Q_para->count);   /* ?? */
-        chatterCallbackFlag = 0;    
+        chatterCallbackFlag --;    
     }
 }
 
@@ -853,8 +861,8 @@ void needCallback(const social_msg::need_msg::ConstPtr& msg)
     //social_msg::bhvQueue temp;
     test_i++;
     ROS_INFO("task name:[%s][%d]",msg->need_name.c_str(), test_i);
-    ListBuf = *msg;
-    chatterCallbackFlag = 1; //需要处理
+    chatterCallbackFlag ++; //需要处理
+    ListBuf[chatterCallbackFlag] = *msg;
 }
 
 void replyCallback(const social_msg::bhvReply::ConstPtr& msg)
@@ -926,17 +934,20 @@ int main(int argc,char **argv)
 
     while(ros::ok())
     {
-        Behavior_Create(ListBuf,Q,List);
+        int x;
+        int y = 1;
+        for(x = chatterCallbackFlag; x > 0; x--){
+            Behavior_Create(ListBuf[y],Q,List);
+            y++;
+        }
         social_msg::bhvPara temp;
         social_msg::bhvQueue temp2;
         temp2.n = Q->count;
             int m = Q->front;
         for(int i=0; i< temp2.n; i++)
         {
-            // string Qdata_need = (string)Q->data[m].Needs;
-            temp2.need[i] =  Q->data[m].Needs;  //Qdata_need;( std_msgs::String ) 
-            // string Qdata_target = Q->data[m].gaze.target;
-            temp2.obj[i] = Q->data[m].gaze.target ; //Qdata_target;
+            temp2.need[i] = Q->data[m].Needs;
+            temp2.obj[i] = Q->data[m].gaze.target;
             m = (m+1)%20;
         }
          chatterQ_pub.publish(temp2);
@@ -949,10 +960,10 @@ int main(int argc,char **argv)
             taskNum ++;
             temp.num = taskNum*1000+temp.num;
             //调试
-            // temp.num = taskNum*1000+temp.num+100;s
+            // temp.num = taskNum*1000+temp.num+100;
             temp.time = int64_t((ros::Time::now().toSec())*1000.0);
-            
             chatter_pub.publish(temp);
+            cout<<"发送行为："<<temp.Needs << endl;
             tasks.flag = 0;
             InsertAndConcurFlag = 0;
             //Pop(Q);

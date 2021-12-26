@@ -162,7 +162,7 @@ void QNode::Callback_need(const social_msg::need_msg &msg){
 }
 
 void QNode::Callback_bhvPara(const social_msg::bhvPara &msg){
-  std::cout << "QNode::Callback_bhvPara" << std::endl;
+  std::cout << "QNode::Callback_bhvPara ------ " << msg.Needs<< std::endl;
   Ebhv_action = msg.Needs;
   Ebhv_target = msg.gaze.target;
 //  Hbhv_action = msg.HeadBehavior;
