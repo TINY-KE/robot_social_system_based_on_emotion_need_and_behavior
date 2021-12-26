@@ -42,6 +42,13 @@
 #include <cmath>
 #include "yaml-cpp/yaml.h"
 
+#include "social_msg/robot_status.h"
+#include "social_msg/bhvReply.h"
+
+#include "social_msg/need_msg.h"
+#include "social_msg/need_satisfy_msg.h"
+#include "social_msg/bhvPara.h"
+#include "social_msg/bhvReply.h"
 
 
 using namespace std; 

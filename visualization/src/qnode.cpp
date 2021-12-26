@@ -46,7 +46,7 @@ QNode::~QNode() {
 }
 
 bool QNode::init() {
-	ros::init(init_argc,init_argv,"msg");
+  ros::init(init_argc,init_argv,"visualization");
 	if ( ! ros::master::check() ) {
 		return false;
 	}
@@ -72,8 +72,11 @@ void QNode::run() {
   ros::start(); // explicitly needed since our nodehandle is going out of scope.
   ros::NodeHandle n;
   // Add your ros communications here.
-  subscriber_body = n.subscribe("robot_status", 1000, &QNode::Callback_body, this);
   subscriber_perception = n.subscribe("perceptions", 1000, &QNode::Callback_percetion, this);
+  subscriber_social_attitude =  n.subscribe("attitude", 1000, &QNode::Callback_social_attitude, this);
+  subscriber_need_satisfy =  n.subscribe("need_satisfied", 1000, &QNode::Callback_need_satisfy, this);
+  subscriber_body = n.subscribe("robot_status", 1000, &QNode::Callback_body, this);
+
 
   subscriber_emotion = n.subscribe("robot_emotion", 1000, &QNode::Callback_emotion, this);   //(2))
   subscriber_emotion_image = n.subscribe("emotion_img", 1000, &QNode::Callback_emotion_image, this);   //    subscriber_emotion_image;//  sensor_msgs/Image
@@ -92,6 +95,46 @@ void QNode::run() {
 
 
 //add
+void QNode::Callback_percetion(const social_msg::perception_msg &msg){
+
+  std::cout << "QNode::Callback_perception" << std::endl;
+  per_time = msg.time;
+  per_person = msg.person_name;
+  per_person_IDtype = msg.IDtype;
+  per_intention = msg.intention;
+  per_p = msg.p;
+  per_speech = msg.speech;
+  per_personEmotion = msg.person_emotion;
+  Q_EMIT loggingUpdated_perception();
+}
+void QNode::Callback_social_attitude(const social_msg::attitude_msg &msg){
+
+  std::cout << "QNode::Callback_social_attitude" << std::endl;
+  attitude_person_name = msg.person_name;
+  attitude_type = msg.attitude;
+  Q_EMIT loggingUpdated_social_attitude();
+}
+void QNode::Callback_body(const social_msg::robot_status &msg){
+  std::cout << "QNode::Callback_body" << std::endl;
+  body1 = msg.body1;
+  body2 = msg.body2;
+  body3 = msg.body3;
+  body4 = msg.body4;
+  body5 = msg.body5;
+  body6 = msg.body6;
+  body7 = msg.body7;
+  body8 = msg.idleState;
+  Q_EMIT loggingUpdated_body();
+}
+void QNode::Callback_need_satisfy(const social_msg::need_satisfy_msg &msg){
+  std::cout << "QNode::Callback_need_satisfy" << std::endl;
+  need_satisfy_name = msg.need_name;
+  need_satisfy_value = msg.satisfy_value;
+  Q_EMIT loggingUpdated_need_satisfy();
+}
+
+
+
 void QNode::Callback_emotion(const social_msg::robot_emotion &msg)
 {
   std::cout << "QNode::Callback_emotion" << std::endl;
@@ -113,31 +156,8 @@ void QNode::Callback_emotion_image(const sensor_msgs::Image &msg)
 //  cv::imshow("view", cv_ptr->image);
   Q_EMIT loggingUpdated_emotion();      //(2.2)  singal to qt
 }
-void QNode::Callback_body(const social_msg::robot_status &msg){
-  std::cout << "QNode::Callback_body" << std::endl;
-  body1 = msg.body1;
-  body2 = msg.body2;
-  body3 = msg.body3;
-  body4 = msg.body4;
-  body5 = msg.body5;
-  body6 = msg.body6;
-  body7 = msg.body7;
-  body8 = msg.idleState;
-  Q_EMIT loggingUpdated_body();
-}
 
-void QNode::Callback_percetion(const social_msg::perception_msg &msg){
 
-  std::cout << "QNode::Callback_perception" << std::endl;
-  per_time = msg.time;
-  per_person = msg.person_name;
-  per_person_IDtype = msg.IDtype;
-  per_intention = msg.intention;
-  per_p = msg.p;
-  per_speech = msg.speech;
-  per_personEmotion = msg.person_emotion;
-  Q_EMIT loggingUpdated_perception();
-}
 void QNode::Callback_need(const social_msg::need_msg &msg){
   std::cout << "QNode::Callback_need" << std::endl;
   need_cur.name  = msg.need_name;
@@ -148,7 +168,7 @@ void QNode::Callback_need(const social_msg::need_msg &msg){
   //  need_list.push_back(need_cur);
   //  need_list_sort();
 
-  if( msg.qt_order == qt_order_largest){
+  if( msg.qt_order <= qt_order_largest){
       need_list.push_back(need_cur);
   }
   else  if(msg.qt_order > qt_order_largest){

@@ -58,16 +58,21 @@ public Q_SLOTS:
     *******************************************/
     void updateLoggingView(); // no idea why this can't connect automatically
 
-    void updateLoggingView_body();
     void updateLoggingView_perception();
+    void updateLoggingView_social_attitude();
+    void updateLoggingView_body();
+    void updateLoggingView_need_satisfy();
 
     void updateLoggingView_emotion(); //add
     void updateLoggingView_emotion_image(){} //add
 
     void updateLoggingView_need();
+
     void updateLoggingView_bhvPara();
     void updateLoggingView_bhvReply();
     void updateLoggingView_bhvQueue();
+
+
     QString calcValue(int, QString, QString, QString, int, int);
     void slt_valueChanged_gaze(int, int, int, QString);
     void slt_valueChanged_screen(int, int, int, QString);

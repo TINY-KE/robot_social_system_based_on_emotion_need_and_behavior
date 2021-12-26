@@ -88,8 +88,12 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 	**********************/
 
     QObject::connect(&qnode, SIGNAL(loggingUpdated()), this, SLOT(updateLoggingView()));
-    QObject::connect(&qnode, SIGNAL(loggingUpdated_body()), this, SLOT(updateLoggingView_body()));
+
     QObject::connect(&qnode, SIGNAL(loggingUpdated_perception()), this, SLOT(updateLoggingView_perception()));
+    QObject::connect(&qnode, SIGNAL(loggingUpdated_social_attitude()), this, SLOT(updateLoggingView_social_attitude()));
+    QObject::connect(&qnode, SIGNAL(loggingUpdated_body()), this, SLOT(updateLoggingView_body()));
+    QObject::connect(&qnode, SIGNAL(loggingUpdated_need_satisfy()), this, SLOT(updateLoggingView_need_satisfy()));
+
 
     QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion()), this, SLOT(updateLoggingView_emotion()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion_image()), this, SLOT(updateLoggingView_emotion_image()));
@@ -360,7 +364,23 @@ void MainWindow::slt_valueChanged_leg(int value, int breakpoint1, int breakpoint
 
 
 
-
+void MainWindow::updateLoggingView_perception() {
+  ui.lineEdit_per_time -> setText(QString::number(qnode.per_time,'f',2));
+  ui.lineEdit_per_person -> setText(QString::fromStdString(qnode.per_person_IDtype));
+  ui.lineEdit_per_person_name -> setText(QString::fromStdString(qnode.per_person));
+  ui.lineEdit_per_intention -> setText(QString::fromStdString(qnode.per_intention));
+  ui.lineEdit_per_p -> setText(QString::number(qnode.per_p,'f',2));
+  ui.lineEdit_per_speech -> setText(QString::fromStdString(qnode.per_speech));
+  ui.lineEdit_per_personEmotion -> setText(QString::fromStdString(qnode.per_personEmotion));
+}
+void MainWindow::updateLoggingView_social_attitude() {
+  ui.lineEdit_attitude_person_name -> setText(QString::fromStdString(qnode.attitude_person_name));
+  ui.lineEdit_attitude_attitude -> setText(QString::fromStdString(qnode.attitude_type));
+}
+void MainWindow::updateLoggingView_need_satisfy() {
+  ui.lineEdit_need_satisfied_type -> setText(QString::fromStdString(qnode.need_satisfy_name));
+  ui.lineEdit_need_satisfied_value ->  setText(QString::number(qnode.need_satisfy_value,'f',2));
+}
 void MainWindow::updateLoggingView_body() {
   ui.progressBar_body1->setValue(int(qnode.body1*100));
   ui.lineEdit_body1->setText(QString::number(qnode.body1,'f',2));
@@ -378,15 +398,6 @@ void MainWindow::updateLoggingView_body() {
   ui.lineEdit_body7->setText(QString::number(qnode.body7,'f',2));
   ui.progressBar_body8_atwork->setValue(int(qnode.body8*100));
   ui.lineEdit_body8->setText(QString::number(qnode.body8,'f',2));
-}
-void MainWindow::updateLoggingView_perception() {
-  ui.lineEdit_per_time -> setText(QString::number(qnode.per_time,'f',2));
-  ui.lineEdit_per_person -> setText(QString::fromStdString(qnode.per_person_IDtype));
-  ui.lineEdit_per_person_name -> setText(QString::fromStdString(qnode.per_person));
-  ui.lineEdit_per_intention -> setText(QString::fromStdString(qnode.per_intention));
-  ui.lineEdit_per_p -> setText(QString::number(qnode.per_p,'f',2));
-  ui.lineEdit_per_speech -> setText(QString::fromStdString(qnode.per_speech));
-  ui.lineEdit_per_personEmotion -> setText(QString::fromStdString(qnode.per_personEmotion));
 }
 
 

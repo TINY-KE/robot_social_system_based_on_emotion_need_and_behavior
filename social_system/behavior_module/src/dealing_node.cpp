@@ -826,6 +826,7 @@ void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList li
         temp_Qpara.emotion.type = temp_list.rob_emotion;    // (2)这怎么办？
         temp_Qpara.speech.content = temp_list.speech;
         temp_Qpara.weight = temp_list.weight;
+        temp_Qpara.satisfy_value = temp_list.satisfy_value;
         //根据机器人心情调节动作
         if(emotionFlag == 1)//积极影响
         {
@@ -918,7 +919,7 @@ int main(int argc,char **argv)
     Queue_init(Q);
     tasks.flag = 1;
     //名称初始化时要求唯一
-    ros::init(argc,argv,"dealing_node");
+    ros::init(argc,argv,"behavior_module");
     ros::NodeHandle n;
 
     LoclistInit(List);

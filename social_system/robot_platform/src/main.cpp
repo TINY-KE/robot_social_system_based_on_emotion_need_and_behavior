@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-25 17:00:16
+ * @LastEditTime: 2021-12-26 21:36:58
  */
 /* 
 4）行为的发布：
@@ -38,7 +38,7 @@ e)轮子：进入start周期次数后，开始靠近或远离用户。一般情�
 #include <ros/ros.h>
 #include "std_msgs/String.h"
 #include <string>
-
+#include <thread>
 #include "common_include.h"
 
 // #include "periodDetection.h"
@@ -49,6 +49,10 @@ using namespace  std;
 
 // ros node
 ros::Subscriber sub_behavior;
+ros::Publisher pub_reply;
+ros::Publisher pub_need_satisfy;
+ros::Publisher pub_associated_need;
+ros::Publisher pub_body_status;
 
 // TODO: 无线通讯通道
 
@@ -56,19 +60,20 @@ ros::Subscriber sub_behavior;
 
 // 全局变量
 string behavior_name;
-// bool insert_new_behavior;
 bool first_behavior = true;
-// private:
+
 bool behavior_cur_exist = false;
 bool insert_new_behavihor = false;
 social_msg::bhvPara behavior;
 double single_period_time;
 bool flag;
-
-
-
-
-ros::Publisher pub_reply;
+string  gaze_target_lastpub = "none", screen_type_lastpub = "none", 
+            sounder_tone_lastpub = "none", sounder_rate_lastpub = "none", sounder_content_lastpub = "none", 
+            arm_action_lastpub = "none", arm_rate_lastpub = "none", 
+            leg_target_lastpub = "none", leg_aciton_lastpub = "none", leg_rate_lastpub = "none", leg_distance_lastpub = "none";
+double  energy = 0.9, gaze = 1, expresion = 1, trunk = 1, arm = 1, leg = 1;
+bool  idlestate = true;
+social_msg::robot_status robot_status; 
 
 int behavior_type_1;
 int behavior_type_10;
@@ -93,39 +98,74 @@ void flag_set( bool flag_new,  bool& flag_){
     if(flag_ == 1 || flag_new == 1) 
         flag_ = 1;
 }
-
+// 需求满足状态  、肢体状态 、 内部感知信息（pass、 Uncooperate。 
+// 感觉直接改成需求更合适，为什么要通过感知信息而多此一举呢。甚至直接改为行为？）的生成。
 void publish( int period_ ){
     string  gaze_target = "none", screen_type = "none", 
             sounder_tone = "none", sounder_rate = "none", sounder_content = "none", 
-            arm_aciton = "none", arm_rate = "none", 
+            arm_action = "none", arm_rate = "none", 
             leg_target = "none", leg_aciton = "none", leg_rate = "none", leg_distance = "none";
-
+// publish gaze
     if(  (period_ >= behavior.gaze.startTime)  &&   (period_ <= behavior.gaze.endTime) ){
-            gaze_target = none_check(behavior.gaze.target);
+            if(behavior.gaze.target != gaze_target_lastpub){
+                gaze_target = none_check(behavior.gaze.target);
+                gaze_target_lastpub = gaze_target;
+            }
         }
 
 // publish_screen
     if(  (period_ >= behavior.emotion.startTime)  &&   (period_ <= behavior.emotion.endTime) ){
-            screen_type = none_check(behavior.emotion.type);
+            if(behavior.emotion.type != screen_type_lastpub){
+                screen_type = none_check(behavior.emotion.type);
+                screen_type_lastpub = screen_type;
+            }    
         }
+    
 // publish_sounder
     if(  (period_ >= behavior.speech.startTime)  &&   (period_ <= behavior.speech.endTime) ){
-            sounder_tone = none_check(to_string(behavior.speech.tone)); 
-            sounder_rate = none_check(to_string(behavior.speech.rate));
-            sounder_content = none_check(behavior.speech.content);
+            if( 
+                (sounder_tone_lastpub != to_string(behavior.speech.tone))   ||
+                (sounder_rate_lastpub != to_string(behavior.speech.rate))   ||
+                (sounder_content_lastpub != behavior.speech.content)       
+             ){
+                sounder_tone = none_check(to_string(behavior.speech.tone)); 
+                sounder_rate = none_check(to_string(behavior.speech.rate));
+                sounder_content = none_check(behavior.speech.content);
+                sounder_tone = sounder_tone_lastpub; 
+                sounder_rate = sounder_rate_lastpub;
+                sounder_content = sounder_content_lastpub;
+            }        
         }
 
 // publish_arm
     if(  (period_ >= behavior.arms.startTime)  &&   (period_ <= behavior.arms.endTime) ){
-            arm_aciton = none_check(behavior.arms.action);
-            arm_rate = none_check(to_string(behavior.arms.rate));
+            if(
+                (arm_action_lastpub != behavior.arms.action)            ||
+                (arm_rate_lastpub != to_string(behavior.arms.rate))
+            ){
+                arm_action = none_check(behavior.arms.action);
+                arm_rate = none_check(to_string(behavior.arms.rate));
+                arm_action = arm_action_lastpub;
+                arm_rate = arm_rate_lastpub;
+            }   
         }
 // publish_leg( period_ );
     if(  (period_ >= behavior.legs.startTime)  &&   (period_ <= behavior.legs.endTime) ){
-            leg_target = none_check(behavior.legs.target);
-            leg_aciton = none_check(behavior.legs.action);
-            leg_rate = none_check(to_string(behavior.legs.rate));
-            leg_distance = none_check(to_string(behavior.legs.distance));
+            if(
+                (leg_target_lastpub != behavior.legs.target)           ||
+                (leg_aciton_lastpub != behavior.legs.action)           ||
+                (leg_rate_lastpub != to_string(behavior.legs.rate))    ||
+                (leg_distance_lastpub != to_string(behavior.legs.distance))
+            ){
+                leg_target = none_check(behavior.legs.target);
+                leg_aciton = none_check(behavior.legs.action);
+                leg_rate = none_check(to_string(behavior.legs.rate));
+                leg_distance = none_check(to_string(behavior.legs.distance));
+                leg_target = leg_target_lastpub;
+                leg_aciton = leg_aciton_lastpub;
+                leg_rate = leg_rate_lastpub;
+                leg_distance = leg_distance_lastpub;
+            }
         }
 
 
@@ -133,7 +173,7 @@ void publish( int period_ ){
     string ss = gaze_target +" "+ block +" "+ block +" "+ block +" "+ block +" "+ 
                 screen_type +" "+ block +" "+ block +" "+ block +" "+ block +" "+ 
                 sounder_tone +" "+ sounder_rate +" "+ sounder_content +" "+ block +" "+ block +" "+ 
-                arm_aciton +" "+ arm_rate +" "+ block +" "+ block +" "+ block +" "+ 
+                arm_action +" "+ arm_rate +" "+ block +" "+ block +" "+ block +" "+ 
                 leg_target +" "+ leg_aciton +" "+ leg_rate+" "+ leg_distance +" "+ block +" "
                 ;
     cout<< "        行为参数：" <<ss<<endl;
@@ -211,6 +251,44 @@ bool recall(  int period_  ){
         return false;
 }
 
+void body_status_check_and_pub(){
+    while(1){
+        // 接受 安卓板的信息 
+
+        // 发布机器人肢体状态：
+        if(
+            robot_status.idleState != idlestate 
+        )
+        {
+            robot_status.body1 = energy; 
+            robot_status.body2 = gaze;
+            robot_status.body3 = expresion;
+            robot_status.body4 = trunk;
+            robot_status.body5 = arm;
+            robot_status.body6 = leg;
+            robot_status.body7 = 1;
+            robot_status.idleState = idlestate;
+            pub_body_status.publish(robot_status);
+            // std::cout<< "发送机器人状态，idleState为："<<idlestate<< std::endl;
+            // ROS_DEBUG("发送机器人状态，idleState为：&d \n", (int)robot_status.idleState);
+            printf( GREEN "发送机器人状态，idleState为：%d \n"NONE, (int)robot_status.idleState);  
+        }
+    }
+}
+
+void body_status_first_pub(){
+        robot_status.body1 = 0.9; 
+        robot_status.body2 = 1;
+        robot_status.body3 = 1;
+        robot_status.body4 = 1;
+        robot_status.body5 = 1;
+        robot_status.body6 = 1;
+        robot_status.body7 = 1;
+        robot_status.idleState = true;
+        pub_body_status.publish(robot_status);
+        // ROS_DEBUG("发送机器人状态，idleState为：&d \n", (int)robot_status.idleState);
+        printf( GREEN "发送机器人状态，idleState为：%d \n"NONE, (int)robot_status.idleState);  
+}
    
 
 
@@ -231,6 +309,9 @@ void BehaviorUpdate(const social_msg::bhvPara::ConstPtr& behavior_ ,  ros::NodeH
             insert_new_behavihor = true;
         first_behavior = false;
         sleep(0.1);// TODO: 要不要 延迟01秒呢？  从而保证 一定能当前行为一定被打断。
+        
+        // 机器人脱离 闲置状态
+        idlestate = false;
 
         //更新行为
         behavior = *behavior_;
@@ -248,13 +329,24 @@ int main(int argc, char** argv){
     sub_behavior  = n.subscribe<social_msg::bhvPara> ("behavior_pub", 10,  boost::bind(&BehaviorUpdate, _1, &n));
     ros::spinOnce();// ros::spin();
     
-    pub_reply = n.advertise<social_msg::bhvReply>("behavior_Reply", 10);  
+    pub_reply = n.advertise<social_msg::bhvReply>("behavior_Reply", 10); 
+    pub_need_satisfy = n.advertise<social_msg::need_satisfy_msg>("need_satisfied", 10); 
+    
+    pub_associated_need = n.advertise<social_msg::need_msg>("need_lists", 10); 
+    pub_body_status = n.advertise<social_msg::robot_status>("robot_status", 10); 
+    
+    
+    sleep(1);
+    body_status_first_pub();
+
+    std::thread thread_body_status( body_status_check_and_pub );
+
     while(ros::ok())
     {
         if(behavior_cur_exist)
             PeriodDetection();
-          
-        ros::spinOnce(); 
+        
+        ros::spinOnce();
         // loop_rate.sleep();
     }
     
@@ -275,7 +367,7 @@ void  PeriodDetection(){
         ros::spinOnce(); 
     }   
     else {
-    // 
+        
         int period_total =  100;
         int period_cur = 0;
         insert_new_behavihor = false;
@@ -298,12 +390,44 @@ void  PeriodDetection(){
                 pub_reply.publish(behavior_reply);
                 period_cur++;   
                 if( period_cur > 100) {
+                    // 当前行为结束后
+                    // 1.关闭周期检测函数
                     behavior_cur_exist = false;
                     std::cout<< "执行 "<<behavior.Needs<< " 行为【完毕】"<< std::endl;
+                    //2.生成需求满足状态  TODO: 需求满足状态的msg。 在 behavior中添加 satisfy_value
+                    social_msg::need_satisfy_msg satisfy_msg;
+                    satisfy_msg.need_name = behavior.Needs;
+                    satisfy_msg.satisfy_value = behavior.satisfy_value;
+                    pub_need_satisfy.publish(satisfy_msg);
+
+                    //3.机器人进入闲置状态
+                    idlestate = true;
+                    
+                    //4.生成关联性需求，如pass等。   TODO: 内部感知信息而诞生的need msg。
+                    social_msg::need_msg associated_need;
+                    if( behavior.Needs == "MeasureTempareture"){
+                        associated_need.need_name = "Pass";
+                        associated_need.person_name = behavior.legs.target;
+                        associated_need.person_emotion = "none";
+                        associated_need.IDtype = "none";
+                        associated_need.qt_order = -1;  //TODO:  要求  qt中必须当前显示。
+                        associated_need.rob_emotion = "Joy";
+                        associated_need.weight = 0.95;//TODO: need weight 还不确定。。
+                        associated_need.speech = "您的检查完成了，可以进学校了"; 
+                        associated_need.satisfy_value = 1;
+                        pub_associated_need.publish(associated_need);
+                    }
+                    // TODO:  维持秩序的源头： 
+                    // if( behavior.Needs == "MeasureTempareture"){
+                    //     associated_need.need_name = "StopStranger";
+                        
+                    //     pub_associated_need.publish(associated_need);
+                    // }
                 }
             }
             ros::spinOnce(); 
         }
-    }  
+    }
+
     
 }

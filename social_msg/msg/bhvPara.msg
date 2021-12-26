@@ -5,6 +5,7 @@ int8 CurOrder
 int8 TotalOrder
 float64 weight
 int8 TotalTime
+int8 satisfy_value      #需求满足强度的  预设值
 # string HeadBehavior
 # string HeadBehavior_person 
 social_msg/Gaze gaze

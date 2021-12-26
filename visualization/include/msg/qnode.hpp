@@ -27,14 +27,20 @@
 #include <std_msgs/String.h>  //add
 
 #include "social_msg/perception_msg.h"
-#include "social_msg/need_msg.h"
-#include "social_msg/robot_emotion.h"
+#include "social_msg/attitude_msg.h"
 #include "social_msg/robot_status.h"
+#include "social_msg/need_satisfy_msg.h"
+
+#include "social_msg/robot_emotion.h"
+#include "sensor_msgs/Image.h"
+
+#include "social_msg/need_msg.h"
 #include "social_msg/need_compare.h"
+
 #include "social_msg/bhvPara.h"
 #include "social_msg/bhvReply.h"
 #include "social_msg/bhvQueue.h"
-#include "sensor_msgs/Image.h"
+
 #include "common.h"
 /*****************************************************************************
 ** Namespaces
@@ -70,11 +76,16 @@ public:
 //	void log( const LogLevel &level, const std::string &msg);
 //  QStringListModel* loggingModel_sub() { return &logging_model_sub; } //add
 //  void log_sub( const LogLevel &level, const std::string &msg); //add
+  void Callback_percetion(const social_msg::perception_msg &msg);
+  void Callback_social_attitude(const social_msg::attitude_msg &msg);
+  void Callback_body(const social_msg::robot_status &msg);
+  void Callback_need_satisfy(const social_msg::need_satisfy_msg &msg);
+
   void Callback_emotion(const social_msg::robot_emotion &msg);
   void Callback_emotion_image(const sensor_msgs::Image &msg);
-  void Callback_body(const social_msg::robot_status &msg);
-  void Callback_percetion(const social_msg::perception_msg &msg);
+
   void Callback_need(const social_msg::need_msg &msg);
+
   void Callback_bhvPara(const social_msg::bhvPara &msg);
   void Callback_bhvReply(const social_msg::bhvReply &msg);
   void Callback_bhvQueue(const social_msg::bhvQueue &msg);
@@ -83,8 +94,11 @@ public:
 Q_SIGNALS:
 	void loggingUpdated();
   void rosShutdown();
-  void loggingUpdated_body();
+
   void loggingUpdated_perception();
+  void loggingUpdated_body();
+  void loggingUpdated_social_attitude();
+  void loggingUpdated_need_satisfy();
 
   void loggingUpdated_emotion();
   void loggingUpdated_emotion_image();
@@ -101,8 +115,12 @@ private:
 	int init_argc;
 	char** init_argv;
 	ros::Publisher chatter_publisher;
-  ros::Subscriber subscriber_body;
+
   ros::Subscriber subscriber_perception;
+  ros::Subscriber subscriber_social_attitude;
+  ros::Subscriber subscriber_need_satisfy;
+  ros::Subscriber subscriber_body;
+
 
   ros::Subscriber subscriber_emotion;
   ros::Subscriber subscriber_emotion_image;//  sensor_msgs/Image
@@ -116,16 +134,18 @@ private:
   ros::Subscriber subscriber_bhvQueue;
 
 public:
-  //emotion status
-  double emotion1;
-  double emotion2;
-  double emotion3;
-  double emotion4;
-  double emotion5;
-  double emotion6;
-  double emotion7;
-  double emotion8;
+  //perception
+  double per_time;
+  std::string per_person;
+  std::string per_person_IDtype;
+  std::string per_intention;
+  double per_p;
+  std::string per_personEmotion;
+  std::string per_speech;
 
+  //social attitude
+  std::string attitude_person_name;
+  std::string attitude_type;
 
   //body status
   double body1;
@@ -137,14 +157,21 @@ public:
   double body7;
   double body8;
 
-  //perception
-  double per_time;
-  std::string per_person;
-  std::string per_person_IDtype;
-  std::string per_intention;
-  double per_p;
-  std::string per_personEmotion;
-  std::string per_speech;
+
+  //need satisfied
+  std::string need_satisfy_name;
+  int need_satisfy_value;
+
+  //emotion status
+  double emotion1;
+  double emotion2;
+  double emotion3;
+  double emotion4;
+  double emotion5;
+  double emotion6;
+  double emotion7;
+  double emotion8;
+
 
   //need
   std::vector<need> need_list;

@@ -89,7 +89,7 @@ void RobotStatusUpdate(const social_msg::robot_status& msg){
 
 int main(int argc, char** argv){
     // ROS
-    ros::init(argc, argv, "social_msg");
+    ros::init(argc, argv, "need_module");
     ros::NodeHandle n;
     cout<< "Start to Subscribe（接收ROS信息） !!\n";
     
@@ -101,7 +101,7 @@ int main(int argc, char** argv){
     
     // 需求发布
     pub = n.advertise<social_msg::need_msg>("need_lists", 10);  
-    ros::Rate loop_rate(0.1);   //  TODO:  10秒 发送一次，这是由于当前是 人手打输入。
+    ros::Rate loop_rate(0.2);   //  TODO:  10秒 发送一次，这是由于当前是 人手打输入。
     // 为需求模型的运行  创建单独的线程 。  
     // std::thread PriorNeedThread(run_PriorNeed);
     cout<< "Wait to run PriorNeed !!\n";
