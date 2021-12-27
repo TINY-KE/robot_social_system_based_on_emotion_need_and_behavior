@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-27 15:21:44
+ * @LastEditTime: 2021-12-27 20:02:09
  */
 /* 
 4）行为的发布：
@@ -180,19 +180,87 @@ void publish( int period_ ){
     
 
 }
+/* if( behavior.Needs == "MeasureTempareture" && behavior.gaze.target == "Gang"){
 
-bool recall_gaze(  int period_  ){      /* 检测 gaze 行为的目标 是否到达 */ 
-    //end周期
-    if(    period_ == behavior.gaze.endTime  ){
+    }
+    else{
+        //end周期
+        if(    period_ == behavior.gaze.endTime  ){
         //if( recall成功 )
         return true;   //TODO: 
         // else
         return false;
+        }
+        // 非end周期
+        else{
+            return true;
+        }
+    }   */
+#define DEBUG_delay_for_gaze_xiaogang_measureTemperate
+int delay_for_gaze_xiaogang_measureTemperate = 0;
+bool delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 0;
+// DEBUG_delay_for_gaze_xiaogang_measureTemperate
+bool recall_gaze(  int period_  ){      /* 检测 gaze 行为的目标 是否到达 */ 
+    #ifdef DEBUG_delay_for_gaze_xiaogang_measureTemperate
+    if( behavior.Needs == "MeasureTempareture" && behavior.gaze.target == "Gang"){
+        //end周期
+        if(    period_ == behavior.gaze.endTime  ){
+            //if( recall成功 )
+            return true;   //TODO: 
+            // else
+            return false;
+        }
+        // 非end周期
+        else if( period_ == 30){
+                if(delay_for_gaze_xiaogang_measureTemperate > 25){
+                    delay_for_gaze_xiaogang_measureTemperate = 0;
+                    delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy  = 1;// delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy ++ ; 
+                    return true;
+                }
+                else{
+                    return false;
+                } 
+        }
+        else if( period_ == 70){
+                if(delay_for_gaze_xiaogang_measureTemperate > 25){
+                    delay_for_gaze_xiaogang_measureTemperate = 0;
+                    delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 1;// delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy ++ ; 
+                    return true;
+                }
+                else{
+                    return false;
+                } 
+        }
+        else{
+            return true;
+        }
     }
-    // 非end周期
     else{
-        return true;
+        //end周期
+        if(    period_ == behavior.gaze.endTime  ){
+        //if( recall成功 )
+        return true;   //TODO: 
+        // else
+        return false;
+        }
+        // 非end周期
+        else{
+            return true;
+        }
     }
+    #else
+        //end周期
+        if(    period_ == behavior.gaze.endTime  ){
+        //if( recall成功 )
+        return true;   //TODO: 
+        // else
+        return false;
+        }
+        // 非end周期
+        else{
+            return true;
+        }
+    #endif
 }
 bool recall_screen(  int period_  ){      /* 检测 screen 行为的目标 是否到达 */ 
     return true;  //认为表情 永远能立即实现
@@ -268,6 +336,11 @@ bool recall(  int period_  ){
     #ifdef DEBUG_delay_for_sounder_endtime
         if(    period_ == behavior.speech.endTime  )
                 delay_for_sounder_endtime ++ ;
+    #endif
+    #ifdef DEBUG_delay_for_gaze_xiaogang_measureTemperate
+        if( behavior.Needs == "MeasureTempareture" && behavior.gaze.target == "Gang" )
+            if( period_ == 30 ||  period_ == 70)
+                delay_for_gaze_xiaogang_measureTemperate ++ ;
     #endif
     // 以上的循环，完全是依靠  时间尺度。如果按照原来的 全部的 flag_xx 都为true了，就跳出循环，会导致 recall刚执行就结束了。
     // 按照时间尺度结束循环后， 会更体现  行为参数的预定义的重要性。
@@ -435,53 +508,80 @@ void  PeriodDetection(){
                 pub_reply.publish(behavior_reply);       
             }
             else{
-                // 当前周期通过后，生成behavior_reply
+                // 1.当前周期通过后，生成behavior_reply
                 social_msg::bhvReply behavior_reply;
                 behavior_reply.num = behavior.num;
                 behavior_reply.time = behavior.time;
                 behavior_reply.reply = (int)period_cur;
                 pub_reply.publish(behavior_reply);
 
-                // 进入下一周期
+                // 2.进入下一周期
                 period_cur++;   
                 
-                // delay_time 置为0
+                // 3.delay_time 置为0
                 delay_time = 0;
 
-                // 当前行为结束后
+                // 4.当前行为结束后
                 if( period_cur > 100) {
                     
-                    // 1.关闭周期检测函数
+                    //(1)关闭周期检测函数
                     behavior_cur_exist = false;
                     std::cout<< "执行 "<<behavior.Needs<< " 行为【完毕】"<< std::endl;
-                    //2.生成  积极需求满足。  TODO: 需求满足状态的msg。 在 behavior中添加 satisfy_value
+                    //(2)生成  积极需求满足。  TODO: 需求满足状态的msg。 在 behavior中添加 satisfy_value
                     need_satisfy_pub( behavior , true );
 
-                    //3.机器人进入闲置状态
+                    //(3)机器人进入闲置状态
                     idlestate = true;
                     
-                    //4.生成关联性需求，如pass等。   TODO: 内部感知信息而诞生的need msg。
-                    social_msg::need_msg associated_need;
+                    //(4)生成关联性需求，pass。   TODO: 内部感知信息而诞生的need msg。
+                    social_msg::need_msg associated_need_pass;
                     if( behavior.Needs == "MeasureTempareture"){
-                        associated_need.need_name = "Pass";
-                        associated_need.person_name = behavior.legs.target;
-                        associated_need.person_emotion = "none";
-                        associated_need.IDtype = "none";
-                        associated_need.qt_order = -1;  //TODO:  要求  qt中必须当前显示。
-                        associated_need.rob_emotion = "Joy";
-                        associated_need.weight = 0.95;//TODO: need weight 还不确定。。
-                        associated_need.speech = "您的检查完成了，可以进学校了"; 
-                        associated_need.satisfy_value = 1;
-                        pub_associated_need.publish(associated_need);
+                        associated_need_pass.need_name = "Pass";
+                        associated_need_pass.person_name = behavior.legs.target;
+                        associated_need_pass.person_emotion = "none";
+                        associated_need_pass.IDtype = "none";
+                        associated_need_pass.qt_order = -1;  //TODO:  要求  qt中必须当前显示。
+                        associated_need_pass.rob_emotion = "Joy";
+                        associated_need_pass.weight = 0.95;//TODO: need weight 还不确定。。
+                        associated_need_pass.speech = "您的检查完成了，可以进学校了"; 
+                        associated_need_pass.satisfy_value = 2;
+                        pub_associated_need.publish(associated_need_pass);
                     }
-                    // TODO:  维持秩序的源头： 
-                    // 经过思考  只能通过 安卓板通过检测人的位置移动次数，生成用户的uncooperate意图。
-                    // if( behavior.Needs == "MeasureTempareture"){
-                    //     associated_need.need_name = "StopStranger";
-                        
-                    //     pub_associated_need.publish(associated_need);
-                    // }
+
+                    // (5) 用于 小刚测体温的 打断次数的 记录，要归零。
+                    delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 0;
                 }
+
+                // 5.关联性需求，KeepOrder 1  TODO:  维持秩序的源头： 
+                social_msg::need_msg associated_need_keepOrder;
+                if( delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy == 1 ){
+                    associated_need_keepOrder.need_name = "KeepOrder";
+                    associated_need_keepOrder.person_name = behavior.gaze.target;
+                    associated_need_keepOrder.person_emotion = "none";
+                    associated_need_keepOrder.IDtype = "none";
+                    associated_need_keepOrder.qt_order = -1;  
+                    associated_need_keepOrder.rob_emotion = "Anger";
+                    associated_need_keepOrder.weight = 0.85;
+                    associated_need_keepOrder.speech = "请配合我的工作，站在原地不要乱动";   //由行为模块根据  机器人的心情 来选择。
+                    associated_need_keepOrder.satisfy_value = 2;
+                    pub_associated_need.publish(associated_need_keepOrder);
+                    delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 0;
+                }
+                // 5.关联性需求，KeepOrder 2  
+                // social_msg::need_msg associated_need_keepOrder2;
+                // if(  period_cur == 71 && delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy == 2 ){
+                //     associated_need_keepOrder2.need_name = "KeepOrder";
+                //     associated_need_keepOrder2.person_name = behavior.gaze.target;
+                //     associated_need_keepOrder2.person_emotion = "none";
+                //     associated_need_keepOrder2.IDtype = "none";
+                //     associated_need_keepOrder2.qt_order = -1;  
+                //     associated_need_keepOrder2.rob_emotion = "Anger";
+                //     associated_need_keepOrder2.weight = 0.85;
+                //     associated_need_keepOrder2.speech = "再乱动 我就要通知老师了"; 
+                //     associated_need_keepOrder2.satisfy_value = 2;
+                //     pub_associated_need.publish(associated_need_keepOrder2);
+                //     delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 0;
+                // }
             }
             ros::spinOnce(); 
         }
