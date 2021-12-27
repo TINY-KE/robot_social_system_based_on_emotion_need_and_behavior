@@ -590,8 +590,12 @@ void MainWindow::updateLoggingView_bhvPara() {
 
 }
 void MainWindow::updateLoggingView_bhvReply() {
-    ui.progressBar_behavior_progress->setValue(int(qnode.bhv_Reply));
-
+      if( int(qnode.bhv_Reply) < 0)
+          ui.progressBar_behavior_progress->setStyleSheet("QProgressBar::chunk{background:red}");
+      else
+          ui.progressBar_behavior_progress->setStyleSheet("QProgressBar::chunk{background:orange}");
+       ui.progressBar_behavior_progress->setValue(int(qnode.bhv_Reply));
+//proBar->setStyleSheet("QProgressBar{background:white;} QProgressBar::chunk{background:blue}");
 
     if(qnode.bhv_Reply == 100){
       ui.lineEdit_executing_behavior_type->setText("");

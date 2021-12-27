@@ -94,6 +94,7 @@ void callback(sim::simConfig &config, uint32_t level)
                 need.rob_emotion = config.need_rob_emotion;
                 need.speech = config.need_speech;
                 need.qt_order = config.qt_order;
+                need.satisfy_value = config.satisfy_value_2;
                 pub_needlist.publish(need);
                 }
                 

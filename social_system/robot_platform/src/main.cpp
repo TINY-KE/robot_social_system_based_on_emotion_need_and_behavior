@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-26 21:36:58
+ * @LastEditTime: 2021-12-27 15:21:44
  */
 /* 
 4）行为的发布：
@@ -197,13 +197,35 @@ bool recall_gaze(  int period_  ){      /* 检测 gaze 行为的目标 是否到
 bool recall_screen(  int period_  ){      /* 检测 screen 行为的目标 是否到达 */ 
     return true;  //认为表情 永远能立即实现
 }
+
+#define DEBUG_delay_for_sounder_endtime
+int delay_for_sounder_endtime = 0;
 bool recall_sounder(  int period_  ){      /* 检测 sounder 行为的目标 是否到达 */ 
     //end周期
     if(    period_ == behavior.speech.endTime  ){
-        //if( recall成功 )
-        return true;   //TODO: 
-        // else
-        return false;
+        #ifdef DEBUG_delay_for_sounder_endtime
+        {
+            if( behavior.Needs == "Answer" ){
+                if(delay_for_sounder_endtime > 25){
+                    delay_for_sounder_endtime = 0;
+                    return true;
+                }
+                else{
+                    return false;
+                } 
+            }
+            else
+                return true;
+            
+        }  
+        #else
+        {
+            //if( recall成功 )
+            return true;   //TODO: 
+            // else
+            return false;
+        }
+        #endif 
     }
     // 非end周期
     else{
@@ -243,6 +265,10 @@ bool recall(  int period_  ){
         double delay = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
         if(compare(delay,single_period_time))  break;
     }
+    #ifdef DEBUG_delay_for_sounder_endtime
+        if(    period_ == behavior.speech.endTime  )
+                delay_for_sounder_endtime ++ ;
+    #endif
     // 以上的循环，完全是依靠  时间尺度。如果按照原来的 全部的 flag_xx 都为true了，就跳出循环，会导致 recall刚执行就结束了。
     // 按照时间尺度结束循环后， 会更体现  行为参数的预定义的重要性。
     if( (flag_gaze && flag_screen && flag_sounder && flag_arm && flag_leg) == true )
@@ -289,7 +315,16 @@ void body_status_first_pub(){
         // ROS_DEBUG("发送机器人状态，idleState为：&d \n", (int)robot_status.idleState);
         printf( GREEN "发送机器人状态，idleState为：%d \n"NONE, (int)robot_status.idleState);  
 }
-   
+
+void need_satisfy_pub( social_msg::bhvPara& behavior_for_satisfy, bool pn ){
+    social_msg::need_satisfy_msg satisfy_msg;
+    satisfy_msg.need_name = behavior_for_satisfy.Needs;
+    if(pn)
+        satisfy_msg.satisfy_value = behavior_for_satisfy.satisfy_value;
+    else
+        satisfy_msg.satisfy_value = -1 * behavior_for_satisfy.satisfy_value;
+    pub_need_satisfy.publish(satisfy_msg);
+} 
 
 
 // public:
@@ -354,6 +389,7 @@ int main(int argc, char** argv){
 }
 
 void  PeriodDetection(){
+    // 过渡行为
     if( (behavior_type_100 == 1) && ((behavior_type_10 != 0) || (behavior_type_1 != 0)) ){
         
         std::cout<< "当前为 "<<behavior.Needs<< " 行为的过渡中断行为， 延时3秒"<< std::endl;
@@ -365,12 +401,15 @@ void  PeriodDetection(){
         sleep(3); //TODO:  延迟时间 按照behavior_type_1 和 behavior_type_10 ？
         behavior_cur_exist = false;
         ros::spinOnce(); 
-    }   
+    }  
+
+    // 普通行为 
     else {
         
         int period_total =  100;
         int period_cur = 0;
         insert_new_behavihor = false;
+        int delay_time = 0;
         for(    ;   (period_cur <= period_total ) && (!insert_new_behavihor)    ; )
         {
             //
@@ -380,25 +419,43 @@ void  PeriodDetection(){
             publish( period_cur );
             bool flag = recall( period_cur );
 
-            //如果 某一个肢体目标 在endtime 没有执行成功。 则不period_cur+1。
-            if( flag == false ) {}
+            //根据flag判断： 如果 某一个肢体目标 在endtime 没有执行成功。 则不period_cur+1。
+            if( flag == false ) {
+                // 当前周期（endtime）不能通过，次数到达阈值， 生成 消极需求满足
+                delay_time ++;
+                if( delay_time > 20 ){   //TODO:
+                    need_satisfy_pub( behavior , false );
+                    delay_time = 0;
+                }
+                // 当前周期 停滞，生成 (-1)的behavior_reply
+                social_msg::bhvReply behavior_reply;
+                behavior_reply.num = behavior.num;
+                behavior_reply.time = behavior.time;
+                behavior_reply.reply = -1 ;
+                pub_reply.publish(behavior_reply);       
+            }
             else{
+                // 当前周期通过后，生成behavior_reply
                 social_msg::bhvReply behavior_reply;
                 behavior_reply.num = behavior.num;
                 behavior_reply.time = behavior.time;
                 behavior_reply.reply = (int)period_cur;
                 pub_reply.publish(behavior_reply);
+
+                // 进入下一周期
                 period_cur++;   
+                
+                // delay_time 置为0
+                delay_time = 0;
+
+                // 当前行为结束后
                 if( period_cur > 100) {
-                    // 当前行为结束后
+                    
                     // 1.关闭周期检测函数
                     behavior_cur_exist = false;
                     std::cout<< "执行 "<<behavior.Needs<< " 行为【完毕】"<< std::endl;
-                    //2.生成需求满足状态  TODO: 需求满足状态的msg。 在 behavior中添加 satisfy_value
-                    social_msg::need_satisfy_msg satisfy_msg;
-                    satisfy_msg.need_name = behavior.Needs;
-                    satisfy_msg.satisfy_value = behavior.satisfy_value;
-                    pub_need_satisfy.publish(satisfy_msg);
+                    //2.生成  积极需求满足。  TODO: 需求满足状态的msg。 在 behavior中添加 satisfy_value
+                    need_satisfy_pub( behavior , true );
 
                     //3.机器人进入闲置状态
                     idlestate = true;
@@ -418,6 +475,7 @@ void  PeriodDetection(){
                         pub_associated_need.publish(associated_need);
                     }
                     // TODO:  维持秩序的源头： 
+                    // 经过思考  只能通过 安卓板通过检测人的位置移动次数，生成用户的uncooperate意图。
                     // if( behavior.Needs == "MeasureTempareture"){
                     //     associated_need.need_name = "StopStranger";
                         
