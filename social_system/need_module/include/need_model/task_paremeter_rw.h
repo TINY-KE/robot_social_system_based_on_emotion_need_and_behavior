@@ -32,7 +32,7 @@ private:
     vector<need> need_lists;
 public:
     read_need_parameter () {} // private constructor makes a singleton
-    read_need_parameter (const string DB_CONF ) {
+    read_need_parameter (const string DB_CONF ) {   //DB_CONF： yaml文件地址
         task_doc = YAML::LoadFile( DB_CONF );
         cout<<"从cfg文件中的need数量:"<<task_doc.size()<<endl;
     }

@@ -27,10 +27,16 @@ include_directories(
 
 
 #yaml cpp
-set(YAML_CPP_DIR "/home/zhjd/ws/src/ThirdParty/yaml-cpp-release-0.5.1/build")   
+# set(yaml-cpp_DIR /home/zhjd/ws/src/ThirdParty/yaml-cpp-release-0.5.1)   
+set(YAML_CPP_DIR "/usr/local/share/cmake/yaml-cpp")   
+MESSAGE("(1)yaml cpp dir :" ${yaml-cpp_DIR} )
 find_package(yaml-cpp REQUIRED)
+find_package(yaml-cpp 0.5.1)
+# find_package(yaml-cpp QUIET)
 include_directories(${YAML_CPP_INCLUDE_DIR})
-MESSAGE("yaml cpp dir : ${YAML_CPP_INCLUDE_DIR} ")
+MESSAGE("(2)yaml cpp dir :" ${yaml-cpp_DIR} )
+MESSAGE("(3)yaml cpp dir :"${YAML_CPP_INCLUDE_DIR} )
+MESSAGE("(4)yaml cpp dir :"${yaml-cpp} )
 #thread 
 find_package(Threads) 
 
