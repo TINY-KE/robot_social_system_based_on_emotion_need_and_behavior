@@ -96,21 +96,34 @@ public:
         cout<< "Start to Need Computation !!\n";
         std::vector<need> output_need_list;
         std::vector<need> temp;
-        for( int i = 0 ; i < per_list.size(); i++ )
-        {
-            perception per = per_list[i];
+        if( per_list.size() != 0  ){
+            for( int i = 0 ; i < per_list.size(); i++ )
+            {
+                perception per = per_list[i];
+                task_model -> update( per, emotion_, body_ );
+                inner_model -> update(per, emotion_, body_);   
+                // 任务性需求
+                temp = task_model -> need_output();
+                for(int j = 0 ; j < temp.size() ; j ++ )  output_need_list.push_back( temp[j] );
+                // 生理性需求
+                temp = inner_model -> need_compute_and_output();;
+                for(int k = 0 ; k < temp.size() ; k ++ )  output_need_list.push_back( temp[k] );  
+            }
+        }
+        else{
+            perception per_none;  per_none.p_ = 0;
+            task_model -> update( per_none, emotion_, body_ );
+            inner_model -> update(per_none, emotion_, body_); 
             // 任务性需求
-            task_model -> update( per, emotion_, body_ );
-            
             temp = task_model -> need_output();
             for(int j = 0 ; j < temp.size() ; j ++ )  output_need_list.push_back( temp[j] );
-
             // 生理性需求
-            inner_model -> update(per, emotion_, body_);  
             temp = inner_model -> need_compute_and_output();;
-            for(int k = 0 ; k < temp.size() ; k ++ )  output_need_list.push_back( temp[k] );
+            for(int k = 0 ; k < temp.size() ; k ++ )  output_need_list.push_back( temp[k] );  
         }
-
+        
+        
+        
          //清空 perception
         perceptionClear();  //TODO: ??
         

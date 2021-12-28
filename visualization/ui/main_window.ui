@@ -2361,7 +2361,7 @@
      <rect>
       <x>1020</x>
       <y>40</y>
-      <width>91</width>
+      <width>121</width>
       <height>25</height>
      </rect>
     </property>
@@ -2506,7 +2506,7 @@
      <rect>
       <x>990</x>
       <y>280</y>
-      <width>91</width>
+      <width>111</width>
       <height>25</height>
      </rect>
     </property>
@@ -2578,9 +2578,9 @@
    <widget class="QLineEdit" name="lineEdit_behavior_sounder_content">
     <property name="geometry">
      <rect>
-      <x>1340</x>
+      <x>1330</x>
       <y>300</y>
-      <width>191</width>
+      <width>221</width>
       <height>25</height>
      </rect>
     </property>
@@ -2651,7 +2651,7 @@
      <rect>
       <x>1400</x>
       <y>80</y>
-      <width>61</width>
+      <width>71</width>
       <height>25</height>
      </rect>
     </property>

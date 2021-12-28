@@ -14,15 +14,15 @@ delta_epre = np.zeros(emtionNumber)
 delta_e = np.zeros(emtionNumber)      # 情绪增量向量 [ delta_emotion0 , delta_emotion1,... ]
 current_e = np.zeros(emtionNumber) # 当前情感强度向量 [ float_emotion0 , emotion1,...]
 current_m = 0.1                                              # 当前心境值，初始为0.1
-delta_m = 0                                                      # 心境值增量
-stimulus_t=5                                                   # 刺激持续时间，现默认所有刺激均持续5s
+delta_m = 0.001                                                      # 心境值增量
+stimulus_t= 3                                                 # 刺激持续时间，现默认所有刺激均持续5s
 t_flag = 0                                                           # 判断是否处于刺激持续循环内
 e_count=0                                                        # 记录情绪更新周期的参数
 
 
 ##### 情绪参数
 tmp_lst = []
-with open('emotion_param.csv', 'r') as f:
+with open("/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'emotion_param.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
                 tmp_lst.append(row)

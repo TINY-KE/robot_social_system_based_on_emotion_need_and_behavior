@@ -6,7 +6,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.9
-  satisfy_value: 1
+  satisfy_value: 2
 - need_name: Greet
   intention: EnterSchool
   IDtype: Student
@@ -15,7 +15,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.88
-  satisfy_value: 1
+  satisfy_value: 2
 - need_name: Greet
   intention: EnterSchool
   IDtype: Parent
@@ -24,7 +24,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.86 
-  satisfy_value: 1
+  satisfy_value: 2
   
 - need_name: StopStranger
   intention: EnterSchool
@@ -45,7 +45,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
-  satisfy_value: 1
+  satisfy_value: 2
 - need_name: MeasureTempareture
   intention: EnterSchool
   IDtype: Student
@@ -54,7 +54,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
-  satisfy_value: 1
+  satisfy_value: 2
 - need_name: MeasureTempareture
   intention: EnterSchool
   IDtype: Parent
@@ -63,7 +63,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
-  satisfy_value: 1
+  satisfy_value: 2
 
 - need_name: Pass
   intention: pass
@@ -73,7 +73,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.95
-  satisfy_value: 1
+  satisfy_value: 2
 - need_name: Pass
   intention: pass
   IDtype: Student
@@ -82,7 +82,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.95
-  satisfy_value: 1
+  satisfy_value: 2
 - need_name: Pass
   intention: pass
   IDtype: Parent
@@ -91,7 +91,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.95
-  satisfy_value: 1
+  satisfy_value: 2
 
 - need_name: ParentIdentity
   intention: EnterSchool
@@ -101,7 +101,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.80
-  satisfy_value: 1 
+  satisfy_value: 2 
 
 
 
@@ -113,7 +113,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85
-  satisfy_value: 1 
+  satisfy_value: 2 
 - need_name: Answer
   intention: Query
   IDtype: Student
@@ -122,7 +122,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85
-  satisfy_value: 1  
+  satisfy_value: 2  
 - need_name: Answer
   intention: Query
   IDtype: Parent
@@ -131,7 +131,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85 
-  satisfy_value: 1 
+  satisfy_value: 2 
 
 
 
@@ -173,7 +173,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
   weight: 0.7 
-  satisfy_value: 1 
+  satisfy_value: 2 
 - need_name:  Remind
   intention: SendWord
   IDtype: Student
@@ -182,7 +182,7 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
   weight: 0.7
-  satisfy_value: 1  
+  satisfy_value: 2  
 - need_name:  Remind
   intention: SendWord
   IDtype: Parent
@@ -191,5 +191,4 @@
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
   weight: 0.7
-  satisfy_value: 1 
-
+  satisfy_value: 2 

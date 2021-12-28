@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-27 20:02:09
+ * @LastEditTime: 2021-12-28 20:57:08
  */
 /* 
 4）行为的发布：
@@ -41,11 +41,28 @@ e)轮子：进入start周期次数后，开始靠近或远离用户。一般情�
 #include <thread>
 #include "common_include.h"
 
-// #include "periodDetection.h"
 
+// 蓝牙通信  TODO: 无线通讯通道
+#include "serial.h"
 using namespace  std;
 
-  
+int ret;
+pthread_t th;
+
+//创建接收线程，用于读取串口数据
+int fd = open_serial(PORT, BAUDRATE, 8, 'N', 1);
+// pthread_create(&th, NULL, pthread_read, &fd);
+// if (fd < 0)
+// {
+//     perror("cann't open serial port ");
+//     return -1;
+// }
+//蓝牙通信: 1.接受flag  . main函数中。
+
+// 蓝牙通信：2.发送行为参数
+char buf[] = "hello zhjd";
+string buf1 = buf;
+// write(fd, buf, strlen(buf));
 
 // ros node
 ros::Subscriber sub_behavior;
@@ -53,9 +70,6 @@ ros::Publisher pub_reply;
 ros::Publisher pub_need_satisfy;
 ros::Publisher pub_associated_need;
 ros::Publisher pub_body_status;
-
-// TODO: 无线通讯通道
-
 
 
 // 全局变量
@@ -419,7 +433,8 @@ void BehaviorUpdate(const social_msg::bhvPara::ConstPtr& behavior_ ,  ros::NodeH
         sleep(0.1);// TODO: 要不要 延迟01秒呢？  从而保证 一定能当前行为一定被打断。
         
         // 机器人脱离 闲置状态
-        idlestate = false;
+        if( behavior_name != "Wander"  &&  behavior_name != "Chat" )
+            idlestate = false;
 
         //更新行为
         behavior = *behavior_;
@@ -427,6 +442,10 @@ void BehaviorUpdate(const social_msg::bhvPara::ConstPtr& behavior_ ,  ros::NodeH
 }
 
 int main(int argc, char** argv){
+    //蓝牙通信
+    //蓝牙通信: 1.接受flag
+    pthread_create(&th, NULL, pthread_read, &fd);
+    
     // ROS
     ros::init(argc, argv, "robot_platform");
     ros::NodeHandle n;

@@ -8,6 +8,7 @@ import pandas as pd
 from aip import AipNlp
 import rospy
 import main
+import time
 from Emotion_engine import *
 from social_msg.msg import robot_emotion
 from collections import deque
@@ -28,6 +29,10 @@ APP_ID = '25295465'
 API_KEY = 'WxY0AiFTs0HgWZaSsWGB6lM4'
 SECRET_KEY = '9oGOc6MmGGkFcYp6aGaRRy1fT87TYQ1t'
 client = AipNlp(APP_ID, API_KEY, SECRET_KEY)   
+
+# 身体状态对无聊情绪的影响
+global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
+idleState_flag = 0
 
 
 ##### 发布话题 
@@ -174,7 +179,7 @@ def callback_need(need_satisfy_msg):
        msg_list.append(need_satisfy_msg.satisfy_value)  
 
        #### 自我满足信息处理，通过查找dataframe实现值映射
-       csv_name  = 'need_satisfy.csv'
+       csv_name  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'need_satisfy.csv'
        index_name = "satisfy_value"
        index_val = str(need_satisfy_msg.satisfy_value)
        column_val = need_satisfy_msg.need_name
@@ -200,6 +205,22 @@ def callback_a_p(attitude_msg,perception_msg):
        msg_list.insert(0,perception_msg.time)
        
 
+def callback_robot_status( robot_status_msg ):  
+       '''
+       * 身体状态信息处理，用于“无聊情绪”
+       :param robot_status_msg：订阅自我满足需求信息
+       :output need_eval：身体状态 引起的情绪变化列表？？？[ float_情绪种类，float_情绪变化强度... ]
+       '''
+       print("接收robot_status_msg ")
+       
+       global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
+       idleState_last = 0
+       if ( (idleState_last == 0) and  (robot_status_msg.idleState == 1) ):
+              time_init = time.time()
+       idleState_last = robot_status_msg.idleState
+       idleState_flag = 1
+       # print("×××××展示%f"%(idleState_flag))
+
 
 def data_process():
        global msg_list,current_e,current_m,delta_e,delta_epre
@@ -214,7 +235,7 @@ def data_process():
               #print('Internal_eval: ',need_eval)
               ### 社交态度信息处理
               if msg_list[3] == msg_list[4]:
-                     csv_name  = 'attitude.csv'
+                     csv_name  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'attitude.csv'
                      index_name = "person_emotion"
                      index_val = msg_list[5]
                      column_val = msg_list[6]
@@ -236,7 +257,7 @@ def data_process():
                      except:
                             print("API failed !")
                             eclass='none'
-              csv_name1  = 'perception.csv'
+              csv_name1  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'perception.csv'
               index_name1 = "speech_emotion"
               index_val1 = str(eclass)
               column_val1 = 'empathy'
@@ -255,8 +276,21 @@ def data_process():
        caculate_e(delta_e,delta_epre)
        msg_list=[] # msg列表初始化
 
+       # 闲置状态对无聊情绪的影响   
+       global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
+       if idleState_flag :
+              print("运行robot_status_msg to boring ")
+              time_cur = time.time()
+              print("机器人闲置了%f秒"%(time_cur - time_init)) 
+              if ( (time_cur - time_init) > 60 ):
+                     # idleState_to_boring = 0.8
+                     current_e[7] = 0.7
+                     idleState_last = 0
+                     time_init =  time.time()
+                     print("无聊情绪置为 0.8")
+
        #### 可视化
-       #main.visualization()
+       main.visualization()
 
        #### 机器人情感topic发布
        publish()

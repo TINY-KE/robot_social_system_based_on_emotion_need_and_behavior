@@ -267,7 +267,7 @@ void LoclistInit(LocalList &list){
     list.bhv[2].emotion.endTime = 20;
 
     list.bhv[2].speech.weight = 2;
-    list.bhv[2].speech.call = 0;
+    list.bhv[2].speech.call = 1;
     list.bhv[2].speech.content = "测温中，请耐心等待";
     list.bhv[2].speech.tone = 2;
     list.bhv[2].speech.rate = 2;
@@ -824,9 +824,7 @@ void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList li
         temp_Qpara.gaze.target = temp_list.person_name;
         temp_Qpara.legs.target = temp_list.person_name;     //(1) temp_Qpara.legs.target存储的是
         temp_Qpara.emotion.type = temp_list.rob_emotion;    // (2)这怎么办？
-        //to solve speech content bug
-        if(temp_list.speech != "")
-            temp_Qpara.speech.content = temp_list.speech;
+        temp_Qpara.speech.content = temp_list.speech;
         temp_Qpara.weight = temp_list.weight;
         temp_Qpara.satisfy_value = temp_list.satisfy_value;
         //根据机器人心情调节动作
@@ -844,8 +842,6 @@ void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList li
             temp_Qpara.speech.rate = (temp_Qpara.speech.rate==1) ? temp_Qpara.speech.rate : (temp_Qpara.speech.rate -1);
             temp_Qpara.speech.tone = (temp_Qpara.speech.tone==1) ? temp_Qpara.speech.tone : (temp_Qpara.speech.tone -1);
         }
-        //to solve speech content bug
-
         ParaInsert(Q_para,temp_Qpara);
         ROS_INFO("Qs nums:%d", Q_para->count);   /* ?? */
         chatterCallbackFlag --;    
@@ -923,7 +919,7 @@ int main(int argc,char **argv)
     Queue_init(Q);
     tasks.flag = 1;
     //名称初始化时要求唯一
-    ros::init(argc,argv,"dealing_node");
+    ros::init(argc,argv,"behavior_module");
     ros::NodeHandle n;
 
     LoclistInit(List);
@@ -939,8 +935,8 @@ int main(int argc,char **argv)
 
     while(ros::ok())
     {
-        int x,y;
-        if(chatterCallbackFlag == 0) y = 1;
+        int x;
+        int y = 1;
         for(x = chatterCallbackFlag; x > 0; x--){
             Behavior_Create(ListBuf[y],Q,List);
             y++;
@@ -968,6 +964,7 @@ int main(int argc,char **argv)
             // temp.num = taskNum*1000+temp.num+100;
             temp.time = int64_t((ros::Time::now().toSec())*1000.0);
             chatter_pub.publish(temp);
+            cout<<"发送行为："<<temp.Needs << endl;
             tasks.flag = 0;
             InsertAndConcurFlag = 0;
             //Pop(Q);

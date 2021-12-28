@@ -13,7 +13,7 @@ import PIL.Image as Image
 from social_msg.msg import attitude_msg
 from social_msg.msg import need_satisfy_msg
 from social_msg.msg import perception_msg
-
+from social_msg.msg import robot_status
 
 class myThread(threading.Thread):
     def __init__(self,  name, content):
@@ -35,12 +35,14 @@ def data_get():
         *启动模块，调用Data_processing.py中的函数，订阅三个刺激信息并作处理、发布robot_emotion_msg（进入循环）
         '''
         rospy.init_node('emotion_listener', anonymous=True,disable_signals=True)
-        t1 = message_filters.Subscriber("attitude_msg", attitude_msg)
-        t2 = message_filters.Subscriber("need_satisfy_msg", need_satisfy_msg)
-        t3 = message_filters.Subscriber("perception_msg", perception_msg)
+        t1 = message_filters.Subscriber("attitude", attitude_msg)
+        t2 = message_filters.Subscriber("need_satisfied", need_satisfy_msg)
+        t3 = message_filters.Subscriber("perceptions", perception_msg)
+        t4 = message_filters.Subscriber("robot_status", robot_status)
         ts = message_filters.ApproximateTimeSynchronizer([t1, t3], 1, 1, allow_headerless=True)
         t2.registerCallback(Data_processing.callback_need)
         ts.registerCallback(Data_processing.callback_a_p)
+        t4.registerCallback(Data_processing.callback_robot_status)
         rospy.spin() # spin() simply keeps python from exiting until this node is stopped
 
 
