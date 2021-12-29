@@ -115,6 +115,7 @@ int main(int argc, char** argv){
     return 0;
 }
 
+int qt_order_debug = 0;
 void run_PriorNeed(){
     // while(1)
     {
@@ -134,6 +135,7 @@ void run_PriorNeed(){
                 need_output.qt_order = period_cur;
                 need_output.satisfy_value = need_lists[j].satisfy_value;
                 pub.publish(need_output);
+                printf( GREEN "qt_order: %d:\n"NONE, need_output.qt_order); 
                 sleep(1);
             }
             period_cur++;     
