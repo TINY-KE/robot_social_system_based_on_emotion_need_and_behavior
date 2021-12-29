@@ -107,7 +107,7 @@ void publish( social_msg::bhvPara& behavior,   int period_,  int& buletooth)
         cout<< "        行为参数：" <<parameter_buletooth<<endl;
         // char buf[] = "hello zhjd";
         // string buf1 = buf;
-        char parameter_buletooth_char[] = parameter_buletooth;
-        write(buletooth, parameter_buletooth_char, strlen(parameter_buletooth_char));    
+        //char parameter_buletooth_char[] = parameter_buletooth;
+        //write(buletooth, parameter_buletooth_char, strlen(parameter_buletooth_char));    
 
 }

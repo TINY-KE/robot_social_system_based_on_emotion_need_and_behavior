@@ -18,7 +18,7 @@
 #include "social_msg/robot_emotion.h"
 #include "social_msg/robot_status.h"
 #include "social_msg/bhvQueue.h"
-#define EnhanceFactor 1.3
+#define EnhanceFactor 1.1
 using namespace tinyxml2;
 using namespace std;
 
@@ -267,7 +267,7 @@ void LoclistInit(LocalList &list){
     list.bhv[2].emotion.endTime = 20;
 
     list.bhv[2].speech.weight = 2;
-    list.bhv[2].speech.call = 0;
+    list.bhv[2].speech.call = 1;
     list.bhv[2].speech.content = "测温中，请耐心等待";
     list.bhv[2].speech.tone = 2;
     list.bhv[2].speech.rate = 2;
@@ -620,9 +620,9 @@ void LoclistInit(LocalList &list){
 int CanInterrupt(Queue_para* ptr, social_msg::bhvReply item)
 {
     //if(((item.reply < ptr->data[ptr->front].speech.endTime) && (item.reply > ptr->data[ptr->front].speech.startTime)) || item.reply > 70)
-    if(item.reply > 70)
+    if((item.reply > 70) && (ptr->data[ptr->front].num/100 == 0))
         return 0;
-    return item.reply + 10;
+    return item.reply + 1;
 }
 
 int CanConcurrence(Queue_para* ptr, social_msg::bhvPara Concurptr, social_msg::bhvReply item)
@@ -645,7 +645,7 @@ int CanConcurrence(Queue_para* ptr, social_msg::bhvPara Concurptr, social_msg::b
     if((item.reply > 70) || flag)
         return 0;
     else
-        return item.reply + 10;
+        return item.reply + 1;
 
 }
 //过渡行为生成
@@ -709,10 +709,11 @@ void TaskInsert(Queue_para* ptr, social_msg::bhvPara item)
     {
         //任务分解
         //oriTask
-        OriTask.num += 100 + CanInterrupt(ptr,tasks.states);
+        //OriTask.num += 100 + CanInterrupt(ptr,tasks.states);
+        OriTask.num = (OriTask.num|100) + CanInterrupt(ptr,tasks.states);
         //OriTask.Needs += " "+ item.Needs;
         OriTask.TotalOrder = 4;
-        OriTask.weight = item.weight;
+        //OriTask.weight = item.weight;
 
         //过渡行为：TransTask
         TransTask_Create(TransTask);
@@ -742,6 +743,7 @@ void TaskInsert(Queue_para* ptr, social_msg::bhvPara item)
         TaskContinue.Needs = TransTask.Needs;
         TaskContinue.CurOrder = 4;
         TaskContinue.TotalOrder = 4;
+        TaskContinue.progress = CanInterrupt(ptr,tasks.states);
         //恢复处理，主要是语音
 
         //4个任务入队
@@ -788,8 +790,8 @@ void ParaInsert(Queue_para* ptr, social_msg::bhvPara item)
 
             }
             //并发判断
-            else if(CanConcurrence(ptr, item, tasks.states))
-                TaskConcurrence(ptr, item);
+            // else if(CanConcurrence(ptr, item, tasks.states))
+            //     TaskConcurrence(ptr, item);
             //插入判断
             else if(item.weight > EnhanceFactor * ptr->data[ptr->front].weight)
             {

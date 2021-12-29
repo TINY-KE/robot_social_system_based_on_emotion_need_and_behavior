@@ -19,7 +19,7 @@ include_directories(
         ${catkin_INCLUDE_DIRS}
         include
         /home/zhjd/ws/devel/include/
-
+        /home/kod/com_ws/devel/include/
         # /home/zhjd/ws/src/social_system/robot_platform/include/
 )
 

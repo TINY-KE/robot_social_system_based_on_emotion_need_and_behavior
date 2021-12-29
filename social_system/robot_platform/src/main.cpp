@@ -229,7 +229,7 @@ void  PeriodDetection(){
     else {
         
         int period_total =  100;
-        int period_cur = 0;
+        int period_cur = 0; period_cur = behavior.progress;
         insert_new_behavihor = false;
         int delay_time = 0;
         for(    ;   (period_cur <= period_total ) && (!insert_new_behavihor)    ; )
