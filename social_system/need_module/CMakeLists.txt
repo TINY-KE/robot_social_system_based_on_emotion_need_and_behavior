@@ -22,7 +22,8 @@ include_directories(
         include/need_model
         ${catkin_INCLUDE_DIRS}
         include
-        /home/zhjd/ws/devel/include/
+        /home/kod/com_ws/devel/include/
+	/home/zhjd/ws/devel/include/
 )
 
 

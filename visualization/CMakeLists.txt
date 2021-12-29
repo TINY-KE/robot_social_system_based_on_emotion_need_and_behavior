@@ -25,7 +25,7 @@ find_package(OpenCV REQUIRED)
   include_directories(${catkin_INCLUDE_DIRS}
       /include/msg/
      /home/zhjd/ws/devel/include/
-     /home/kod/robot_ws/devel/include/
+     /home/kod/com_ws/devel/include/
     )
 
 #ros massage自定义

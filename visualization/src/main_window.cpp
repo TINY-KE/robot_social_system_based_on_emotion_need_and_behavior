@@ -61,26 +61,26 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 //    QImage disImage_1 = QImage((const unsigned char*)(srcImage_1.data), srcImage_1.cols, srcImage_1.rows, QImage::Format_RGB888);
 //    ui.label_emotion_image->setPixmap(QPixmap::fromImage(   disImage_1.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)    ));  // label 显示图像
 //    QString filename("../../../src/social_system/emotion_module/image/emotion_img.png");
-    QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
-    QImage* img=new QImage;
-    if(! ( img->load(filename) ) ) //加载图像
-    {
-    QMessageBox::information(this,
-    tr("打开图像失败"),
-     tr("打开图像失败!"));
-    delete img;
-    return;
-    }
-    int width = (*img).width();      int height =  (*img).height();
-//    QRect rect(width-height/2,0, height,height);
-    qDebug() << width << " " <<  height ;
-    int width_new = height*4.8/5;
-    QRect rect( (width/2 - width_new/2),0, width_new,height);
-    QImage img_cut = (*img).copy(rect);
-    ui.label_emotion_image->setPixmap(QPixmap::fromImage(
-                                                          img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
-                                                        )
-                                      );
+//    QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
+//    QImage* img=new QImage;
+//    if(! ( img->load(filename) ) ) //加载图像
+//    {
+//    QMessageBox::information(this,
+//    tr("打开图像失败"),
+//     tr("打开图像失败!"));
+//    delete img;
+//    return;
+//    }
+//    int width = (*img).width();      int height =  (*img).height();
+////    QRect rect(width-height/2,0, height,height);
+//    qDebug() << width << " " <<  height ;
+//    int width_new = height*4.8/5;
+//    QRect rect( (width/2 - width_new/2),0, width_new,height);
+//    QImage img_cut = (*img).copy(rect);
+//    ui.label_emotion_image->setPixmap(QPixmap::fromImage(
+//                                                          img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
+//                                                        )
+//                                      );
 //.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
 
   /*********************

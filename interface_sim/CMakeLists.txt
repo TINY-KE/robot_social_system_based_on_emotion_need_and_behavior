@@ -23,6 +23,7 @@ include_directories(
  include
   ${catkin_INCLUDE_DIRS}
   /home/zhjd/ws/devel/include/
+  /home/kod/com_ws/devel/include/
 )
 
 #ros massage自定义

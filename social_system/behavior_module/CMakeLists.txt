@@ -17,6 +17,8 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   /home/zhjd/catkin_ws/devel/include/
   /home/zhjd/ws/devel/include/
+  /home/kod/catkin_ws/devel/include/
+  /home/kod/com_ws/devel/include/
   
 )
 #thread 
