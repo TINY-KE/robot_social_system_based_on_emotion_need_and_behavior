@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-28 20:57:08
+ * @LastEditTime: 2021-12-29 12:04:11
  */
 /* 
 4）行为的发布：
@@ -37,10 +37,11 @@ e)轮子：进入start周期次数后，开始靠近或远离用户。一般情�
 //ros头文件
 #include <ros/ros.h>
 #include "std_msgs/String.h"
-#include <string>
+
 #include <thread>
 #include "common_include.h"
-
+#include "publish.h"
+#include "recall.h"
 
 // 蓝牙通信  TODO: 无线通讯通道
 #include "serial.h"
@@ -50,7 +51,7 @@ int ret;
 pthread_t th;
 
 //创建接收线程，用于读取串口数据
-int fd = open_serial(PORT, BAUDRATE, 8, 'N', 1);
+int bluetooth = open_serial(PORT, BAUDRATE, 8, 'N', 1);
 // pthread_create(&th, NULL, pthread_read, &fd);
 // if (fd < 0)
 // {
@@ -81,10 +82,7 @@ bool insert_new_behavihor = false;
 social_msg::bhvPara behavior;
 double single_period_time;
 bool flag;
-string  gaze_target_lastpub = "none", screen_type_lastpub = "none", 
-            sounder_tone_lastpub = "none", sounder_rate_lastpub = "none", sounder_content_lastpub = "none", 
-            arm_action_lastpub = "none", arm_rate_lastpub = "none", 
-            leg_target_lastpub = "none", leg_aciton_lastpub = "none", leg_rate_lastpub = "none", leg_distance_lastpub = "none";
+
 double  energy = 0.9, gaze = 1, expresion = 1, trunk = 1, arm = 1, leg = 1;
 bool  idlestate = true;
 social_msg::robot_status robot_status; 
@@ -92,278 +90,11 @@ social_msg::robot_status robot_status;
 int behavior_type_1;
 int behavior_type_10;
 int behavior_type_100;
-// int startTime；
-// int endTime;
-string none_check( string s){
-    string block = "none";;
-    if( s == "")
-        return block;
-    else
-        return s;
-}
-bool compare( double delay_ , double thresh){
-        if(delay_ > thresh )  
-            return true;
-        else 
-            return  false; 
-}
-
-void flag_set( bool flag_new,  bool& flag_){
-    if(flag_ == 1 || flag_new == 1) 
-        flag_ = 1;
-}
-// 需求满足状态  、肢体状态 、 内部感知信息（pass、 Uncooperate。 
-// 感觉直接改成需求更合适，为什么要通过感知信息而多此一举呢。甚至直接改为行为？）的生成。
-void publish( int period_ ){
-    string  gaze_target = "none", screen_type = "none", 
-            sounder_tone = "none", sounder_rate = "none", sounder_content = "none", 
-            arm_action = "none", arm_rate = "none", 
-            leg_target = "none", leg_aciton = "none", leg_rate = "none", leg_distance = "none";
-// publish gaze
-    if(  (period_ >= behavior.gaze.startTime)  &&   (period_ <= behavior.gaze.endTime) ){
-            if(behavior.gaze.target != gaze_target_lastpub){
-                gaze_target = none_check(behavior.gaze.target);
-                gaze_target_lastpub = gaze_target;
-            }
-        }
-
-// publish_screen
-    if(  (period_ >= behavior.emotion.startTime)  &&   (period_ <= behavior.emotion.endTime) ){
-            if(behavior.emotion.type != screen_type_lastpub){
-                screen_type = none_check(behavior.emotion.type);
-                screen_type_lastpub = screen_type;
-            }    
-        }
-    
-// publish_sounder
-    if(  (period_ >= behavior.speech.startTime)  &&   (period_ <= behavior.speech.endTime) ){
-            if( 
-                (sounder_tone_lastpub != to_string(behavior.speech.tone))   ||
-                (sounder_rate_lastpub != to_string(behavior.speech.rate))   ||
-                (sounder_content_lastpub != behavior.speech.content)       
-             ){
-                sounder_tone = none_check(to_string(behavior.speech.tone)); 
-                sounder_rate = none_check(to_string(behavior.speech.rate));
-                sounder_content = none_check(behavior.speech.content);
-                sounder_tone = sounder_tone_lastpub; 
-                sounder_rate = sounder_rate_lastpub;
-                sounder_content = sounder_content_lastpub;
-            }        
-        }
-
-// publish_arm
-    if(  (period_ >= behavior.arms.startTime)  &&   (period_ <= behavior.arms.endTime) ){
-            if(
-                (arm_action_lastpub != behavior.arms.action)            ||
-                (arm_rate_lastpub != to_string(behavior.arms.rate))
-            ){
-                arm_action = none_check(behavior.arms.action);
-                arm_rate = none_check(to_string(behavior.arms.rate));
-                arm_action = arm_action_lastpub;
-                arm_rate = arm_rate_lastpub;
-            }   
-        }
-// publish_leg( period_ );
-    if(  (period_ >= behavior.legs.startTime)  &&   (period_ <= behavior.legs.endTime) ){
-            if(
-                (leg_target_lastpub != behavior.legs.target)           ||
-                (leg_aciton_lastpub != behavior.legs.action)           ||
-                (leg_rate_lastpub != to_string(behavior.legs.rate))    ||
-                (leg_distance_lastpub != to_string(behavior.legs.distance))
-            ){
-                leg_target = none_check(behavior.legs.target);
-                leg_aciton = none_check(behavior.legs.action);
-                leg_rate = none_check(to_string(behavior.legs.rate));
-                leg_distance = none_check(to_string(behavior.legs.distance));
-                leg_target = leg_target_lastpub;
-                leg_aciton = leg_aciton_lastpub;
-                leg_rate = leg_rate_lastpub;
-                leg_distance = leg_distance_lastpub;
-            }
-        }
 
 
-    string block = "none";
-    string ss = gaze_target +" "+ block +" "+ block +" "+ block +" "+ block +" "+ 
-                screen_type +" "+ block +" "+ block +" "+ block +" "+ block +" "+ 
-                sounder_tone +" "+ sounder_rate +" "+ sounder_content +" "+ block +" "+ block +" "+ 
-                arm_action +" "+ arm_rate +" "+ block +" "+ block +" "+ block +" "+ 
-                leg_target +" "+ leg_aciton +" "+ leg_rate+" "+ leg_distance +" "+ block +" "
-                ;
-    cout<< "        行为参数：" <<ss<<endl;
-    
 
-}
-/* if( behavior.Needs == "MeasureTempareture" && behavior.gaze.target == "Gang"){
 
-    }
-    else{
-        //end周期
-        if(    period_ == behavior.gaze.endTime  ){
-        //if( recall成功 )
-        return true;   //TODO: 
-        // else
-        return false;
-        }
-        // 非end周期
-        else{
-            return true;
-        }
-    }   */
-#define DEBUG_delay_for_gaze_xiaogang_measureTemperate
-int delay_for_gaze_xiaogang_measureTemperate = 0;
-bool delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 0;
-// DEBUG_delay_for_gaze_xiaogang_measureTemperate
-bool recall_gaze(  int period_  ){      /* 检测 gaze 行为的目标 是否到达 */ 
-    #ifdef DEBUG_delay_for_gaze_xiaogang_measureTemperate
-    if( behavior.Needs == "MeasureTempareture" && behavior.gaze.target == "Gang"){
-        //end周期
-        if(    period_ == behavior.gaze.endTime  ){
-            //if( recall成功 )
-            return true;   //TODO: 
-            // else
-            return false;
-        }
-        // 非end周期
-        else if( period_ == 30){
-                if(delay_for_gaze_xiaogang_measureTemperate > 25){
-                    delay_for_gaze_xiaogang_measureTemperate = 0;
-                    delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy  = 1;// delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy ++ ; 
-                    return true;
-                }
-                else{
-                    return false;
-                } 
-        }
-        else if( period_ == 70){
-                if(delay_for_gaze_xiaogang_measureTemperate > 25){
-                    delay_for_gaze_xiaogang_measureTemperate = 0;
-                    delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 1;// delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy ++ ; 
-                    return true;
-                }
-                else{
-                    return false;
-                } 
-        }
-        else{
-            return true;
-        }
-    }
-    else{
-        //end周期
-        if(    period_ == behavior.gaze.endTime  ){
-        //if( recall成功 )
-        return true;   //TODO: 
-        // else
-        return false;
-        }
-        // 非end周期
-        else{
-            return true;
-        }
-    }
-    #else
-        //end周期
-        if(    period_ == behavior.gaze.endTime  ){
-        //if( recall成功 )
-        return true;   //TODO: 
-        // else
-        return false;
-        }
-        // 非end周期
-        else{
-            return true;
-        }
-    #endif
-}
-bool recall_screen(  int period_  ){      /* 检测 screen 行为的目标 是否到达 */ 
-    return true;  //认为表情 永远能立即实现
-}
-
-#define DEBUG_delay_for_sounder_endtime
-int delay_for_sounder_endtime = 0;
-bool recall_sounder(  int period_  ){      /* 检测 sounder 行为的目标 是否到达 */ 
-    //end周期
-    if(    period_ == behavior.speech.endTime  ){
-        #ifdef DEBUG_delay_for_sounder_endtime
-        {
-            if( behavior.Needs == "Answer" ){
-                if(delay_for_sounder_endtime > 25){
-                    delay_for_sounder_endtime = 0;
-                    return true;
-                }
-                else{
-                    return false;
-                } 
-            }
-            else
-                return true;
-            
-        }  
-        #else
-        {
-            //if( recall成功 )
-            return true;   //TODO: 
-            // else
-            return false;
-        }
-        #endif 
-    }
-    // 非end周期
-    else{
-        return true;
-    }
-}
-bool recall_arm(  int period_  ){      /* 检测 arm 行为的目标 是否到达 */ 
-    return true;  //认为手臂的摆动 永远能立即实现
-}
-bool recall_leg(  int period_  ){      /* 检测 leg 行为的目标 是否到达 */ 
-    //end周期
-    if(    period_ == behavior.legs.endTime  ){
-        //if( recall成功 )
-        return true;    //TODO: 
-        // else
-        return false;
-    }
-    // 非end周期
-    else{
-        return true;
-    }
-}
-    
-bool recall(  int period_  ){
-    /* 检测行为的目标 是否到达 */ 
-    std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-    bool flag_gaze=0, flag_screen=0, flag_sounder=0, flag_arm=0, flag_leg=0;
-    
-    while(1){
-        flag_set(recall_gaze( period_ )   ,  flag_gaze);            
-        flag_set(recall_screen( period_ )   ,  flag_screen);     
-        flag_set(recall_sounder( period_ )   ,  flag_sounder);     
-        flag_set(recall_arm( period_ )   ,  flag_arm);     
-        flag_set(recall_leg( period_ )   ,  flag_leg);     
-        
-        std::chrono::steady_clock::time_point  t2 = std::chrono::steady_clock::now();
-        double delay = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
-        if(compare(delay,single_period_time))  break;
-    }
-    #ifdef DEBUG_delay_for_sounder_endtime
-        if(    period_ == behavior.speech.endTime  )
-                delay_for_sounder_endtime ++ ;
-    #endif
-    #ifdef DEBUG_delay_for_gaze_xiaogang_measureTemperate
-        if( behavior.Needs == "MeasureTempareture" && behavior.gaze.target == "Gang" )
-            if( period_ == 30 ||  period_ == 70)
-                delay_for_gaze_xiaogang_measureTemperate ++ ;
-    #endif
-    // 以上的循环，完全是依靠  时间尺度。如果按照原来的 全部的 flag_xx 都为true了，就跳出循环，会导致 recall刚执行就结束了。
-    // 按照时间尺度结束循环后， 会更体现  行为参数的预定义的重要性。
-    if( (flag_gaze && flag_screen && flag_sounder && flag_arm && flag_leg) == true )
-        return true;
-    else
-        return false;
-}
-
+// 生成和发送  身体状态
 void body_status_check_and_pub(){
     while(1){
         // 接受 安卓板的信息 
@@ -388,7 +119,6 @@ void body_status_check_and_pub(){
         }
     }
 }
-
 void body_status_first_pub(){
         robot_status.body1 = 0.9; 
         robot_status.body2 = 1;
@@ -444,7 +174,7 @@ void BehaviorUpdate(const social_msg::bhvPara::ConstPtr& behavior_ ,  ros::NodeH
 int main(int argc, char** argv){
     //蓝牙通信
     //蓝牙通信: 1.接受flag
-    pthread_create(&th, NULL, pthread_read, &fd);
+    pthread_create(&th, NULL, pthread_read, &bluetooth);
     
     // ROS
     ros::init(argc, argv, "robot_platform");
@@ -508,8 +238,8 @@ void  PeriodDetection(){
             std::cout<< "执行 "<<behavior.Needs<< " 行为的周期检测, ["<< period_cur << "]"<< std::endl;
         
             //查看每个行为的的起始周期，并发布行为参数
-            publish( period_cur );
-            bool flag = recall( period_cur );
+            publish( behavior, period_cur , bluetooth);
+            bool flag = recall( behavior, period_cur );
 
             //根据flag判断： 如果 某一个肢体目标 在endtime 没有执行成功。 则不period_cur+1。
             if( flag == false ) {
