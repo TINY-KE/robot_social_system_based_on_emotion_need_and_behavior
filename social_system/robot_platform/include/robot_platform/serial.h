@@ -13,12 +13,13 @@
 #include <time.h>
 
 #include "common_include.h"
-int speed_arr[]={B115200, B9600, B57600};
-int name_arr[]={115200, 9600, 57600};
+
 
 //设置波特率函数
 int set_speed(int fd, int speed)
 {
+	int speed_arr[]={B115200, B9600, B57600};
+	int name_arr[]={115200, 9600, 57600};
 	int i;
 	int stat;
 	struct termios opt;
@@ -166,37 +167,8 @@ int openDev(char *dev)
 	} else 
 		return fd;
 }
-#define PORT "/dev/rfcomm0"
-// #define PORT "/dev/ttyUSB0"
-#define BAUDRATE 115200
-void * pthread_read(void *arg)
-{
-    int fd, ret;
-    char buf[128];
-    fd = *(int *)(arg);
 
-    while (1)
-    {   //循环读取串口数据，读到buf
-        ret = read(fd, buf, sizeof buf);
-        if (ret > 0)
-        {
-			//读到数据后打印出来
-            printf("%s", buf);
-            printf( LIGHT_PURPLE "%s \n"NONE, buf);  
-            fflush(stdout);
-        }
-        else if (ret < 0)
-        {
-            // perror("read error ret\n");
-            printf( LIGHT_PURPLE "read error ret\n"NONE);  
-            printf("ret = %d\n", ret);
-            
-            return NULL;
-        }
-           
-        
-    }
-}
+
 // int main()
 // {
 // 	int ret;
@@ -219,26 +191,3 @@ void * pthread_read(void *arg)
 // 		}
 // 	}	
 // }
-
-int run_serial()
-{
-	int ret;
-	char buf[128];
-    pthread_t th;
-	int fd = open_serial(PORT, BAUDRATE, 8, 'N', 1);
-    if (fd < 0)
-    {
-        perror("cann't open serial port ");
-        return -1;
-    }
-	//创建接收线程，用于读取串口数据
-    pthread_create(&th, NULL, pthread_read, &fd);
-	while (1)
-	{
-		//获取终端数据，打印到串口
-		if (NULL != fgets(buf, sizeof buf, stdin))
-		{
-			write(fd, buf, strlen(buf));
-		}
-	}	
-}

@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-29 11:40:12
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-29 12:07:19
+ * @LastEditTime: 2021-12-29 15:55:38
  */
 #include "common_include.h"
 
@@ -104,10 +104,13 @@ void publish( social_msg::bhvPara& behavior,   int period_,  int& buletooth)
                     arm_action +" "+ arm_rate +" "+ block +" "+ block +" "+ block +" "+ 
                     leg_target +" "+ leg_aciton +" "+ leg_rate+" "+ leg_distance +" "+ block +" "
                     ;
-        cout<< "        行为参数：" <<parameter_buletooth<<endl;
+        // cout<< "        行为参数：" <<parameter_buletooth<<endl;
         // char buf[] = "hello zhjd";
         // string buf1 = buf;
-        char parameter_buletooth_char[] = parameter_buletooth;
+        char *parameter_buletooth_charstat = (char *)parameter_buletooth.c_str();
+        char parameter_buletooth_char[1000];
+        strcpy(  parameter_buletooth_char , parameter_buletooth_charstat );
+        printf( "行为参数 parameter_buletooth_char: %s \n" , parameter_buletooth_char);
         write(buletooth, parameter_buletooth_char, strlen(parameter_buletooth_char));    
 
 }

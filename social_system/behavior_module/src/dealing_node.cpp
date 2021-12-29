@@ -18,7 +18,7 @@
 #include "social_msg/robot_emotion.h"
 #include "social_msg/robot_status.h"
 #include "social_msg/bhvQueue.h"
-#define EnhanceFactor 1.3
+#define EnhanceFactor 1.1
 using namespace tinyxml2;
 using namespace std;
 
@@ -865,7 +865,7 @@ void needCallback(const social_msg::need_msg::ConstPtr& msg)
 {
     //social_msg::bhvQueue temp;
     test_i++;
-    ROS_INFO("task name:[%s][%d]",msg->need_name.c_str(), test_i);
+    ROS_INFO("task name:[%s][%d]，weight:[%f]",msg->need_name.c_str(), test_i, msg->weight);
     chatterCallbackFlag ++; //需要处理
     ListBuf[chatterCallbackFlag] = *msg;
 }

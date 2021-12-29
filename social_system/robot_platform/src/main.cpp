@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-29 12:04:11
+ * @LastEditTime: 2021-12-29 17:57:54
  */
 /* 
 4）行为的发布：
@@ -40,31 +40,15 @@ e)轮子：进入start周期次数后，开始靠近或远离用户。一般情�
 
 #include <thread>
 #include "common_include.h"
-#include "publish.h"
-#include "recall.h"
 
 // 蓝牙通信  TODO: 无线通讯通道
 #include "serial.h"
+
 using namespace  std;
 
-int ret;
-pthread_t th;
-
-//创建接收线程，用于读取串口数据
-int bluetooth = open_serial(PORT, BAUDRATE, 8, 'N', 1);
-// pthread_create(&th, NULL, pthread_read, &fd);
-// if (fd < 0)
-// {
-//     perror("cann't open serial port ");
-//     return -1;
-// }
-//蓝牙通信: 1.接受flag  . main函数中。
-
-// 蓝牙通信：2.发送行为参数
-char buf[] = "hello zhjd";
-string buf1 = buf;
-// write(fd, buf, strlen(buf));
-
+/******************************************************************
+ * 零、全局变量
+*******************************************************************/
 // ros node
 ros::Subscriber sub_behavior;
 ros::Publisher pub_reply;
@@ -91,10 +75,331 @@ int behavior_type_1;
 int behavior_type_10;
 int behavior_type_100;
 
+/******************************************************************
+ * 一、recall函数
+*******************************************************************/
+#define PORT "/dev/rfcomm0"
+// #define PORT "/dev/ttyUSB0"
+#define BAUDRATE 115200
+int ret;
+pthread_t th;
+
+//创建接收线程，用于读取串口数据
+int bluetooth = open_serial(PORT, BAUDRATE, 8, 'N', 1);
+//蓝牙通信: 1.接受flag  . main函数中。
+bool flag_gaze_bt=0, flag_screen_bt=0, flag_sounder_bt=0, flag_arm_bt=0, flag_leg_bt=0;
+void * pthread_read(void *arg)
+{
+    int fd, ret;
+    char buf[128];
+    fd = *(int *)(arg);
+
+    while (1)
+    {   //循环读取串口数据，读到buf
+        ret = read(fd, buf, sizeof buf);
+        if (ret > 0){
+			//读到数据后打印出来
+            printf("%s", buf);
+            printf( LIGHT_PURPLE "%s \n"NONE, buf); 
+            string str = buf;
+            stringstream ss(str);
+            string b;
+            while(ss>>b) {
+                cout<<"蓝牙接受"<<b<<endl;
+            }
+            fflush(stdout);
+        }
+        else if (ret < 0){
+            printf( LIGHT_PURPLE "read error ret\n"NONE);  
+            printf("ret = %d\n", ret);
+            return NULL;
+        }   
+    }
+}
 
 
+//工具函数 
+bool compare( double delay_ , double thresh){
+        if(delay_ > thresh )  
+            return true;
+        else 
+            return  false; 
+}
 
-// 生成和发送  身体状态
+void flag_set( bool flag_new,  bool& flag_){
+    if(flag_ == 1 || flag_new == 1) 
+        flag_ = 1;
+}
+
+
+#define DEBUG_delay_for_gaze_xiaogang_measureTemperate
+int delay_for_gaze_xiaogang_measureTemperate = 0;
+bool delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 0;
+// DEBUG_delay_for_gaze_xiaogang_measureTemperate
+bool recall_gaze(  social_msg::bhvPara& behavior,    int period_  ){      /* 检测 gaze 行为的目标 是否到达 */ 
+    #ifdef DEBUG_delay_for_gaze_xiaogang_measureTemperate
+    if( behavior.Needs == "MeasureTempareture" && behavior.gaze.target == "Gang"){
+        //end周期
+        if(    period_ == behavior.gaze.endTime  ){
+            //if( recall成功 )
+            return true;   //TODO: 
+            // else
+            return false;
+        }
+        // 非end周期
+        else if( period_ == 30){
+                if(delay_for_gaze_xiaogang_measureTemperate > 25){
+                    delay_for_gaze_xiaogang_measureTemperate = 0;
+                    delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy  = 1;// delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy ++ ; 
+                    return true;
+                }
+                else{
+                    return false;
+                } 
+        }
+        else if( period_ == 70){
+                if(delay_for_gaze_xiaogang_measureTemperate > 25){
+                    delay_for_gaze_xiaogang_measureTemperate = 0;
+                    delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 1;// delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy ++ ; 
+                    return true;
+                }
+                else{
+                    return false;
+                } 
+        }
+        else{
+            return true;
+        }
+    }
+    else{
+        //end周期
+        if(    period_ == behavior.gaze.endTime  ){
+        //if( recall成功 )
+        return true;   //TODO: 
+        // else
+        return false;
+        }
+        // 非end周期
+        else{
+            return true;
+        }
+    }
+    #else
+        //end周期
+        if(    period_ == behavior.gaze.endTime  ){
+        //if( recall成功 )
+        return true;   //TODO: 
+        // else
+        return false;
+        }
+        // 非end周期
+        else{
+            return true;
+        }
+    #endif
+}
+bool recall_screen(  social_msg::bhvPara& behavior,    int period_  ){      /* 检测 screen 行为的目标 是否到达 */ 
+    return true;  //认为表情 永远能立即实现
+}
+
+#define DEBUG_delay_for_sounder_endtime
+int delay_for_sounder_endtime = 0;
+bool recall_sounder(   social_msg::bhvPara& behavior,   int period_  ){      /* 检测 sounder 行为的目标 是否到达 */ 
+    //end周期
+    if(    period_ == behavior.speech.endTime  ){
+        #ifdef DEBUG_delay_for_sounder_endtime
+        {
+            if( behavior.Needs == "Answer" ){
+                if(delay_for_sounder_endtime > 25){
+                    delay_for_sounder_endtime = 0;
+                    return true;
+                }
+                else{
+                    return false;
+                } 
+            }
+            else
+                return true;
+            
+        }  
+        #else
+        {
+            //if( recall成功 )
+            return true;   //TODO: 
+            // else
+            return false;
+        }
+        #endif 
+    }
+    // 非end周期
+    else{
+        return true;
+    }
+}
+bool recall_arm(  social_msg::bhvPara& behavior,    int period_  ){      /* 检测 arm 行为的目标 是否到达 */ 
+    return true;  //认为手臂的摆动 永远能立即实现
+}
+bool recall_leg(  social_msg::bhvPara& behavior,    int period_  ){      /* 检测 leg 行为的目标 是否到达 */ 
+    //end周期
+    if(    period_ == behavior.legs.endTime  ){
+        //if( recall成功 )
+        return true;    //TODO: 
+        // else
+        return false;
+    }
+    // 非end周期
+    else{
+        return true;
+    }
+}
+    
+bool recall( social_msg::bhvPara& behavior,     int period_  ){
+    //必要的变量计算
+    double single_period_time = behavior.TotalTime /100.0 ;
+    
+    /* 检测行为的目标 是否到达 */ 
+    std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+    bool flag_gaze=0, flag_screen=0, flag_sounder=0, flag_arm=0, flag_leg=0;
+    
+    while(1){
+        flag_set(recall_gaze( behavior, period_ )   ,  flag_gaze);            
+        flag_set(recall_screen( behavior, period_ )   ,  flag_screen);     
+        flag_set(recall_sounder( behavior, period_ )   ,  flag_sounder);     
+        flag_set(recall_arm( behavior, period_ )   ,  flag_arm);     
+        flag_set(recall_leg( behavior, period_ )   ,  flag_leg);     
+        
+        std::chrono::steady_clock::time_point  t2 = std::chrono::steady_clock::now();
+        double delay = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
+        if(compare(delay,single_period_time))  break;
+    }
+    #ifdef DEBUG_delay_for_sounder_endtime
+        if(    period_ == behavior.speech.endTime  )
+                delay_for_sounder_endtime ++ ;
+    #endif
+    #ifdef DEBUG_delay_for_gaze_xiaogang_measureTemperate
+        if( behavior.Needs == "MeasureTempareture" && behavior.gaze.target == "Gang" )
+            if( period_ == 30 ||  period_ == 70)
+                delay_for_gaze_xiaogang_measureTemperate ++ ;
+    #endif
+    // 以上的循环，完全是依靠  时间尺度。如果按照原来的 全部的 flag_xx 都为true了，就跳出循环，会导致 recall刚执行就结束了。
+    // 按照时间尺度结束循环后， 会更体现  行为参数的预定义的重要性。
+    if( (flag_gaze && flag_screen && flag_sounder && flag_arm && flag_leg) == true )
+        return true;
+    else
+        return false;
+}
+
+
+/******************************************************************
+ * 二、publish函数
+*******************************************************************/
+string  gaze_target_lastpub = "none", screen_type_lastpub = "none", 
+            sounder_tone_lastpub = "none", sounder_rate_lastpub = "none", sounder_content_lastpub = "none", 
+            arm_action_lastpub = "none", arm_rate_lastpub = "none", 
+            leg_target_lastpub = "none", leg_aciton_lastpub = "none", leg_rate_lastpub = "none", leg_distance_lastpub = "none";
+//工具函数 
+string none_check( string s){
+    string block = "none";;
+    if( s == "")
+        return block;
+    else
+        return s;
+}
+
+
+// 需求满足状态  、肢体状态 、 内部感知信息（pass、 Uncooperate。 
+// 感觉直接改成需求更合适，为什么要通过感知信息而多此一举呢。甚至直接改为行为？）的生成。
+void publish( social_msg::bhvPara& behavior,   int period_,  int& buletooth)
+{
+    string  gaze_target = "none", screen_type = "none", 
+            sounder_tone = "none", sounder_rate = "none", sounder_content = "none", 
+            arm_action = "none", arm_rate = "none", 
+            leg_target = "none", leg_aciton = "none", leg_rate = "none", leg_distance = "none";
+    // publish gaze
+        if(  (period_ >= behavior.gaze.startTime)  &&   (period_ <= behavior.gaze.endTime) ){
+                if(behavior.gaze.target != gaze_target_lastpub){
+                    gaze_target = none_check(behavior.gaze.target);
+                    gaze_target_lastpub = gaze_target;
+                }
+            }
+
+    // publish_screen
+        if(  (period_ >= behavior.emotion.startTime)  &&   (period_ <= behavior.emotion.endTime) ){
+                if(behavior.emotion.type != screen_type_lastpub){
+                    screen_type = none_check(behavior.emotion.type);
+                    screen_type_lastpub = screen_type;
+                }    
+            }
+        
+    // publish_sounder
+        if(  (period_ >= behavior.speech.startTime)  &&   (period_ <= behavior.speech.endTime) ){
+                if( 
+                    (sounder_tone_lastpub != to_string(behavior.speech.tone))   ||
+                    (sounder_rate_lastpub != to_string(behavior.speech.rate))   ||
+                    (sounder_content_lastpub != behavior.speech.content)       
+                ){
+                    sounder_tone = none_check(to_string(behavior.speech.tone)); 
+                    sounder_rate = none_check(to_string(behavior.speech.rate));
+                    sounder_content = none_check(behavior.speech.content);
+                    sounder_tone = sounder_tone_lastpub; 
+                    sounder_rate = sounder_rate_lastpub;
+                    sounder_content = sounder_content_lastpub;
+                }        
+            }
+
+    // publish_arm
+        if(  (period_ >= behavior.arms.startTime)  &&   (period_ <= behavior.arms.endTime) ){
+                if(
+                    (arm_action_lastpub != behavior.arms.action)            ||
+                    (arm_rate_lastpub != to_string(behavior.arms.rate))
+                ){
+                    arm_action = none_check(behavior.arms.action);
+                    arm_rate = none_check(to_string(behavior.arms.rate));
+                    arm_action = arm_action_lastpub;
+                    arm_rate = arm_rate_lastpub;
+                }   
+            }
+    // publish_leg( period_ );
+        if(  (period_ >= behavior.legs.startTime)  &&   (period_ <= behavior.legs.endTime) ){
+                if(
+                    (leg_target_lastpub != behavior.legs.target)           ||
+                    (leg_aciton_lastpub != behavior.legs.action)           ||
+                    (leg_rate_lastpub != to_string(behavior.legs.rate))    ||
+                    (leg_distance_lastpub != to_string(behavior.legs.distance))
+                ){
+                    leg_target = none_check(behavior.legs.target);
+                    leg_aciton = none_check(behavior.legs.action);
+                    leg_rate = none_check(to_string(behavior.legs.rate));
+                    leg_distance = none_check(to_string(behavior.legs.distance));
+                    leg_target = leg_target_lastpub;
+                    leg_aciton = leg_aciton_lastpub;
+                    leg_rate = leg_rate_lastpub;
+                    leg_distance = leg_distance_lastpub;
+                }
+            }
+
+
+        string block = "none";
+        string parameter_buletooth = gaze_target +" "+ block +" "+ block +" "+ block +" "+ block +" "+ 
+                    screen_type +" "+ block +" "+ block +" "+ block +" "+ block +" "+ 
+                    sounder_tone +" "+ sounder_rate +" "+ sounder_content +" "+ block +" "+ block +" "+ 
+                    arm_action +" "+ arm_rate +" "+ block +" "+ block +" "+ block +" "+ 
+                    leg_target +" "+ leg_aciton +" "+ leg_rate+" "+ leg_distance +" "+ block +" "
+                    ;
+        // cout<< "        行为参数：" <<parameter_buletooth<<endl;
+        // char buf[] = "hello zhjd";
+        // string buf1 = buf;
+        char *parameter_buletooth_charstat = (char *)parameter_buletooth.c_str();
+        char parameter_buletooth_char[1000];
+        strcpy(  parameter_buletooth_char , parameter_buletooth_charstat );
+        printf( "行为参数 parameter_buletooth_char: %s \n" , parameter_buletooth_char);
+        write(buletooth, parameter_buletooth_char, strlen(parameter_buletooth_char));    
+
+}
+
+/******************************************************************
+ * 三、生成和发送  身体状态
+*******************************************************************/
 void body_status_check_and_pub(){
     while(1){
         // 接受 安卓板的信息 
@@ -133,6 +438,10 @@ void body_status_first_pub(){
         printf( GREEN "发送机器人状态，idleState为：%d \n"NONE, (int)robot_status.idleState);  
 }
 
+
+/******************************************************************
+ * 四、需求满足状态
+*******************************************************************/
 void need_satisfy_pub( social_msg::bhvPara& behavior_for_satisfy, bool pn ){
     social_msg::need_satisfy_msg satisfy_msg;
     satisfy_msg.need_name = behavior_for_satisfy.Needs;
@@ -146,7 +455,11 @@ void need_satisfy_pub( social_msg::bhvPara& behavior_for_satisfy, bool pn ){
 
 // public:
 void  PeriodDetection();
-// 行为更新
+
+
+/******************************************************************
+ * 五、行为更新
+*******************************************************************/
 void BehaviorUpdate(const social_msg::bhvPara::ConstPtr& behavior_ ,  ros::NodeHandle*  n){
         std::cout<< "××××××××××××××××××××××××××××××××××××××××××××××××××××××"<< std::endl << "接收到 "<<behavior_->Needs<< " 行为, num为： "<< behavior_->num<< " , type为： "<< behavior_->num / 100%10 << std::endl<< "××××××××××××××××××××××××××××××××××××××××××××××××××××××"<< std::endl;
         //保存 当前行为的 必要信息         
@@ -171,11 +484,14 @@ void BehaviorUpdate(const social_msg::bhvPara::ConstPtr& behavior_ ,  ros::NodeH
         behavior_cur_exist = true;
 }
 
+/******************************************************************
+ * 六、main， 周期检测函数
+*******************************************************************/
 int main(int argc, char** argv){
     //蓝牙通信
     //蓝牙通信: 1.接受flag
     pthread_create(&th, NULL, pthread_read, &bluetooth);
-    
+    gaze_target_lastpub = "none";
     // ROS
     ros::init(argc, argv, "robot_platform");
     ros::NodeHandle n;
@@ -196,7 +512,7 @@ int main(int argc, char** argv){
     sleep(1);
     body_status_first_pub();
 
-    std::thread thread_body_status( body_status_check_and_pub );
+    // std::thread thread_body_status( body_status_check_and_pub );
 
     while(ros::ok())
     {
@@ -209,7 +525,6 @@ int main(int argc, char** argv){
     
     return 0;
 }
-
 void  PeriodDetection(){
     // 过渡行为
     if( (behavior_type_100 == 1) && ((behavior_type_10 != 0) || (behavior_type_1 != 0)) ){
@@ -229,7 +544,7 @@ void  PeriodDetection(){
     else {
         
         int period_total =  100;
-        int period_cur = 0;
+        int period_cur = 0;  period_cur = behavior.progress;
         insert_new_behavihor = false;
         int delay_time = 0;
         for(    ;   (period_cur <= period_total ) && (!insert_new_behavihor)    ; )
