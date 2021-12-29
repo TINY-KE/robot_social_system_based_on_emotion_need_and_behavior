@@ -14,4 +14,3 @@ social_msg/Emotion emotion
 social_msg/Arms arms
 social_msg/Speech speech
 social_msg/Legs legs
-int8 progress
