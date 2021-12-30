@@ -9,66 +9,66 @@ def attitude_talker():
     pub = rospy.Publisher('attitude', attitude_msg, queue_size=10)
     rate = rospy.Rate(0.05) # 1hz
     while not rospy.is_shutdown():
-# #0
-#         rate.sleep()
-#         rate.sleep()
-# #40
-#         atti=attitude_msg()
-#         atti.person_name ="Teacher_Li"
-#         atti.attitude = "enthusiastic"
-#         pub.publish(atti)
-#         rospy.loginfo("subscribe1：%s,%s",atti.person_name,atti.attitude)
-#         rate.sleep()
-# #60
-#         atti=attitude_msg()
-#         atti.person_name ="Teacher_Li"
-#         atti.attitude = "enthusiastic"
-#         pub.publish(atti)
-#         rate.sleep()
-# #80
-#         atti=attitude_msg()
-#         atti.person_name ="Teacher_Li"
-#         atti.attitude = "enthusiastic"
-#         pub.publish(atti)
-#         rate.sleep()
-#         rate.sleep()
-#         rate.sleep()
-# #140
-#         atti=attitude_msg()
-#         atti.person_name ="Student_Hong"
-#         atti.attitude = "enthusiastic"
-#         pub.publish(atti)
-#         rate.sleep()
-# #160
-#         atti=attitude_msg()
-#         atti.person_name ="Student_Hong"
-#         atti.attitude = "enthusiastic"
-#         pub.publish(atti)
-#         rate.sleep()
-#         rate.sleep()
-#         rate.sleep()
-# #220
-#         atti=attitude_msg()
-#         atti.person_name ="Student_Gang"
-#         atti.attitude = "enthusiastic"
-#         pub.publish(atti)
-#         atti=attitude_msg()
-#         atti.person_name ="Student_Ming"
-#         atti.attitude = "enthusiastic"
-#         pub.publish(atti)
-#         rate.sleep()
-# #240
-#         atti=attitude_msg()
-#         atti.person_name ="Student_Gang"
-#         atti.attitude = "enthusiastic"
-#         pub.publish(atti)
-#         atti=attitude_msg()
-#         atti.person_name ="Student_Ming"
-#         atti.attitude = "enthusiastic"
-#         pub.publish(atti)
-#         rate.sleep()
-#         rate.sleep()
-#         rate.sleep()
+#0
+        rate.sleep()
+        rate.sleep()
+#40
+        atti=attitude_msg()
+        atti.person_name ="Teacher_Li"
+        atti.attitude = "enthusiastic"
+        pub.publish(atti)
+        rospy.loginfo("subscribe1：%s,%s",atti.person_name,atti.attitude)
+        rate.sleep()
+#60
+        atti=attitude_msg()
+        atti.person_name ="Teacher_Li"
+        atti.attitude = "enthusiastic"
+        pub.publish(atti)
+        rate.sleep()
+#80
+        atti=attitude_msg()
+        atti.person_name ="Teacher_Li"
+        atti.attitude = "enthusiastic"
+        pub.publish(atti)
+        rate.sleep()
+        rate.sleep()
+        rate.sleep()
+#140
+        atti=attitude_msg()
+        atti.person_name ="Student_Hong"
+        atti.attitude = "enthusiastic"
+        pub.publish(atti)
+        rate.sleep()
+#160
+        atti=attitude_msg()
+        atti.person_name ="Student_Hong"
+        atti.attitude = "enthusiastic"
+        pub.publish(atti)
+        rate.sleep()
+        rate.sleep()
+        rate.sleep()
+#220
+        atti=attitude_msg()
+        atti.person_name ="Student_Gang"
+        atti.attitude = "enthusiastic"
+        pub.publish(atti)
+        atti=attitude_msg()
+        atti.person_name ="Student_Ming"
+        atti.attitude = "enthusiastic"
+        pub.publish(atti)
+        rate.sleep()
+#240
+        atti=attitude_msg()
+        atti.person_name ="Student_Gang"
+        atti.attitude = "enthusiastic"
+        pub.publish(atti)
+        atti=attitude_msg()
+        atti.person_name ="Student_Ming"
+        atti.attitude = "enthusiastic"
+        pub.publish(atti)
+        rate.sleep()
+        rate.sleep()
+        rate.sleep()
         
 # 300
         atti=attitude_msg()

@@ -169,7 +169,7 @@ class inner_need{
             /* 语音内容 */
             // temp.speech = speech_;
             temp.speech = "怎么还没有人来啊";
-            temp.satisfy_value = 1 ;
+            temp.satisfy_value = 2 ;
             return temp;
             }
 
@@ -192,7 +192,7 @@ class inner_need{
             /* 语音内容 */
             // temp.speech = speech_;
             temp.speech = "你来和我聊聊天吧";
-            temp.satisfy_value = 1 ;
+            temp.satisfy_value = 2 ;
             return temp;
             }
 

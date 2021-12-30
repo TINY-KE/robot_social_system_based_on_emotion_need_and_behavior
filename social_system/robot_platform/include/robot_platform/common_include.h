@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-19 20:22:40
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-27 14:35:24
+ * @LastEditTime: 2021-12-30 11:39:33
  */
 
 
@@ -53,4 +53,3 @@
 #define WHITE "\033[1;37m"    //粗体白色
 
 
-#define DEBUG_delay_for_sounder_endtime

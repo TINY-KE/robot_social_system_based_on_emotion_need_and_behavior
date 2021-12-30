@@ -10,83 +10,83 @@ def perception_talker():
     rate = rospy.Rate(0.05) # 1hz
     while not rospy.is_shutdown():
 	perc = perception_msg()
-# #0
-#         perc.time = rospy.get_time()
-#     	perc.person_name =""
-#     	perc.speech = ""
-#     	perc.person_emotion = ""
-#         pub.publish(perc)
-#         rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
-#         rate.sleep()
-#         rate.sleep()
-# #40
-#         perc.time = rospy.get_time()
-#     	perc.person_name =""
-#     	perc.speech = ""
-#     	perc.person_emotion = ""
-#         pub.publish(perc)
-#         rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
-#         rate.sleep()
+#0
+        perc.time = rospy.get_time()
+    	perc.person_name =""
+    	perc.speech = ""
+    	perc.person_emotion = ""
+        pub.publish(perc)
+        rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
+        rate.sleep()
+        rate.sleep()
+#40
+        perc.time = rospy.get_time()
+    	perc.person_name =""
+    	perc.speech = ""
+    	perc.person_emotion = ""
+        pub.publish(perc)
+        rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
+        rate.sleep()
 
-# #60
-#         perc.time = rospy.get_time()
-#     	perc.person_name ="Teacher_Li"
-#     	perc.speech = ""
-#     	perc.person_emotion = "None"
-#         pub.publish(perc)
-#         rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
-#         rate.sleep()
-# #80
-#         perc.time = rospy.get_time()
-#     	perc.person_name ="Teacher_Li"
-#     	perc.speech = ""
-#     	perc.person_emotion = "Happy"
-#         pub.publish(perc)
-#         rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
-#         rate.sleep()
-#         rate.sleep()
-#         rate.sleep()
-# #140
-#         perc.time = rospy.get_time()
-#     	perc.person_name ="Student_Hong"
-#     	perc.speech = "good"
-#     	perc.person_emotion = "Happy"
-#         pub.publish(perc)
-#         rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
-#         rate.sleep()
-# #160
-#         perc.time = rospy.get_time()
-#     	perc.person_name ="Student_Hong"
-#     	perc.speech = ""
-#     	perc.person_emotion = "None"
-#         pub.publish(perc)
-#         rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
-#         rate.sleep()
-#         rate.sleep()
-#         rate.sleep()
-# #220
-#         perc.time = rospy.get_time()
-#     	perc.person_name ="Student_Hong"
-#     	perc.speech = ""
-#     	perc.person_emotion = "Happy"
-#         pub.publish(perc)
-#         rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
-#         rate.sleep()
-# #240
-#         perc.time = rospy.get_time()
-#     	perc.person_name ="Student_Ming"
-#     	perc.speech = ""
-#     	perc.person_emotion = "None"
-#         pub.publish(perc)
-#         rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
-#         perc.time = rospy.get_time()
-#     	perc.person_name ="Student_Gang"
-#     	perc.speech = ""
-#     	perc.person_emotion = "None"
-#         pub.publish(perc)
-#         rate.sleep()
-#         rate.sleep()
-#         rate.sleep()
+#60
+        perc.time = rospy.get_time()
+    	perc.person_name ="Teacher_Li"
+    	perc.speech = ""
+    	perc.person_emotion = "None"
+        pub.publish(perc)
+        rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
+        rate.sleep()
+#80
+        perc.time = rospy.get_time()
+    	perc.person_name ="Teacher_Li"
+    	perc.speech = ""
+    	perc.person_emotion = "Happy"
+        pub.publish(perc)
+        rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
+        rate.sleep()
+        rate.sleep()
+        rate.sleep()
+#140
+        perc.time = rospy.get_time()
+    	perc.person_name ="Student_Hong"
+    	perc.speech = "good"
+    	perc.person_emotion = "Happy"
+        pub.publish(perc)
+        rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
+        rate.sleep()
+#160
+        perc.time = rospy.get_time()
+    	perc.person_name ="Student_Hong"
+    	perc.speech = ""
+    	perc.person_emotion = "None"
+        pub.publish(perc)
+        rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
+        rate.sleep()
+        rate.sleep()
+        rate.sleep()
+#220
+        perc.time = rospy.get_time()
+    	perc.person_name ="Student_Hong"
+    	perc.speech = ""
+    	perc.person_emotion = "Happy"
+        pub.publish(perc)
+        rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
+        rate.sleep()
+#240
+        perc.time = rospy.get_time()
+    	perc.person_name ="Student_Ming"
+    	perc.speech = ""
+    	perc.person_emotion = "None"
+        pub.publish(perc)
+        rospy.loginfo("发布的消息2：%f,%s,%s,%s",perc.time,perc.person_name,perc.speech,perc.person_emotion)
+        perc.time = rospy.get_time()
+    	perc.person_name ="Student_Gang"
+    	perc.speech = ""
+    	perc.person_emotion = "None"
+        pub.publish(perc)
+        rate.sleep()
+        rate.sleep()
+        rate.sleep()
 #300
         perc.time = rospy.get_time()
     	perc.person_name ="Student_Ming"

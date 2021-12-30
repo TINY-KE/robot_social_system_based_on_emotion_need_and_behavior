@@ -94,14 +94,14 @@ int main(int argc, char** argv){
     cout<< "Start to Subscribe（接收ROS信息） !!\n";
     
     //状态更新
-    sub_perception = n.subscribe("perceptions", 10, PerceptionUpdate);
-    sub_robot_emotion = n.subscribe("robot_emotion", 10, RobotEmotionUpdate);
-    sub_robot_status = n.subscribe("robot_status", 10, RobotStatusUpdate);
+    sub_perception = n.subscribe("perceptions", 1000, PerceptionUpdate);
+    sub_robot_emotion = n.subscribe("robot_emotion", 1000, RobotEmotionUpdate);
+    sub_robot_status = n.subscribe("robot_status", 1000, RobotStatusUpdate);
     ros::spinOnce();
     
     // 需求发布
     pub = n.advertise<social_msg::need_msg>("need_lists", 10);  
-    ros::Rate loop_rate(0.2);   //  TODO:  10秒 发送一次，这是由于当前是 人手打输入。
+    ros::Rate loop_rate(0.2);  
     // 为需求模型的运行  创建单独的线程 。  
     // std::thread PriorNeedThread(run_PriorNeed);
     cout<< "Wait to run PriorNeed !!\n";
@@ -135,7 +135,7 @@ void run_PriorNeed(){
                 need_output.qt_order = period_cur;
                 need_output.satisfy_value = need_lists[j].satisfy_value;
                 pub.publish(need_output);
-                printf( GREEN "qt_order: %d:\n"NONE, need_output.qt_order); 
+                printf( GREEN "    QT_order: %d:\n"NONE, need_output.qt_order); 
                 sleep(1);
             }
             period_cur++;     

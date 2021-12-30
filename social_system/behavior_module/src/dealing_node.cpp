@@ -128,7 +128,7 @@ void LoclistInit(LocalList &list){
     list.bhv[2].Needs = "MeasureTempareture";
     list.bhv[2].TotalTime = 60;
     list.bhv[3].Needs = "Wander";
-    list.bhv[3].TotalTime = 255;
+    list.bhv[3].TotalTime = 30; //127;
     list.bhv[4].Needs = "StopStranger";
     list.bhv[4].TotalTime = 30;
     list.bhv[5].Needs = "Chat";

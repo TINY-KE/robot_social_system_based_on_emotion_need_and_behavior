@@ -69,7 +69,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     tr("打开图像失败"),
      tr("打开图像失败!"));
     delete img;
-    return;
+//    return;
     }
     int width = (*img).width();      int height =  (*img).height();
 //    QRect rect(width-height/2,0, height,height);

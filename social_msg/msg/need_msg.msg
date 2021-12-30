@@ -7,5 +7,5 @@ float64 weight
 string speech
 int8 need   #?
 bool flag   #?
-int8 qt_order   #用于qt显示最新需求
+int64 qt_order   #用于qt显示最新需求
 int8 satisfy_value      #需求满足强度的  预设值
