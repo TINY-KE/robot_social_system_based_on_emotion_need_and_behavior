@@ -20,6 +20,7 @@ attitude_eval=[]
 perception_eval=[]
 delta_elist=[]                                         # 总情绪变化列表 [ float_情绪种类，float_情绪变化强度... ]
 msg_list=[]                                             # msg列表，记录每时刻接收到刺激的内容
+
 unique_msg=deque(maxlen=10) # 消息的唯一性队列，存储被判定为不同刺激的消息内容
 msg_dt=10                                             # 两次内容相同消息，但作为不同刺激输入的最小时间阈值（s）
 
@@ -175,8 +176,10 @@ def callback_need(need_satisfy_msg):
        #rospy.loginfo( "I heard %s %d", need_satisfy_msg.need_name,need_satisfy_msg.satisfy_value)
 
        ### 更新msg列表
-       msg_list.append(need_satisfy_msg.need_name) 
-       msg_list.append(need_satisfy_msg.satisfy_value)  
+       # msg_list.append(need_satisfy_msg.need_name) 
+       # msg_list.append(need_satisfy_msg.satisfy_value)  
+       msg_list[1] = (need_satisfy_msg.need_name) 
+       msg_list[2] = (need_satisfy_msg.satisfy_value)  
 
        #### 自我满足信息处理，通过查找dataframe实现值映射
        csv_name  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'need_satisfy.csv'
@@ -200,16 +203,21 @@ def callback_a_p(attitude_msg,perception_msg):
 
        #### 更新msg列表
        global msg_list
-       msg_list.extend([perception_msg.person_name,attitude_msg.person_name,\
-                                          perception_msg.person_emotion,attitude_msg.attitude,perception_msg.speech])
-       msg_list.insert(0,perception_msg.time)
-       
+       # msg_list.extend([perception_msg.person_name,attitude_msg.person_name,\
+       #                                    perception_msg.person_emotion,attitude_msg.attitude,perception_msg.speech])
+       # msg_list.insert(0,perception_msg.time)
+       msg_list[0] = perception_msg.time
+       msg_list[3] = perception_msg.person_name
+       msg_list[4] = attitude_msg.person_name
+       msg_list[5] = perception_msg.person_emotion
+       msg_list[6] = attitude_msg.attitude
+       msg_list[7] = perception_msg.speech
 
 def callback_robot_status( robot_status_msg ):  
        '''
        * 身体状态信息处理，用于“无聊情绪”
        :param robot_status_msg：订阅自我满足需求信息
-       :output need_eval：身体状态 引起的情绪变化列表？？？[ float_情绪种类，float_情绪变化强度... ]
+       :output ：身体状态 引起的情绪变化列表？？？[ float_情绪种类，float_情绪变化强度... ]
        '''
        print("接收robot_status_msg ")
        
@@ -225,6 +233,7 @@ def callback_robot_status( robot_status_msg ):
 def data_process():
        global msg_list,current_e,current_m,delta_e,delta_epre
        if  (not msg_list):
+       # if( len(msg_list) < 8 ):
               msg_list=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
        print("Msg list: ",msg_list)
        flag=unique_judge(msg_list)
@@ -274,7 +283,8 @@ def data_process():
       
        #### 调用移情计算
        caculate_e(delta_e,delta_epre)
-       msg_list=[] # msg列表初始化
+       # msg_list=[] # msg列表初始化  TODO:
+       msg_list=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
 
        # 闲置状态对无聊情绪的影响   
        global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  

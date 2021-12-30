@@ -6,7 +6,7 @@ from social_msg.msg import need_satisfy_msg
 
 def need_satisfy_talker():
     rospy.init_node('need_satisfy_talker', anonymous=True)
-    pub = rospy.Publisher('need_satisfy', need_satisfy_msg, queue_size=10)
+    pub = rospy.Publisher('need_satisfied', need_satisfy_msg, queue_size=10)
     rate = rospy.Rate(0.05) # 1hz
     while not rospy.is_shutdown():
 #0

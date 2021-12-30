@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-30 11:37:38
+ * @LastEditTime: 2021-12-30 17:04:47
  */
 /* 
 4）行为的发布：
@@ -248,6 +248,7 @@ void  PeriodDetection(){
         int period_cur = 0; period_cur = behavior.progress;
         insert_new_behavihor = false;
         int delay_time = 0;
+        // recall_buletooth.flag_to_false();
         for(    ;   (period_cur <= period_total ) && (!insert_new_behavihor)    ; )
         {
             //

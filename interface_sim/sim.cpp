@@ -35,15 +35,20 @@ void callback(sim::simConfig &config, uint32_t level)
                 perception.speech = config.per_speech;
                 perception.person_emotion = config.per_emotion;
                 pub_perception.publish(perception);
-                }
-                //社交态度
-                if(config.attitude_switch == true)
-                {
+
                 social_msg::attitude_msg attitude;    
-                attitude.person_name = config.attitude_person_name;
+                attitude.person_name = config.per_person_name;
                 attitude.attitude = config.attitude_type;
                 pub_attitude.publish(attitude);
                 }
+                // //社交态度
+                // if(config.attitude_switch == true)
+                // {
+                // social_msg::attitude_msg attitude;    
+                // attitude.person_name = config.attitude_person_name;
+                // attitude.attitude = config.attitude_type;
+                // pub_attitude.publish(attitude);
+                // }
                 //需求满足状况
                 if(config.satisfy_switch == true)
                 {

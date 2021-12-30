@@ -26,7 +26,7 @@ class myThread(threading.Thread):
             data_get()
         else:
             while 1:
-                time.sleep(1)
+                time.sleep(2)
                 Data_processing.data_process()
                 
 

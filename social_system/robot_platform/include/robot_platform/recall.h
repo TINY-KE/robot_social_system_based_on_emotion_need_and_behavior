@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-29 11:42:24
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-30 11:41:14
+ * @LastEditTime: 2021-12-30 16:32:45
  */
 #include "common_include.h"
 using namespace std;
@@ -15,7 +15,7 @@ public:
 private:  
     int buletooth;
 
-    #define EDBUG_WITHOUT_REAL_ROBOT
+    // #define EDBUG_WITHOUT_REAL_ROBOT
     #ifdef EDBUG_WITHOUT_REAL_ROBOT
         bool flag_gaze_bt=1, flag_screen_bt=1, flag_sounder_bt=1, flag_arm_bt=1, flag_leg_bt=1;
     #else
@@ -237,6 +237,9 @@ public:
             return true;
         else
             return false;
+    }
+    void flag_to_false(){
+        flag_gaze_bt=0; flag_screen_bt=0; flag_sounder_bt=0; flag_arm_bt=0; flag_leg_bt=0;
     }
 
 };
