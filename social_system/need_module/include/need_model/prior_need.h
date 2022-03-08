@@ -9,6 +9,7 @@
 #include <map>
 #include "task_need.h"
 #include "inner_need.h"
+#include "emergency.h"
 
 #ifndef TEST_CHECKRULE_H
 #define TEST_CHECKRULE_H
