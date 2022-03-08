@@ -51,7 +51,7 @@ TaskMonitor tasks;
 string CurrentTaskName;
 int test_i=0,test_j=0;
 
-
+social_msg::bhvQueue Q_List;
 
 void Queue_init(Queue_para* ptr) { //初始化队列
     ptr->count = 0;
@@ -773,6 +773,15 @@ void shiftneedlist(social_msg::need_msg &list)
     else if (list.need_name == "Charge") list.need = 10;
     else if (list.need_name == "Pass") list.need = 11;
 }
+int QueueCheck(social_msg::bhvQueue Q, string bhv)
+{
+    for(int i = 0; i < Q.n; i++){
+        if(Q.need[i] == bhv)
+            return 1;
+    }
+    return 0;
+}
+
 //插入判断，满足条件就插队，不满足就入队
 void ParaInsert(Queue_para* ptr, social_msg::bhvPara item)
 {
@@ -783,10 +792,13 @@ void ParaInsert(Queue_para* ptr, social_msg::bhvPara item)
     else{
             //chat\wander判断
             if(CurrentTaskName == "Wander"){
-
-                Append(ptr,item);
-                tasks.flag = 1;
-                Pop(Q);
+                //检查队列，有wander不添加
+                if(QueueCheck(Q_List,"Wander"));//如果wander存在则不做处理
+                else{
+                    Append(ptr,item);
+                    tasks.flag = 1;
+                    Pop(Q);
+                }
 
             }
             //并发判断
@@ -948,16 +960,16 @@ int main(int argc,char **argv)
             y++;
         }
         social_msg::bhvPara temp;
-        social_msg::bhvQueue temp2;
-        temp2.n = Q->count;
+        //social_msg::bhvQueue temp2;
+        Q_List.n = Q->count;
             int m = Q->front;
-        for(int i=0; i< temp2.n; i++)
+        for(int i=0; i< Q_List.n; i++)
         {
-            temp2.need[i] = Q->data[m].Needs;
-            temp2.obj[i] = Q->data[m].gaze.target;
+            Q_List.need[i] = Q->data[m].Needs;
+            Q_List.obj[i] = Q->data[m].gaze.target;
             m = (m+1)%20;
         }
-         chatterQ_pub.publish(temp2);
+         chatterQ_pub.publish(Q_List);
 
         if(((!QueueEmpty(Q)) && (tasks.flag == 1)) || (InsertAndConcurFlag))
         {
@@ -969,7 +981,9 @@ int main(int argc,char **argv)
             //调试
             // temp.num = taskNum*1000+temp.num+100;
             temp.time = int64_t((ros::Time::now().toSec())*1000.0);
+            sleep(1);
             chatter_pub.publish(temp);
+            //sleep(1);
             tasks.flag = 0;
             InsertAndConcurFlag = 0;
             //Pop(Q);
