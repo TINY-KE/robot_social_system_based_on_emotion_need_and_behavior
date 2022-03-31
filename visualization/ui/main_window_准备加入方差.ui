@@ -311,7 +311,7 @@
      <rect>
       <x>80</x>
       <y>510</y>
-      <width>131</width>
+      <width>111</width>
       <height>31</height>
      </rect>
     </property>
@@ -619,9 +619,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>70</y>
+      <y>50</y>
       <width>241</width>
-      <height>276</height>
+      <height>221</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_5">
@@ -634,16 +634,6 @@
      <property name="formAlignment">
       <set>Qt::AlignCenter</set>
      </property>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_28">
-       <property name="text">
-        <string>Time</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="lineEdit_per_time">
        <property name="text">
@@ -702,6 +692,16 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_31">
+       <property name="text">
+        <string>p</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
      <item row="4" column="1">
       <widget class="QLineEdit" name="lineEdit_per_p">
        <property name="text">
@@ -710,23 +710,6 @@
       </widget>
      </item>
      <item row="5" column="0">
-      <widget class="QLabel" name="label_75">
-       <property name="text">
-        <string>Intention_2</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLineEdit" name="lineEdit_per_intention_2">
-       <property name="text">
-        <string>Enter school</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
       <widget class="QLabel" name="label_32">
        <property name="contextMenuPolicy">
         <enum>Qt::ActionsContextMenu</enum>
@@ -739,14 +722,14 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="5" column="1">
       <widget class="QLineEdit" name="lineEdit_per_speech">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="6" column="0">
       <widget class="QLabel" name="label_33">
        <property name="contextMenuPolicy">
         <enum>Qt::ActionsContextMenu</enum>
@@ -759,57 +742,20 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="6" column="1">
       <widget class="QLineEdit" name="lineEdit_per_personEmotion">
        <property name="text">
         <string>Happy</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_31">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_28">
        <property name="text">
-        <string>p</string>
+        <string>Time</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_76">
-       <property name="text">
-        <string>p_2</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="lineEdit_per_p_2">
-       <property name="text">
-        <string>1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="label_77">
-       <property name="contextMenuPolicy">
-        <enum>Qt::ActionsContextMenu</enum>
-       </property>
-       <property name="text">
-        <string>variance</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QLineEdit" name="lineEdit_per_var">
-       <property name="text">
-        <string/>
        </property>
       </widget>
      </item>
@@ -837,7 +783,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>370</y>
+      <y>290</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -855,7 +801,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>400</y>
+      <y>320</y>
       <width>241</width>
       <height>58</height>
      </rect>
@@ -904,7 +850,7 @@
     <property name="geometry">
      <rect>
       <x>620</x>
-      <y>580</y>
+      <y>510</y>
       <width>221</width>
       <height>31</height>
      </rect>
@@ -1926,9 +1872,9 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>620</y>
+      <y>550</y>
       <width>271</width>
-      <height>171</height>
+      <height>241</height>
      </rect>
     </property>
     <property name="font">
@@ -3186,8 +3132,8 @@
    <widget class="QLabel" name="label_72">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>480</y>
+      <x>40</x>
+      <y>400</y>
       <width>221</width>
       <height>31</height>
      </rect>
@@ -3204,9 +3150,9 @@
    <widget class="QWidget" name="formLayoutWidget_5">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>510</y>
-      <width>271</width>
+      <x>20</x>
+      <y>430</y>
+      <width>241</width>
       <height>58</height>
      </rect>
     </property>

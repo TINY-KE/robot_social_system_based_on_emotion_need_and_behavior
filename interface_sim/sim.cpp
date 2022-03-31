@@ -32,6 +32,8 @@ void callback(sim::simConfig &config, uint32_t level)
                 perception.IDtype = config.per_person_IDtype;
                 perception.intention = config.per_intention;
                 perception.p = config.per_p;
+                perception.intention_2 = config.per_intention_2;
+                perception.p_2 = config.per_p_2;
                 perception.speech = config.per_speech;
                 perception.person_emotion = config.per_emotion;
                 pub_perception.publish(perception);

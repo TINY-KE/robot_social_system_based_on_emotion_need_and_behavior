@@ -1,0 +1,108 @@
+num,person,IDtype,perception,p,perception_2,p_2,emotion,body,right need
+1,类别1,,,,,,,,
+2,,,,0,,0,0 0 0 0 0 0 0 0.8,1 1 1 1 1 1 1 1,"Wander,Chat"
+3,,,,0,,0,0 0 0 0 0 0 0 0.7,1 1 1 1 1 1 1 1,"Wander,Chat"
+4,,,,0,,0,0 0 0 0 0 0 0 0.6,1 1 1 1 1 1 1 1,"Wander,Chat"
+5,,,,0,,0,0 0 0 0 0 0 0 0.5,1 1 1 1 1 1 1 1,"Wander,Chat"
+6,,,,0,,0,0.6 0 0 0 0 0 0 0,0.3 1 1 1 1 1 1 1,Charge
+7,,,,0,,0,0.6 0 0 0 0 0 0 0,0.2 1 1 1 1 1 1 1,Charge
+8,,,,0,,0,0.6 0 0 0 0 0 0 0,0.1 1 1 1 1 1 1 1,Charge
+9,,,,0,,0,0.8 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Sing
+10,类别2,,,,,,,,
+11,,Teacher,EnterSchool,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+12,,Student,EnterSchool,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+13,,Parent,EnterSchool,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture,ParentIdentity"
+14,,Stranger,EnterSchool,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,StopStranger
+15,,Teacher,Query,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Answer
+16,,Student,Query,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Answer
+17,,Parent,Query,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Answer
+18,,Stranger,Query,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Answer
+19,,Teacher,Uncooperate,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,KeepOrder
+20,,Student,Uncooperate,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,KeepOrder
+21,,Parent,Uncooperate,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,KeepOrder
+22,,Teacher,SendWord,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Remind
+23,,Student,SendWord,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Remind
+24,,Parent,SendWord,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Remind
+25,类别3,,,,,,,,
+26,,Teacher,SendWord,0.9,Query,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Doubt
+27,,Teacher,Query,0.92,SendWord,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Doubt
+28,,Teacher,Query,0.9,SendWord,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Doubt
+29,,Student,SendWord,0.9,Query,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Doubt
+30,,Student,Query,0.92,SendWord,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Doubt
+31,,Student,Query,0.9,SendWord,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Doubt
+32,,Parent,Uncooperate,0.9,EnterSchool,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Doubt  现程序会生成EnterSchool
+33,,Parent,Uncooperate,0.92,EnterSchool,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Doubt
+34,,Parent,EnterSchool,0.9,Uncooperate,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Doubt
+35,类别4,,,,,,,,
+36,,Teacher,EnterSchool,0.9,Query,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+37,,Teacher,EnterSchool,0.92,SendWord,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+38,,Teacher,EnterSchool,0.9,SendWord,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+39,,Student,EnterSchool,0.9,Query,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+40,,Student,EnterSchool,0.92,SendWord,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+41,,Student,EnterSchool,0.9,SendWord,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+42,,Parent,EnterSchool,0.9,Query,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+43,,Parent,EnterSchool,0.92,SendWord,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+44,,Parent,EnterSchool,0.9,SendWord,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,MeasureTempareture"
+45,,Teacher,Uncooperate,0.9,Query,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Uncooperate
+46,,Teacher,Uncooperate,0.92,SendWord,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Uncooperate
+47,,Teacher,Uncooperate,0.9,SendWord,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Uncooperate
+48,,Student,Uncooperate,0.9,Query,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Uncooperate
+49,,Student,Uncooperate,0.92,SendWord,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Uncooperate
+50,,Student,Uncooperate,0.9,SendWord,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Uncooperate
+51,,Parent,Uncooperate,0.9,Query,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Uncooperate
+52,,Parent,Uncooperate,0.92,SendWord,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Uncooperate
+53,,Parent,Uncooperate,0.9,SendWord,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Uncooperate
+54,类别2,,,,,,,,
+55,Ming,Patient,EnterHospital,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,AskIntention"
+56,Hong,Patient,EnterHospital,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,"Greet,AskIntention"
+57,Stranger,Patient,EnterHospital,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,StopStranger
+58,Li,Patient,AskOtherIntention,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,AskOtherIntention
+59,Liu,Patient,AskOtherIntention,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,AskOtherIntention
+60,Ming,Patient,AskOtherIntention,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,AskOtherIntention
+61,Hong,Patient,AskOtherIntention,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,AskOtherIntention
+62,Li,Patient,Call,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Call
+63,Liu,Patient,Call,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Call
+64,Ming,Patient,Call,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Call
+65,Hong,Patient,Call,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,Call
+66,Li,Patient,PrintReport,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,PrintReport
+67,Liu,Patient,PrintReport,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,PrintReport
+68,Ming,Patient,PrintReport,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,PrintReport
+69,Hong,Patient,PrintReport,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,PrintReport
+70,Li,Patient,PhysicalExamination,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,PhysicalExamination
+71,Liu,Patient,PhysicalExamination,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,PhysicalExamination
+72,Ming,Patient,PhysicalExamination,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,PhysicalExamination
+73,Hong,Patient,PhysicalExamination,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,PhysicalExamination
+74,Li,Patient,ScheduledDialysis,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,ScheduledDialysis
+75,Liu,Patient,ScheduledDialysis,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,ScheduledDialysis
+76,Ming,Patient,ScheduledDialysis,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,ScheduledDialysis
+77,Hong,Patient,ScheduledDialysis,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,ScheduledDialysis
+78,Li,Patient,UnscheduledDialysis,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,UnscheduledDialysis
+79,Liu,Patient,UnscheduledDialysis,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,UnscheduledDialysis
+80,Ming,Patient,UnscheduledDialysis,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,UnscheduledDialysis
+81,Hong,Patient,UnscheduledDialysis,1,,0,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,UnscheduledDialysis
+82,类别3,,,,,,,,
+83,Li,Patient,EnterHospital,0.9,PrintReport,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,EnterHospital
+84,Liu,Patient,EnterHospital,0.92,PhysicalExamination,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,EnterHospital
+85,Ming,Patient,EnterHospital,0.9,ScheduledDialysis,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,EnterHospital
+86,Hong,Patient,EnterHospital,0.95,UnscheduledDialysis,0.9,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,EnterHospital
+87,Li,Patient,UnscheduledDialysis,0.9,ScheduledDialysis,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,UnscheduledDialysis
+88,Liu,Patient,UnscheduledDialysis,0.92,ScheduledDialysis,0.88,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,UnscheduledDialysis
+89,Ming,Patient,ScheduledDialysis,0.9,UnscheduledDialysis,0.85,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,UnscheduledDialysis
+90,Hong,Patient,ScheduledDialysis,0.95,UnscheduledDialysis,0.9,0.6 0 0 0 0 0 0 0,1 1 1 1 1 1 1 1,UnscheduledDialysis
+91,,,,,,,,,
+92,,,,,,,,,
+93,,,,,,,,,
+94,,,,,,,,,
+95,,,,,,,,,
+96,,,,,,,,,
+97,,,,,,,,,
+98,,,,,,,,,
+99,,,,,,,,,
+100,,,,,,,,,
+101,,,,,,,,,
+102,,,,,,,,,
+103,,,,,,,,,
+104,,,,,,,,,
+105,,,,,,,,,
+106,,,,,,,,,
+107,,,,,,,,,

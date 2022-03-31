@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-09-21 21:16:50
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2021-12-25 16:23:46
+ * @LastEditTime: 2022-03-30 17:40:10
  */
 #include "perception.h"
 #include "task_paremeter_rw.h"
@@ -24,10 +24,10 @@ class task_need{
     public:
         task_need( ){
             /* 生成need */                
-            read_need_parameter read(yaml_name);
+            read_need_parameter read;//(yaml_name);
             read_need_lists.clear();
             std::cout <<  "Read parameter for Task Need !! 类型如下： " << "\n"; 
-            read_need_lists = read.return_task_need();
+            read_need_lists = read.return_task_need(yaml_name);
         }
         
         void update( perception per, double *emotion, double body[8]){
@@ -50,7 +50,7 @@ class task_need{
                 if(
                     intention_ ==  iter->intention  &&
                     IDtype_ == iter->IDtype  &&
-                    person_emotion_ == iter->person_emotion  &&
+                    // person_emotion_ == iter->person_emotion  &&
                     rob_emotion_ >= iter->rob_emotion  &&                    
                     rob_status_ >= iter->rob_status  
                 ){

@@ -370,8 +370,11 @@ void MainWindow::updateLoggingView_perception() {
   ui.lineEdit_per_person_name -> setText(QString::fromStdString(qnode.per_person));
   ui.lineEdit_per_intention -> setText(QString::fromStdString(qnode.per_intention));
   ui.lineEdit_per_p -> setText(QString::number(qnode.per_p,'f',2));
+  ui.lineEdit_per_intention_2 -> setText(QString::fromStdString(qnode.per_intention_2));
+  ui.lineEdit_per_p_2 -> setText(QString::number(qnode.per_p_2,'f',2));
   ui.lineEdit_per_speech -> setText(QString::fromStdString(qnode.per_speech));
   ui.lineEdit_per_personEmotion -> setText(QString::fromStdString(qnode.per_personEmotion));
+  ui.lineEdit_per_var -> setText(QString::number(qnode.per_var,'f',7));
 }
 void MainWindow::updateLoggingView_social_attitude() {
   ui.lineEdit_attitude_person_name -> setText(QString::fromStdString(qnode.attitude_person_name));

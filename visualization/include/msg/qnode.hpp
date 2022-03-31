@@ -140,9 +140,11 @@ public:
   std::string per_person_IDtype;
   std::string per_intention;
   double per_p;
+  std::string per_intention_2;
+  double per_p_2;
   std::string per_personEmotion;
   std::string per_speech;
-
+  double per_var;
   //social attitude
   std::string attitude_person_name;
   std::string attitude_type;
@@ -247,7 +249,7 @@ public:
   static bool comp( need &a,need &b);
   need need_cur;
   void need_list_sort();
-
+  double varianceTop2( double p1 , double p2 );
 };
 
 }  // namespace msg

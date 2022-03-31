@@ -62,6 +62,7 @@ find_package(Threads)
 catkin_package(
         LIBRARIES need_model
         CATKIN_DEPENDS  message_runtime
+        CATKIN_DEPENDS roscpp rospy std_msgs
 )
 
 

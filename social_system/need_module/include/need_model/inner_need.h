@@ -17,6 +17,7 @@ class inner_need{
         std::vector<double> rob_status_;
         std::vector<double> rob_status_last;
         double p_;
+        bool doubtflag_;
         /* inner的need的影响因子 */
         double  Doubt_factor ;      double  Doubt_weight = 0.95;
         double  Wander_factor ;     double  Wander_weight = 0.8;    double  Wander_time_thresh = 10;
@@ -93,11 +94,11 @@ class inner_need{
 
         ~inner_need(){};
 
-        void update( perception per, double *emotion, double *body){
+        void update( perception per, double *emotion, double *body , bool doubtflag = false){
                 /* 读取need的判断信息 */
                 intention_ = per.intention_;
                 IDtype_ = per.IDtype_;
-                
+                doubtflag_ = doubtflag;
                 /* 更新外界状态 */
                 std::vector<double > temp(emotion, emotion+8); rob_emotion_.assign(temp.begin(), temp.end());
                 person_emotion_ = per.person_emotion_;
@@ -114,9 +115,7 @@ class inner_need{
     private:
         need Doubt( ){
             need temp;
-            /* 信息 */
             temp.need_name = "Doubt";
-            /* 评价标准 */
 
             temp.intention = "";
             temp.IDtype = IDtype_; 
@@ -126,11 +125,15 @@ class inner_need{
             temp.IDtype = "itself";
             temp.person_emotion = "none";            
             temp.rob_status.assign(rob_status_.begin(), rob_status_.end());
-            /* 权重计算公式 */
             // temp.weight = Doubt_factor * (1 - Doubt_weight) * (1 - p_)/0.5 + Doubt_weight;   
-            if(p_ > 0) 
-                {temp.weight = Doubt_weight * (-1*pow(Doubt_factor , (1-p_)*10) + 1);  }
-            /* 语音内容 */
+            // if(p_ > 0) 
+            //     {temp.weight = Doubt_weight * (-1*pow(Doubt_factor , (1-p_)*10) + 1);  }
+            
+            if(doubtflag_){
+                temp.weight = Doubt_weight;  //TODO: ??
+                doubtflag_ = false;
+            }
+                
             // temp.speech = speech_;
             temp.speech = "请问您需要我做什么吗";
             temp.satisfy_value = 2 ;
@@ -172,6 +175,28 @@ class inner_need{
             temp.satisfy_value = 2 ;
             return temp;
             }
+        need Wander_boring(){
+            need temp;
+            /* 信息 */
+            temp.need_name = "Wander";
+            /* 评价标准 */
+            temp.intention = "";
+            temp.IDtype = ""; 
+            temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
+            temp.person_name = "itself";
+            temp.IDtype = "itself";
+            temp.person_emotion = "none";            
+            temp.rob_status.assign(rob_status_.begin(), rob_status_.end());
+            /* 权重计算公式 */
+            // temp.weight = Chat_factor * (1 - Chat_weight) * rob_emotion_[3] + Chat_weight; // TODO: 第几个是"无聊"情绪。假设为：高兴、悲伤、愤怒、无聊
+            temp.weight = Chat_weight * (-1*pow(Chat_factor , rob_emotion_[7]*10) + 1);
+            /* 语音内容 */
+            // temp.speech = speech_;
+            temp.speech = "怎么还没有人来啊";
+            temp.satisfy_value = 2 ;
+            return temp;
+            }
 
         need Chat( ){
             need temp;
@@ -188,7 +213,7 @@ class inner_need{
             temp.rob_status.assign(rob_status_.begin(), rob_status_.end());
             /* 权重计算公式 */
             // temp.weight = Chat_factor * (1 - Chat_weight) * rob_emotion_[3] + Chat_weight; // TODO: 第几个是"无聊"情绪。假设为：高兴、悲伤、愤怒、无聊
-            temp.weight = Chat_weight * (-1*pow(Chat_factor , rob_emotion_[3]*10) + 1);
+            temp.weight = Chat_weight * (-1*pow(Chat_factor , rob_emotion_[7]*10) + 1);
             /* 语音内容 */
             // temp.speech = speech_;
             temp.speech = "你来和我聊聊天吧";
@@ -224,7 +249,8 @@ class inner_need{
             std::vector<need> output_need_lists;
             need temp;
             temp = Doubt();  if( temp.weight > 0.5 )    output_need_lists.push_back(temp);
-            temp = Wander();  if( temp.weight > 0.5 )   output_need_lists.push_back(temp);/* 应该让漫步的需求，永久输出？ */
+            temp = Wander_boring();  if( temp.weight > 0.5 )    output_need_lists.push_back(temp);
+            // temp = Wander();  if( temp.weight > 0.5 )   output_need_lists.push_back(temp);/* 应该让漫步的需求，永久输出？ */
             temp = Chat();   if( temp.weight > 0.5 )    output_need_lists.push_back(temp);
             temp = Charge(); if( temp.weight > 0.5 )    output_need_lists.push_back(temp);
 

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: sueRimn
  * @Date: 2021-09-21 21:16:50
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-09-29 10:38:41
+ * @LastEditors: Zhang Jiadong
+ * @LastEditTime: 2022-03-28 10:35:27
  */
 //
 // Created by zhjd on 2021/5/11.
@@ -20,6 +20,8 @@ public:
     std::string IDtype_;
     std::string intention_;
     double p_;
+    std::string intention_2_;
+    double p_2_;
     std::string speech_;
     std::string person_emotion_;
     

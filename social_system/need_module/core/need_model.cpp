@@ -46,10 +46,18 @@ void run_PriorNeed();
 void PerceptionUpdate(const social_msg::perception_msg& msg){
     
     perception per;
+    per.intention_ = msg.intention;
     per.p_ = msg.p;
+    per.intention_2_ = msg.intention_2;
+    if(  msg.intention_2 == ""    || msg.p_2 == 0  || msg.p_2 == NULL ){
+        per.p_2_ = 0;
+    }
+    else{
+        per.p_2_ = msg.p_2;
+    }
     per.person_name_ = msg.person_name;
     per.IDtype_ = msg.IDtype;
-    per.intention_ = msg.intention;
+    
     per.speech_ = msg.speech;
     per.person_emotion_ = msg.person_emotion;
     
@@ -101,7 +109,8 @@ int main(int argc, char** argv){
     
     // 需求发布
     pub = n.advertise<social_msg::need_msg>("need_lists", 10);  
-    ros::Rate loop_rate(0.2);  
+    // ros::Rate loop_rate(0.1);  //5s一次
+    ros::Rate loop_rate(0.4);  //5s一次
     // 为需求模型的运行  创建单独的线程 。  
     // std::thread PriorNeedThread(run_PriorNeed);
     cout<< "Wait to run PriorNeed !!\n";
@@ -123,20 +132,34 @@ void run_PriorNeed(){
         {
             printf( GREEN "Run %dth PriorNeed（运行先验模型） !!\n"NONE, period_cur);            
             vector<need> need_lists = PriorNeed.need_compute_all();
-            for(int j =0 ; j< need_lists.size(); j++){
-                social_msg::need_msg need_output;
-                need_output.IDtype = need_lists[j].IDtype;
-                need_output.rob_emotion = need_lists[j].robot_emotion_str;//TODO: need_lists[i].rob_emotion;
-                need_output.person_emotion = need_lists[j].person_emotion;//need_lists[i].person_emotion
-                need_output.need_name = need_lists[j].need_name;  
-                need_output.weight = need_lists[j].weight;
-                need_output.speech = need_lists[j].speech;
-                need_output.person_name =  need_lists[j].person_name;
-                need_output.qt_order = period_cur;
-                need_output.satisfy_value = need_lists[j].satisfy_value;
-                pub.publish(need_output);
-                printf( GREEN "    QT_order: %d:\n"NONE, need_output.qt_order); 
-                sleep(1);
+            if( need_lists.size() != 0 )
+                for(int j =0 ; j< need_lists.size(); j++){
+                    social_msg::need_msg need_output;
+                    need_output.IDtype = need_lists[j].IDtype;
+                    need_output.rob_emotion = need_lists[j].robot_emotion_str;//TODO: need_lists[i].rob_emotion;
+                    need_output.person_emotion = need_lists[j].person_emotion;//need_lists[i].person_emotion
+                    need_output.need_name = need_lists[j].need_name;  
+                    need_output.weight = need_lists[j].weight;
+                    need_output.speech = need_lists[j].speech;
+                    need_output.person_name =  need_lists[j].person_name;
+                    need_output.qt_order = period_cur;
+                    need_output.satisfy_value = need_lists[j].satisfy_value;
+                    pub.publish(need_output);
+                    printf( GREEN "    QT_order: %d:\n"NONE, need_output.qt_order); 
+                    // sleep(0.1); // TODO: 重要。
+                }
+            else{
+                    social_msg::need_msg need_output;
+                    need_output.IDtype = "";
+                    need_output.rob_emotion = "";//TODO: need_lists[i].rob_emotion;
+                    need_output.person_emotion = "";//need_lists[i].person_emotion
+                    need_output.need_name = "";  
+                    need_output.weight = 0;
+                    need_output.speech = "";
+                    need_output.person_name =  "";
+                    need_output.qt_order = period_cur;
+                    need_output.satisfy_value = 0;
+                    pub.publish(need_output);
             }
             period_cur++;     
         }

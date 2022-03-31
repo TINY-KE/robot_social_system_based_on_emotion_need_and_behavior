@@ -103,8 +103,12 @@ void QNode::Callback_percetion(const social_msg::perception_msg &msg){
   per_person_IDtype = msg.IDtype;
   per_intention = msg.intention;
   per_p = msg.p;
+  per_intention_2 = msg.intention_2;
+  per_p_2 = msg.p_2;
   per_speech = msg.speech;
   per_personEmotion = msg.person_emotion;
+  per_var = varianceTop2(per_p , per_p_2);
+  std::cout << " ******* varianceTop2(per_p , per_p_2):"<< per_var << std::endl;
   Q_EMIT loggingUpdated_perception();
 }
 void QNode::Callback_social_attitude(const social_msg::attitude_msg &msg){
@@ -174,7 +178,8 @@ void QNode::Callback_need(const social_msg::need_msg &msg){
   else  if(msg.qt_order > qt_order_largest){
       qt_order_largest = msg.qt_order;
       need_list.clear();
-      need_list.push_back(need_cur);
+      if(need_cur.name != "" )
+         need_list.push_back(need_cur);
   }
 
   Q_EMIT loggingUpdated_need();
@@ -265,4 +270,11 @@ bool QNode::comp( need &a,need &b)
 void QNode::need_list_sort(){
     sort( need_list.begin(),  need_list.end(),  comp );
 }
+
+double QNode::varianceTop2( double p1 , double p2 ){
+
+        double mean = p1/2.0 + p2/2.0;
+        double var = pow(p1-mean,2) + pow(p2-mean,2);
+        return var/2.0;
+    }
 }  // namespace msg
