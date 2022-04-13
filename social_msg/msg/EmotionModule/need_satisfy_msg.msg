@@ -1,0 +1,2 @@
+string need_name
+int8 satisfy_value

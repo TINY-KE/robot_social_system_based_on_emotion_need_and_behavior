@@ -1,0 +1,72 @@
+cmake_minimum_required(VERSION 3.0)
+project(need_module)
+set(CMAKE_BUILD_TYPE "Debug")
+## Compile as C++11, supported in ROS Kinetic and newer
+add_compile_options(-std=c++14)
+
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
+find_package(catkin REQUIRED COMPONENTS
+        roscpp
+        rospy
+        std_msgs
+        message_generation
+        geometry_msgs
+#        need_model
+#        perception_msgs
+        dynamic_reconfigure
+)
+
+include_directories(
+        include/need_model
+        ${catkin_INCLUDE_DIRS}
+        include
+        /home/kod/com_ws/devel/include/
+	/home/zhjd/ws/devel/include/
+)
+
+
+#yaml cpp
+# set(yaml-cpp_DIR /home/zhjd/ws/src/ThirdParty/yaml-cpp-release-0.5.1)   
+set(YAML_CPP_DIR "/usr/local/share/cmake/yaml-cpp")   
+MESSAGE("(1)yaml cpp dir :" ${yaml-cpp_DIR} )
+find_package(yaml-cpp REQUIRED)
+find_package(yaml-cpp 0.5.1)
+# find_package(yaml-cpp QUIET)
+include_directories(${YAML_CPP_INCLUDE_DIR})
+MESSAGE("(2)yaml cpp dir :" ${yaml-cpp_DIR} )
+MESSAGE("(3)yaml cpp dir :"${YAML_CPP_INCLUDE_DIR} )
+MESSAGE("(4)yaml cpp dir :"${yaml-cpp} )
+#thread 
+find_package(Threads) 
+
+#ros massage自定义
+# add_message_files( FILES perception_msg.msg  
+#         need_msg.msg  
+#         robot_emotion.msg  
+#         robot_status.msg  
+#         need_compare.msg
+#         person_emotion_assessment.msg
+#         person_emotion_assessment_list.msg
+#         attitude_msg.msg
+#         need_satisfy_msg.msg
+# )
+# generate_messages( DEPENDENCIES    roscpp  std_msgs geometry_msgs )
+
+# generate_dynamic_reconfigure_options( 
+#     cfg/DynamicParam.cfg 
+
+# ) 
+
+catkin_package(
+        LIBRARIES need_model
+        CATKIN_DEPENDS  message_runtime
+        CATKIN_DEPENDS roscpp rospy std_msgs
+)
+
+
+#可执行文件
+add_executable(need_model core/need_model.cpp  core/perception_filter.cpp)
+target_link_libraries(need_model ${catkin_LIBRARIES}  yaml-cpp ${CMAKE_THREAD_LIBS_INIT})
+

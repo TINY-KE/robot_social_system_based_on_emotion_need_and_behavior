@@ -1,0 +1,11 @@
+int16 num
+int32 time
+string intention
+int8 CurOrder
+int8 TotalOrder
+int8 Actuator_enable
+social_msg/Gaze gaze
+social_msg/Emotion emotion
+social_msg/Arms arms
+social_msg/Speech speech
+social_msg/Legs legs

@@ -1,0 +1,10 @@
+float64 time
+string person_name
+string IDtype
+string intention
+float64 p
+string intention_2
+float64 p_2
+string person_speech
+string speech
+string person_emotion
