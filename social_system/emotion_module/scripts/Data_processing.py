@@ -222,12 +222,23 @@ def callback_robot_status( robot_status_msg ):
        print("接收robot_status_msg ")
        
        global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
-       idleState_last = 0
-       if ( (idleState_last == 0) and  (robot_status_msg.idleState == 1) ):
-              time_init = time.time()
-       idleState_last = robot_status_msg.idleState
-       idleState_flag = 1
+       # 原来的：
+       # idleState_last = 0
+       # if ( (idleState_last == 0) and  (robot_status_msg.idleState == 1) ):
+       #        time_init = time.time()
+       # idleState_last = robot_status_msg.idleState
+       # idleState_flag = 1
        # print("×××××展示%f"%(idleState_flag))
+
+       # 现在的：
+       if ( robot_status_msg.idleState == 1 ):
+              print("接收到robot 处于闲置状态")
+              time_init = time.time()
+              idleState_flag = 1
+       else:
+              idleState_flag = 0
+       # idleState_last = robot_status_msg.idleState
+       
 
 
 def data_process():
@@ -287,16 +298,28 @@ def data_process():
        msg_list=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
 
        # 闲置状态对无聊情绪的影响   
+       # 原来的：
+       # global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
+       # if idleState_flag :
+       #        print("运行robot_status_msg to boring ")
+       #        time_cur = time.time()
+       #        print("机器人闲置了%f秒"%(time_cur - time_init)) 
+       #        if ( (time_cur - time_init) > 30 ):
+       #               # idleState_to_boring = 0.8
+       #               current_e[7] = 0.5
+       #               idleState_last = 0
+       #               time_init =  time.time()
+       #               print("无聊情绪置为 0.8")
+       # 现在的：
        global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
        if idleState_flag :
               print("运行robot_status_msg to boring ")
               time_cur = time.time()
               print("机器人闲置了%f秒"%(time_cur - time_init)) 
-              if ( (time_cur - time_init) > 60 ):
+              if ( (time_cur - time_init) > 30 ):
                      # idleState_to_boring = 0.8
-                     current_e[7] = 0.7
-                     idleState_last = 0
-                     time_init =  time.time()
+                     current_e[7] = 0.5
+                     idleState_flag  = 0
                      print("无聊情绪置为 0.8")
 
        #### 可视化

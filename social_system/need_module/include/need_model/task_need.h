@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-09-21 21:16:50
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-03-30 17:40:10
+ * @LastEditTime: 2022-04-16 00:48:46
  */
 #include "perception.h"
 #include "task_paremeter_rw.h"
@@ -59,7 +59,7 @@ class task_need{
                     // if( iter->speech == "MeasureTempareture")
                     //     iter->speech = "请站在原地接受体温测量哦"; TODO:  交由行为管理模块完成.
                     iter->rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-                    iter->robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
+                    robot_emotion_num2string( rob_emotion_ ,iter->robot_emotion_str ,iter->robot_emotion_intensity );
                     // iter->person_emotion.assign(person_emotion_.begin(), person_emotion_.end()); //TODO: ??
                     iter->person_emotion = person_emotion_;
                     iter->rob_status.assign(rob_status_.begin(), rob_status_.end()); 
@@ -90,47 +90,72 @@ class task_need{
             wirte();
         }
     private:
-         string robot_emotion_num2string( std::vector<double> rob_emotion ){
-            int temp  =  -1; 
-            int i_temp;
-            int i = 0;
-            for(  ; i < rob_emotion.size() ; i++) {
-                if( rob_emotion[i] > temp ){
-                    temp = rob_emotion[i];
-                    i_temp = i ;
-                }
-                // else if(rob_emotion[i] == temp){
-                //     ROS_DEBUG("robot_emotion_num2string: 最大情绪值存在两个： [%d] 和 [%d] ",i_temp,i);
-                // }
-            }
+        
 
-            switch( i_temp )
-                {
-                case 0:
-                    return "Joy"; 
-                    break;
-                case 1:
-                    return "Trust"; 
-                    break;
-                case 2:
-                    return "Suprise"; 
-                    break;
-                case 3:
-                    return "Sadness"; 
-                    break;
-                case 4:
-                    return "Anger"; 
-                    break;
-                case 5:
-                    return "Fear"; 
-                    break;
-                case 6:
-                    return "Disgust"; 
-                    break;
-                case 7:
-                    return "Boring"; 
-                    break;
-                }
+double emotion_calm_thresh = 0.3;
+double emotion_intensity_thresh_3 = 0.8;
+double emotion_intensity_thresh_2 = 0.5;
+double emotion_intensity_thresh_1 = 0.3;
+
+
+int robot_emotion_num2intensity( double& rob_emotion_value){
+            if(rob_emotion_value>emotion_intensity_thresh_3)
+                return 3;
+            else if(rob_emotion_value>emotion_intensity_thresh_2)
+                return 2;
+            else if(rob_emotion_value>emotion_intensity_thresh_1)
+                return 1;
+}
+
+
+void robot_emotion_num2string( std::vector<double> rob_emotion , string & rob_emotion_string , int & rob_emotion_intensity ){
+    int temp  =  -1; 
+    int i_EmotionMax;
+    int i = 0;
+    for(  ; i < rob_emotion.size() ; i++) {
+        if( rob_emotion[i] > temp ){
+            temp = rob_emotion[i];
+            i_EmotionMax = i ;
         }
+        // else if(rob_emotion[i] == temp){
+        //     ROS_DEBUG("robot_emotion_num2string: 最大情绪值存在两个： [%d] 和 [%d] ",i_EmotionMax,i);
+        // }
+    }
+    
+    if( rob_emotion[i_EmotionMax] < emotion_calm_thresh){
+        rob_emotion_string =  "Calm";
+        rob_emotion_intensity = 0;
+    }
+    else{
+        rob_emotion_intensity = robot_emotion_num2intensity(rob_emotion[i_EmotionMax]);
+        switch( i_EmotionMax )
+        {
+        case 0:
+            rob_emotion_string =  "Joy"; 
+            break;
+        case 1:
+            rob_emotion_string =  "Trust"; 
+            break;
+        case 2:
+            rob_emotion_string =  "Suprise"; 
+            break;
+        case 3:
+            rob_emotion_string =  "Sadness"; 
+            break;
+        case 4:
+            rob_emotion_string =  "Anger"; 
+            break;
+        case 5:
+            rob_emotion_string =  "Fear"; 
+            break;
+        case 6:
+            rob_emotion_string =  "Disgust"; 
+            break;
+        case 7:
+            rob_emotion_string =  "Boring"; 
+            break;
+        }
+    }
+}
         
 };

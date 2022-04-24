@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-04-13 10:00:56
+ * @LastEditTime: 2022-04-20 14:57:03
  */
 /* 
 4）行为的发布：
@@ -191,14 +191,21 @@ int main(int argc, char** argv){
 
     //蓝牙通信
     //蓝牙通信: 1.接受flag
+    if(argc != 2)
+    {
+        cerr << endl << "Input if RUN WITH REAL ROBOT" << endl;
+        return 1;
+    }
+
+    recall_buletooth.set_REAL_ROBOT(argv[1]);
     // pthread_create(&th, NULL, recall::pthread_read, &bluetooth);
 
     // ROS
-    ros::init(argc, argv, "robot_platform");
+    ros::init(argc, argv, "action_node");
     ros::NodeHandle n;
     pub_buletooth.set_ros_node(n);
     cout<< "Start to Subscribe Behavior Parameter（接收ROS信息） !!\n";
-    ros::Rate loop_rate(1); //loop_rate 发送数据频率10Hz
+    ros::Rate loop_rate(1); //loop_rate 发送数据频率10Hz   
 
     
     sub_behavior  = n.subscribe<social_msg::bhvPara> ("behavior_pub", 10,  boost::bind(&BehaviorUpdate, _1, &n));
@@ -249,7 +256,7 @@ void  PeriodDetection(){
         int period_cur = 0; period_cur = behavior.progress;
         insert_new_behavihor = false;
         int delay_time = 0;
-        // recall_buletooth.flag_to_false();
+        recall_buletooth.flag_to_false();   /* 关键 */
         for(    ;   (period_cur <= period_total ) && (!insert_new_behavihor)    ; )
         {
             //
@@ -309,8 +316,9 @@ void  PeriodDetection(){
                         associated_need_pass.IDtype = "none";
                         associated_need_pass.qt_order = -1;  //TODO:  要求  qt中必须当前显示。
                         associated_need_pass.rob_emotion = "Joy";
+                        associated_need_pass.rob_emotion_intensity = 2;
                         associated_need_pass.weight = 0.95;//TODO: need weight 还不确定。。
-                        associated_need_pass.speech = "您的检查完成了，可以进学校了"; 
+                        associated_need_pass.speech = "你可以进校了"; 
                         associated_need_pass.satisfy_value = 2;
                         pub_associated_need.publish(associated_need_pass);
                     }
@@ -334,21 +342,7 @@ void  PeriodDetection(){
                     pub_associated_need.publish(associated_need_keepOrder);
                     recall_buletooth.delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 0;
                 }
-                // 5.关联性需求，KeepOrder 2  
-                // social_msg::need_msg associated_need_keepOrder2;
-                // if(  period_cur == 71 && delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy == 2 ){
-                //     associated_need_keepOrder2.need_name = "KeepOrder";
-                //     associated_need_keepOrder2.person_name = behavior.gaze.target;
-                //     associated_need_keepOrder2.person_emotion = "none";
-                //     associated_need_keepOrder2.IDtype = "none";
-                //     associated_need_keepOrder2.qt_order = -1;  
-                //     associated_need_keepOrder2.rob_emotion = "Anger";
-                //     associated_need_keepOrder2.weight = 0.85;
-                //     associated_need_keepOrder2.speech = "再乱动 我就要通知老师了"; 
-                //     associated_need_keepOrder2.satisfy_value = 2;
-                //     pub_associated_need.publish(associated_need_keepOrder2);
-                //     delay_for_gaze_xiaogang_measureTemperate_for_needSatisfy = 0;
-                // }
+                
             }
             
             ros::spinOnce(); 

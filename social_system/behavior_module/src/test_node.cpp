@@ -265,9 +265,33 @@ int main(int argc,char **argv)
     need[31].speech = "工作期间不能闲聊";
     need[31].weight = 0.90;
 
+    need[32].need_name = "MeasureTempareture";
+    need[32].person_name= "小明";
+    need[32].person_emotion = "none";
+    need[32].rob_emotion = "Joy";
+    need[32].rob_emotion_intensity = 1;
+    need[32].speech = "好的,你站在原地不要动";
+    need[32].weight = 0.67;
+
+    need[33].need_name = "Greet";
+    need[33].person_name= "李老师";
+    need[33].person_emotion = "none";
+    need[33].rob_emotion = "Joy";
+    need[33].rob_emotion_intensity = 2;
+    need[33].speech = "李老师早上好啊";
+    need[33].weight = 0.90;
+
+    need[34].need_name = "KeepOrder";
+    need[34].person_name= "小明";
+    need[34].person_emotion = "none";
+    need[34].rob_emotion = "Anger";
+    need[33].rob_emotion_intensity = 2;
+    need[34].speech = "请不要扰乱秩序，站着别动";
+    need[34].weight = 0.90;
+
     while(ros::ok())
     {
-        int nn = 1;//1 测试 2 跑脚本
+        int nn = 2;//1 测试 2 ZQJC  3 JiaoBen
         if(nn == 1){
             if(count==2)// 111
             // if(count==23)
@@ -281,6 +305,30 @@ int main(int argc,char **argv)
             // if(count==23)
             {
                 i = 31;   
+                ROS_INFO("%s, %s, %s, %s, %s, %.2f",need[i].need_name.c_str(), need[i].person_name.c_str(), 
+                need[i].person_emotion.c_str(), need[i].rob_emotion.c_str(), need[i].speech.c_str(), need[i].weight);
+                chatter_pub.publish(need[i]);
+            }
+        }
+        else if(nn == 2)
+        {
+            if(count==2)
+            {
+                i = 32;   
+                ROS_INFO("%s, %s, %s, %s, %s, %.2f",need[i].need_name.c_str(), need[i].person_name.c_str(), 
+                need[i].person_emotion.c_str(), need[i].rob_emotion.c_str(), need[i].speech.c_str(), need[i].weight);
+                chatter_pub.publish(need[i]);
+            }
+            if(count==10)
+            {
+                i = 33;   
+                ROS_INFO("%s, %s, %s, %s, %s, %.2f",need[i].need_name.c_str(), need[i].person_name.c_str(), 
+                need[i].person_emotion.c_str(), need[i].rob_emotion.c_str(), need[i].speech.c_str(), need[i].weight);
+                chatter_pub.publish(need[i]);
+            }
+            if(count==42)
+            {
+                i = 34;   
                 ROS_INFO("%s, %s, %s, %s, %s, %.2f",need[i].need_name.c_str(), need[i].person_name.c_str(), 
                 need[i].person_emotion.c_str(), need[i].rob_emotion.c_str(), need[i].speech.c_str(), need[i].weight);
                 chatter_pub.publish(need[i]);

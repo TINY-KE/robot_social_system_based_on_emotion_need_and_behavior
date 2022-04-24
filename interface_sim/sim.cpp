@@ -99,7 +99,9 @@ void callback(sim::simConfig &config, uint32_t level)
                 need.weight = config.need_weight;
                 need.person_emotion = config.need_person_emotion;
                 need.rob_emotion = config.need_rob_emotion;
+                need.rob_emotion_intensity = config.need_rob_emotion_intensity;   //TODO：
                 need.speech = config.need_speech;
+                // need.speech_ = config.need_speech;
                 need.qt_order = config.qt_order;
                 need.satisfy_value = config.satisfy_value_2;
                 pub_needlist.publish(need);

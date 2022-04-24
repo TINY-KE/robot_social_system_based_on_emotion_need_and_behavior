@@ -58,3 +58,6 @@ target_link_libraries(test_node ${catkin_LIBRARIES})
 
 add_executable(pub_node src/pub_node.cpp)
 target_link_libraries(pub_node ${catkin_LIBRARIES})
+
+add_executable(all_test_node  src/all_test_node.cpp)
+target_link_libraries(all_test_node ${catkin_LIBRARIES})

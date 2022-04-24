@@ -21,6 +21,15 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/opencv.hpp"
+#include<cv_bridge/cv_bridge.h>
+#include<opencv2/opencv.hpp>
+#include<opencv2/highgui.hpp>
+#include<opencv2/imgproc.hpp>
+
+
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 
 //QTextCodec::setCodecForCStrings(QTextCodec::codecForName("GB2312"));
 /*****************************************************************************
@@ -55,14 +64,6 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 //    emotion_image = new Emotion_image( &ui );
 
 /*emotion image*/
-//    QString page_1 = "/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png";
-//    cv::Mat srcImage_1 = cv::imread(page_1.toLatin1().data());      // 读取图片数据
-//    cv::cvtColor(srcImage_1, srcImage_1, CV_BGR2GRAY);        // 图像格式转换
-//    QImage disImage_2  =  cvMat2QImage( srcImage_1 );
-//    cv::imshow("cvMat2QImage RGB32", srcImage_1);
-//    QImage disImage_1 = QImage((const unsigned char*)(srcImage_1.data), srcImage_1.cols, srcImage_1.rows, QImage::Format_RGB888);
-//    ui.label_emotion_image->setPixmap(QPixmap::fromImage(   disImage_1.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)    ));  // label 显示图像
-//    QString filename("../../../src/social_system/emotion_module/image/emotion_img.png");
     QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
     QImage* img=new QImage;
     if(! ( img->load(filename) ) ) //加载图像
@@ -75,44 +76,51 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     }
     int width = (*img).width();      int height =  (*img).height();
 //    QRect rect(width-height/2,0, height,height);
-    qDebug() << width << " " <<  height ;
+//    qDebug() << width << " " <<  height ;
     int width_new = height*4.8/5;
     QRect rect( (width/2 - width_new/2),0, width_new,height);
     QImage img_cut = (*img).copy(rect);
     ui.label_emotion_image->setPixmap(QPixmap::fromImage(
                                                           img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
-                                                        )
-                                      );
+                                                        ));
 
-/*emotion express video*/
-  //    QString filename_express("/home/zhjd/ws/src/visualization/emotion_express/raw/emotion_img.png");
-  //    QImage* img_express=new QImage;
-  //    img_express->load(filename_express);
-  //    width = (*img).width();
-  //    height =  (*img).height();
-  //    qDebug() << width << " " <<  height ;
-  //    width_new = height*4.8/5;
-  //    QRect rect_express( (width/2 - width_new/2),0, width_new,height);
-  //    img_cut = (*img_express).copy(rect_express);
-  //    ui.label_emotion_express->setPixmap(QPixmap::fromImage(
-  //                                                          img_cut.scaled(ui.label_emotion_express->size(), Qt::KeepAspectRatio)
-  //                                                        )
-  //                                      );
-//    QMediaPlayer *m_pQMediaPlayer;
-//    QVideoWidget *m_pQVideoWidget;
-//    QMediaPlaylist *m_pQMediaPlaylist;
+/*********************
+**emotion express video
+**********************/
 
-//    virtual void paintEvent(QPaintEvent *) override;
+//    cv::VideoCapture cap;
+//    bool suc = false;
+//    suc = cap.open("/home/zhjd/ws/src/visualization/emotion_express/raw/normalspeak.mp4");
+//    if (!suc)
+//      {
+//        std::cout << "播放失败"<<std::endl;
+//      }
+//    else{
+//        std::cout << "播放 success" <<std::endl;
+//            while (1)
+//            {
 
+//              cap >> frame;
+//              if (frame.empty())
+//              {
+//                std::cout << "Finish" << std::endl;
+//                break;
+//              }
+//              cv::Mat rgb;
+//              QImage img;
+//              //cvt Mat BGR 2 QImage RGB
+//              cv::cvtColor(frame ,rgb, CV_BGR2RGB);
+//              img =QImage((const unsigned char*)(frame.data),
+//                          frame.cols,frame.rows,
+//                          frame.cols*frame.channels(),
+//                          QImage::Format_RGB888);
 
-//.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
-    /*********************
-    ** layout max
-    **********************/
-//    QWidget * widget_center = new QWidget();
-//    setCentralWidget(widget_center);
-//    centralWidget()->setLayout(ui.horizontalLayout_5);
-//    this -> setLayout( ui.formLayout);
+//              ui.label_emotion_image ->setPixmap(QPixmap::fromImage(img));
+//              ui.label_emotion_image ->setScaledContents(true);
+//              sleep(0.05);
+//            }
+//    }
+
   /*********************
 	** Logging
 	**********************/
@@ -126,13 +134,17 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 
 
     QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion()), this, SLOT(updateLoggingView_emotion()));
-    QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion_image()), this, SLOT(updateLoggingView_emotion_image()));
+//    QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion_image()), this, SLOT(updateLoggingView_emotion_image()));
 
     QObject::connect(&qnode, SIGNAL(loggingUpdated_need()), this, SLOT(updateLoggingView_need()));
 
     QObject::connect(&qnode, SIGNAL(loggingUpdated_bhvPara()), this, SLOT(updateLoggingView_bhvPara()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_bhvReply()), this, SLOT(updateLoggingView_bhvReply()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_bhvQueue()), this, SLOT(updateLoggingView_bhvQueue()));
+
+    QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion_image()), this, SLOT(updateLoggingView_emotion_image()));
+    QObject::connect(&qnode, SIGNAL(loggingUpdated_real_image()), this, SLOT(updateLoggingView_real_image()));
+//    loggingUpdated_real_image
     //(1.1)qt  connect   ros singal  and  ui_progrem
 //    QObject::connect(&qnode, SIGNAL(loggingUpdated_need()), this, SLOT(updateLoggingView_need()));
 
@@ -466,7 +478,7 @@ void MainWindow::updateLoggingView_emotion() {
   }
   int width = (*img).width();      int height =  (*img).height();
 //    QRect rect(width-height/2,0, height,height);
-  qDebug() << width << " " <<  height ;
+//  qDebug() << width << " " <<  height ;
   QRect rect( (width/2 - height/2),0, height,height);
   QImage img_cut = (*img).copy(rect);
   ui.label_emotion_image->setPixmap(QPixmap::fromImage(
@@ -653,6 +665,8 @@ void MainWindow::updateLoggingView_bhvReply() {
       ui.progressBar_behavior_sounder->setValue(0);
       ui.progressBar_behavior_gaze->setValue(0);
     }
+
+    ui.label_emotion_express ->setScaledContents(true);
 }
 void MainWindow::updateLoggingView_bhvQueue() {
     QStringList list;
@@ -664,6 +678,34 @@ void MainWindow::updateLoggingView_bhvQueue() {
         list<<QString::fromStdString(s);
     }
     ui.listWidget_bhvQueue->addItems(list);
+}
+
+void MainWindow::updateLoggingView_emotion_image(){
+  cv::Mat rgb;
+  QImage img;
+  //cvt Mat BGR 2 QImage RGB
+  cv::cvtColor(qnode.img_emotion ,rgb, CV_BGR2RGB);
+  img =QImage((const unsigned char*)(rgb.data),
+              rgb.cols,rgb.rows,
+              rgb.cols*rgb.channels(),
+              QImage::Format_RGB888);
+
+  ui.label_emotion_express ->setPixmap(QPixmap::fromImage(img));
+  ui.label_emotion_express ->setScaledContents(true);
+}
+void MainWindow::updateLoggingView_real_image() {
+  cv::Mat rgb;
+  QImage img;
+  //cvt Mat BGR 2 QImage RGB
+  cv::cvtColor(qnode.img_real ,rgb, CV_BGR2RGB);
+  img =QImage((const unsigned char*)(rgb.data),
+              rgb.cols,rgb.rows,
+              rgb.cols*rgb.channels(),
+              QImage::Format_RGB888);
+
+  ui.label_real_express ->setPixmap(QPixmap::fromImage(img));
+  ui.label_real_express ->setScaledContents(true);
+
 }
 
 /*****************************************************************************

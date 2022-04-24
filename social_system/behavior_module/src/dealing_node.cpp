@@ -122,29 +122,485 @@ void LoclistInit(LocalList &list){
     // 需求类型：Greet  、MeasureTempareture、Answer、ParentIdentity、KeepOrder、StopStranger、Wander、Doubt、Chat、Charge、Remind、
     //情感类型：高兴、信任、期待、悲伤、愤怒、害怕、厌恶、无聊
     list.bhv[0].Needs = "Greet";
-    list.bhv[0].TotalTime = 20;
+    list.bhv[0].TotalTime = 10;
+
+    list.bhv[0].gaze.weight = 1;
+    list.bhv[0].gaze.call = 1;
+    list.bhv[0].gaze.target = "object";
+    list.bhv[0].gaze.startTime = 0;
+    list.bhv[0].gaze.endTime = 100;
+
+    list.bhv[0].emotion.weight = 2;
+    list.bhv[0].emotion.call = 1;
+    list.bhv[0].emotion.type = "Joy";
+    list.bhv[0].emotion.rob_emotion_intensity = 2;
+    list.bhv[0].emotion.startTime = 50;
+    list.bhv[0].emotion.endTime = 100;
+
+    list.bhv[0].speech.weight = 1;
+    list.bhv[0].speech.call = 1;
+    list.bhv[0].speech.content = "你好呀!";
+    list.bhv[0].speech.tone = 3;
+    list.bhv[0].speech.rate = 2;
+    list.bhv[0].speech.startTime = 0;
+    list.bhv[0].speech.endTime = 100;
+
+    list.bhv[0].arms.weight = 3;
+    list.bhv[0].arms.call = 1;
+    list.bhv[0].arms.action = "wave";
+    list.bhv[0].arms.rate = 2;
+    list.bhv[0].arms.startTime = 50;
+    list.bhv[0].arms.endTime = 100;
+
+    list.bhv[0].legs.weight = 1;
+    list.bhv[0].legs.call = 1;
+    list.bhv[0].legs.target = "object";
+    list.bhv[0].legs.action = "gonear";
+    list.bhv[0].legs.rate = 2;
+    list.bhv[0].legs.distance = 2;
+    list.bhv[0].legs.startTime = 0;
+    list.bhv[0].legs.endTime = 100;
+
     list.bhv[1].Needs = "Doubt";
     list.bhv[1].TotalTime = 15;
+
+    list.bhv[1].gaze.weight = 1;
+    list.bhv[1].gaze.call = 1;
+    list.bhv[1].gaze.target = "object";
+    list.bhv[1].gaze.startTime = 0;
+    list.bhv[1].gaze.endTime = 100;
+
+    list.bhv[1].emotion.weight = 1;
+    list.bhv[1].emotion.call = 1;
+    list.bhv[1].emotion.type = "doubt";
+    list.bhv[1].emotion.rob_emotion_intensity = 2;
+    list.bhv[1].emotion.startTime = 40;
+    list.bhv[1].emotion.endTime = 100;
+
+    list.bhv[1].speech.weight = 1;
+    list.bhv[1].speech.call = 1;
+    list.bhv[1].speech.content = "doubt";
+    list.bhv[1].speech.tone = 2;
+    list.bhv[1].speech.rate = 2;
+    list.bhv[1].speech.startTime = 40;
+    list.bhv[1].speech.endTime = 100;
+
+    list.bhv[1].arms.weight = 0;
+    list.bhv[1].arms.call = 1;
+    list.bhv[1].arms.action = "curl";
+    list.bhv[1].arms.rate = 1;
+    list.bhv[1].arms.startTime = 30;
+    list.bhv[1].arms.endTime = 90;
+
+    list.bhv[1].legs.weight = 1;
+    list.bhv[1].legs.call = 1;
+    list.bhv[1].legs.target = "object";
+    list.bhv[1].legs.action = "gonear";
+    list.bhv[1].legs.rate = 2;
+    list.bhv[1].legs.distance = 2;
+    list.bhv[1].legs.startTime = 0;
+    list.bhv[1].legs.endTime = 40;
+
     list.bhv[2].Needs = "MeasureTempareture";
-    list.bhv[2].TotalTime = 60;
+    list.bhv[2].TotalTime = 60;    // TODO；
+
+    list.bhv[2].gaze.weight = 1;
+    list.bhv[2].gaze.call = 1;
+    list.bhv[2].gaze.target = "object";
+    list.bhv[2].gaze.startTime = 0;
+    list.bhv[2].gaze.endTime = 100;
+
+    list.bhv[2].emotion.weight = 3;
+    list.bhv[2].emotion.call = 1;
+    list.bhv[2].emotion.type = "slfmood";
+    list.bhv[2].emotion.rob_emotion_intensity = 2;
+    list.bhv[2].emotion.startTime = 0;
+    list.bhv[2].emotion.endTime = 20;
+
+    list.bhv[2].speech.weight = 2;
+    list.bhv[2].speech.call = 1;
+    list.bhv[2].speech.content = "测温中，请耐心等待";
+    list.bhv[2].speech.tone = 2;
+    list.bhv[2].speech.rate = 2;
+    list.bhv[2].speech.startTime = 0;
+    list.bhv[2].speech.endTime = 10;
+
+    list.bhv[2].arms.weight = 0;
+    list.bhv[2].arms.call = 1;
+    list.bhv[2].arms.action = "curl";
+    list.bhv[2].arms.rate = 0;
+    list.bhv[2].arms.startTime = 0;
+    list.bhv[2].arms.endTime = 0;
+
+    list.bhv[2].legs.weight = 2;
+    list.bhv[2].legs.call = 1;
+    list.bhv[2].legs.target = "object";
+    list.bhv[2].legs.action = "gonear";
+    list.bhv[2].legs.rate = 2;
+    list.bhv[2].legs.distance = 1;
+    list.bhv[2].legs.startTime = 0;
+    list.bhv[2].legs.endTime = 100;
+
     list.bhv[3].Needs = "Wander";
-    list.bhv[3].TotalTime = 30; //127;
+    list.bhv[3].TotalTime = 20; //127;
+
+    list.bhv[3].gaze.weight = 1;
+    list.bhv[3].gaze.call = 1;
+    list.bhv[3].gaze.target = "around";
+    list.bhv[3].gaze.startTime = 0;
+    list.bhv[3].gaze.endTime = 100;
+
+    list.bhv[3].emotion.weight = 0;
+    list.bhv[3].emotion.call = 0;
+    list.bhv[3].emotion.type = "Boring";
+    list.bhv[3].emotion.rob_emotion_intensity = 2;
+    list.bhv[3].emotion.startTime = 0;
+    list.bhv[3].emotion.endTime = 0;
+
+    list.bhv[3].speech.weight = 3;
+    list.bhv[3].speech.call = 1;
+    list.bhv[3].speech.content = "怎么还没有人来?";
+    list.bhv[3].speech.tone = 2;
+    list.bhv[3].speech.rate = 2;
+    list.bhv[3].speech.startTime = 0;
+    list.bhv[3].speech.endTime = 60;
+
+    list.bhv[3].arms.weight = 2;
+    list.bhv[3].arms.call = 1;
+    list.bhv[3].arms.action = "shrug";
+    list.bhv[3].arms.rate = 2;
+    list.bhv[3].arms.startTime = 0;
+    list.bhv[3].arms.endTime = 0;
+
+    list.bhv[3].legs.weight = 1;
+    list.bhv[3].legs.call = 1;
+    list.bhv[3].legs.target = "around";
+    list.bhv[3].legs.action = "wander";
+    list.bhv[3].legs.rate = 1;
+    list.bhv[3].legs.distance = 0;
+    list.bhv[3].legs.startTime = 0;
+    list.bhv[3].legs.endTime = 100;    
+
     list.bhv[4].Needs = "StopStranger";
     list.bhv[4].TotalTime = 30;
+
+    list.bhv[4].gaze.weight = 1;
+    list.bhv[4].gaze.call = 1;
+    list.bhv[4].gaze.target = "object";
+    list.bhv[4].gaze.startTime = 0;
+    list.bhv[4].gaze.endTime = 100;
+
+    list.bhv[4].emotion.weight = 2;
+    list.bhv[4].emotion.call = 1;
+    list.bhv[4].emotion.type = "serious";
+    list.bhv[4].emotion.rob_emotion_intensity = 2;
+    list.bhv[4].emotion.startTime = 20;
+    list.bhv[4].emotion.endTime = 60;
+
+    list.bhv[4].speech.weight = 1;
+    list.bhv[4].speech.call = 1;
+    list.bhv[4].speech.content = "没有通行码不能入校哦";
+    list.bhv[4].speech.tone = 0;
+    list.bhv[4].speech.rate = 0;
+    list.bhv[4].speech.startTime = 20;
+    list.bhv[4].speech.endTime = 100;
+
+    list.bhv[4].arms.weight = 1;
+    list.bhv[4].arms.call = 1;
+    list.bhv[4].arms.action = "stop";
+    list.bhv[4].arms.rate = 3;
+    list.bhv[4].arms.startTime = 20;
+    list.bhv[4].arms.endTime = 60;
+
+    list.bhv[4].legs.weight = 1;
+    list.bhv[4].legs.call = 1;
+    list.bhv[4].legs.target = "object";
+    list.bhv[4].legs.action = "gonear";
+    list.bhv[4].legs.rate = 3;
+    list.bhv[4].legs.distance = 1;
+    list.bhv[4].legs.startTime = 0;
+    list.bhv[4].legs.endTime = 20;  
+
     list.bhv[5].Needs = "Chat";
     list.bhv[5].TotalTime = 20;
+
+    list.bhv[5].gaze.weight = 0;
+    list.bhv[5].gaze.call = 0;
+    list.bhv[5].gaze.target = "object";
+    list.bhv[5].gaze.startTime = 0;
+    list.bhv[5].gaze.endTime = 100;
+
+    list.bhv[5].emotion.weight = 0;
+    list.bhv[5].emotion.call = 0;
+    list.bhv[5].emotion.type = "doubt";
+    list.bhv[5].emotion.rob_emotion_intensity = 2;
+    list.bhv[5].emotion.startTime = 40;
+    list.bhv[5].emotion.endTime = 100;
+
+    list.bhv[5].speech.weight = 1;
+    list.bhv[5].speech.call = 1;
+    list.bhv[5].speech.content = "chat";
+    list.bhv[5].speech.tone = 2;
+    list.bhv[5].speech.rate = 2;
+    list.bhv[5].speech.startTime = 40;
+    list.bhv[5].speech.endTime = 100;
+
+    list.bhv[5].arms.weight = 0;
+    list.bhv[5].arms.call = 1;
+    list.bhv[5].arms.action = "curl";
+    list.bhv[5].arms.rate = 1;
+    list.bhv[5].arms.startTime = 30;
+    list.bhv[5].arms.endTime = 90;
+
+    list.bhv[5].legs.weight = 0;
+    list.bhv[5].legs.call = 0;
+    list.bhv[5].legs.target = "object";
+    list.bhv[5].legs.action = "gonear";
+    list.bhv[5].legs.rate = 2;
+    list.bhv[5].legs.distance = 2;
+    list.bhv[5].legs.startTime = 0;
+    list.bhv[5].legs.endTime = 40;
+
     list.bhv[6].Needs = "Answer";
     list.bhv[6].TotalTime = 20;
+
+    list.bhv[6].gaze.weight = 1;
+    list.bhv[6].gaze.call = 1;
+    list.bhv[6].gaze.target = "object";
+    list.bhv[6].gaze.startTime = 0;
+    list.bhv[6].gaze.endTime = 100;
+
+    list.bhv[6].emotion.weight = 2;
+    list.bhv[6].emotion.call = 1;
+    list.bhv[6].emotion.type = "Joy";
+    list.bhv[6].emotion.rob_emotion_intensity = 1;
+    list.bhv[6].emotion.startTime = 40;
+    list.bhv[6].emotion.endTime = 100;
+
+    list.bhv[6].speech.weight = 1;
+    list.bhv[6].speech.call = 1;
+    list.bhv[6].speech.content = "answer";
+    list.bhv[6].speech.tone = 2;
+    list.bhv[6].speech.rate = 2;
+    list.bhv[6].speech.startTime = 0;
+    list.bhv[6].speech.endTime = 100;
+
+    list.bhv[6].arms.weight = 2;
+    list.bhv[6].arms.call = 1;
+    list.bhv[6].arms.action = "curl";
+    list.bhv[6].arms.rate = 2;
+    list.bhv[6].arms.startTime = 30;
+    list.bhv[6].arms.endTime = 90;
+
+    list.bhv[6].legs.weight = 1;
+    list.bhv[6].legs.call = 1;
+    list.bhv[6].legs.target = "object";
+    list.bhv[6].legs.action = "gonear";
+    list.bhv[6].legs.rate = 2;
+    list.bhv[6].legs.distance = 2;
+    list.bhv[6].legs.startTime = 0;
+    list.bhv[6].legs.endTime = 40;
+    
     list.bhv[7].Needs = "ParentIdentity";
     list.bhv[7].TotalTime = 30;
+
+    list.bhv[7].gaze.weight = 1;
+    list.bhv[7].gaze.call = 1;
+    list.bhv[7].gaze.target = "object";
+    list.bhv[7].gaze.startTime = 0;
+    list.bhv[7].gaze.endTime = 100;
+
+    list.bhv[7].emotion.weight = 2;
+    list.bhv[7].emotion.call = 1;
+    list.bhv[7].emotion.type = "serious";
+    list.bhv[7].emotion.rob_emotion_intensity = 2;
+    list.bhv[7].emotion.startTime = 20;
+    list.bhv[7].emotion.endTime = 100;
+
+    list.bhv[7].speech.weight = 1;
+    list.bhv[7].speech.call = 1;
+    list.bhv[7].speech.content = "请出示您的通行码";
+    list.bhv[7].speech.tone = 2;
+    list.bhv[7].speech.rate = 2;
+    list.bhv[7].speech.startTime = 20;
+    list.bhv[7].speech.endTime = 100;
+
+    list.bhv[7].arms.weight = 0;
+    list.bhv[7].arms.call = 1;
+    list.bhv[7].arms.action = "curl";
+    list.bhv[7].arms.rate = 1;
+    list.bhv[7].arms.startTime = 30;
+    list.bhv[7].arms.endTime = 90;
+
+    list.bhv[7].legs.weight = 1;
+    list.bhv[7].legs.call = 1;
+    list.bhv[7].legs.target = "object";
+    list.bhv[7].legs.action = "gonear";
+    list.bhv[7].legs.rate = 2;
+    list.bhv[7].legs.distance = 2;
+    list.bhv[7].legs.startTime = 0;
+    list.bhv[7].legs.endTime = 20;
+
     list.bhv[8].Needs = "KeepOrder";
-    list.bhv[8].TotalTime = 20;
+    list.bhv[8].TotalTime = 10;
+
+    list.bhv[8].gaze.weight = 1;
+    list.bhv[8].gaze.call = 1;
+    list.bhv[8].gaze.target = "object";
+    list.bhv[8].gaze.startTime = 0;
+    list.bhv[8].gaze.endTime = 100;
+
+    list.bhv[8].emotion.weight = 2;
+    list.bhv[8].emotion.call = 1;
+    list.bhv[8].emotion.type = "Anger";
+    list.bhv[8].emotion.rob_emotion_intensity = 2;
+    list.bhv[8].emotion.startTime = 40;
+    list.bhv[8].emotion.endTime = 100;
+
+    list.bhv[8].speech.weight = 1;
+    list.bhv[8].speech.call = 1;
+    list.bhv[8].speech.content = "请大家保持秩序";
+    list.bhv[8].speech.tone = 2;
+    list.bhv[8].speech.rate = 2;
+    list.bhv[8].speech.startTime = 0;
+    list.bhv[8].speech.endTime = 100;
+
+    list.bhv[8].arms.weight = 2;
+    list.bhv[8].arms.call = 1;
+    list.bhv[8].arms.action = "curl";
+    list.bhv[8].arms.rate = 3;
+    list.bhv[8].arms.startTime = 0;
+    list.bhv[8].arms.endTime = 100;
+
+    list.bhv[8].legs.weight = 2;
+    list.bhv[8].legs.call = 1;
+    list.bhv[8].legs.target = "object";
+    list.bhv[8].legs.action = "gofar";
+    list.bhv[8].legs.rate = 2;
+    list.bhv[8].legs.distance = 3;
+    list.bhv[8].legs.startTime = 0;
+    list.bhv[8].legs.endTime = 100;
+
     list.bhv[9].Needs = "Remind";
     list.bhv[9].TotalTime = 20;
+
+    list.bhv[9].gaze.weight = 1;
+    list.bhv[9].gaze.call = 1;
+    list.bhv[9].gaze.target = "object";
+    list.bhv[9].gaze.startTime = 0;
+    list.bhv[9].gaze.endTime = 100;
+
+    list.bhv[9].emotion.weight = 0;
+    list.bhv[9].emotion.call = 0;
+    list.bhv[9].emotion.type = "doubt";
+    list.bhv[9].emotion.rob_emotion_intensity = 2;
+    list.bhv[9].emotion.startTime = 40;
+    list.bhv[9].emotion.endTime = 100;
+
+    list.bhv[9].speech.weight = 1;
+    list.bhv[9].speech.call = 1;
+    list.bhv[9].speech.content = "remind";
+    list.bhv[9].speech.tone = 3;
+    list.bhv[9].speech.rate = 2;
+    list.bhv[9].speech.startTime = 40;
+    list.bhv[9].speech.endTime = 100;
+
+    list.bhv[9].arms.weight = 3;
+    list.bhv[9].arms.call = 1;
+    list.bhv[9].arms.action = "curl";
+    list.bhv[9].arms.rate = 1;
+    list.bhv[9].arms.startTime = 40;
+    list.bhv[9].arms.endTime = 100;
+
+    list.bhv[9].legs.weight = 1;
+    list.bhv[9].legs.call = 1;
+    list.bhv[9].legs.target = "object";
+    list.bhv[9].legs.action = "gonear";
+    list.bhv[9].legs.rate = 2;
+    list.bhv[9].legs.distance = 2;
+    list.bhv[9].legs.startTime = 0;
+    list.bhv[9].legs.endTime = 100;
+
     list.bhv[10].Needs = "Charge";
     list.bhv[10].TotalTime = 120;
+
+    list.bhv[10].gaze.weight = 0;
+    list.bhv[10].gaze.call = 0;
+    list.bhv[10].gaze.target = "object";
+    list.bhv[10].gaze.startTime = 0;
+    list.bhv[10].gaze.endTime = 100;
+
+    list.bhv[10].emotion.weight = 0;
+    list.bhv[10].emotion.call = 0;
+    list.bhv[10].emotion.type = "doubt";
+    list.bhv[10].emotion.rob_emotion_intensity = 2;
+    list.bhv[10].emotion.startTime = 40;
+    list.bhv[10].emotion.endTime = 100;
+
+    list.bhv[10].speech.weight = 0;
+    list.bhv[10].speech.call = 0;
+    list.bhv[10].speech.content = "doubt";
+    list.bhv[10].speech.tone = 2;
+    list.bhv[10].speech.rate = 2;
+    list.bhv[10].speech.startTime = 40;
+    list.bhv[10].speech.endTime = 100;
+
+    list.bhv[10].arms.weight = 0;
+    list.bhv[10].arms.call = 1;
+    list.bhv[10].arms.action = "curl";
+    list.bhv[10].arms.rate = 1;
+    list.bhv[10].arms.startTime = 30;
+    list.bhv[10].arms.endTime = 90;
+
+    list.bhv[10].legs.weight = 1;
+    list.bhv[10].legs.call = 1;
+    list.bhv[10].legs.target = "charger";
+    list.bhv[10].legs.action = "gonear";
+    list.bhv[10].legs.rate = 2;
+    list.bhv[10].legs.distance = 1;
+    list.bhv[10].legs.startTime = 0;
+    list.bhv[10].legs.endTime = 100;
+
     list.bhv[11].Needs = "Pass";
     list.bhv[11].TotalTime = 12;
+
+    list.bhv[11].gaze.weight = 2;
+    list.bhv[11].gaze.call = 1;
+    list.bhv[11].gaze.target = "object";
+    list.bhv[11].gaze.startTime = 0;
+    list.bhv[11].gaze.endTime = 100;
+
+    list.bhv[11].emotion.weight = 2;
+    list.bhv[11].emotion.call = 1;
+    list.bhv[11].emotion.type = "Calm";
+    list.bhv[11].emotion.rob_emotion_intensity = 1;
+    list.bhv[11].emotion.startTime = 40;
+    list.bhv[11].emotion.endTime = 100;
+
+    list.bhv[11].speech.weight = 1;
+    list.bhv[11].speech.call = 1;
+    list.bhv[11].speech.content = "您的体温正常，可以进学校";
+    list.bhv[11].speech.tone = 2;
+    list.bhv[11].speech.rate = 2;
+    list.bhv[11].speech.startTime = 0;
+    list.bhv[11].speech.endTime = 100;
+
+    list.bhv[11].arms.weight = 2;
+    list.bhv[11].arms.call = 1;
+    list.bhv[11].arms.action = "direct";
+    list.bhv[11].arms.rate = 1;
+    list.bhv[11].arms.startTime = 30;
+    list.bhv[11].arms.endTime = 90;
+
+    list.bhv[11].legs.weight = 1;
+    list.bhv[11].legs.call = 1;
+    list.bhv[11].legs.target = "target";
+    list.bhv[11].legs.action = "turnaround";
+    list.bhv[11].legs.rate = 1;
+    list.bhv[11].legs.distance = 1;
+    list.bhv[11].legs.startTime = 0;
+    list.bhv[11].legs.endTime = 100;
+
 
     for(int i=0;i<12;i++)
     {
@@ -182,445 +638,13 @@ void LoclistInit(LocalList &list){
     list.bhv[11].CurOrder = 1;
     list.bhv[11].TotalOrder = 1;
 
-    list.bhv[0].gaze.weight = 1;
-    list.bhv[0].gaze.call = 1;
-    list.bhv[0].gaze.target = "object";
-    list.bhv[0].gaze.startTime = 0;
-    list.bhv[0].gaze.endTime = 100;
-
-    list.bhv[0].emotion.weight = 2;
-    list.bhv[0].emotion.call = 1;
-    list.bhv[0].emotion.type = "slfmood";
-    list.bhv[0].emotion.startTime = 50;
-    list.bhv[0].emotion.endTime = 100;
-
-    list.bhv[0].speech.weight = 1;
-    list.bhv[0].speech.call = 1;
-    list.bhv[0].speech.content = "你好呀!";
-    list.bhv[0].speech.tone = 3;
-    list.bhv[0].speech.rate = 2;
-    list.bhv[0].speech.startTime = 50;
-    list.bhv[0].speech.endTime = 100;
-
-    list.bhv[0].arms.weight = 3;
-    list.bhv[0].arms.call = 1;
-    list.bhv[0].arms.action = "wave";
-    list.bhv[0].arms.rate = 3;
-    list.bhv[0].arms.startTime = 50;
-    list.bhv[0].arms.endTime = 100;
-
-    list.bhv[0].legs.weight = 1;
-    list.bhv[0].legs.call = 1;
-    list.bhv[0].legs.target = "object";
-    list.bhv[0].legs.action = "face";
-    list.bhv[0].legs.rate = 2;
-    list.bhv[0].legs.distance = 3;
-    list.bhv[0].legs.startTime = 0;
-    list.bhv[0].legs.endTime = 50;
-
-    list.bhv[1].gaze.weight = 1;
-    list.bhv[1].gaze.call = 1;
-    list.bhv[1].gaze.target = "object";
-    list.bhv[1].gaze.startTime = 0;
-    list.bhv[1].gaze.endTime = 100;
-
-    list.bhv[1].emotion.weight = 1;
-    list.bhv[1].emotion.call = 1;
-    list.bhv[1].emotion.type = "doubt";
-    list.bhv[1].emotion.startTime = 40;
-    list.bhv[1].emotion.endTime = 100;
-
-    list.bhv[1].speech.weight = 1;
-    list.bhv[1].speech.call = 1;
-    list.bhv[1].speech.content = "doubt";
-    list.bhv[1].speech.tone = 2;
-    list.bhv[1].speech.rate = 2;
-    list.bhv[1].speech.startTime = 40;
-    list.bhv[1].speech.endTime = 100;
-
-    list.bhv[1].arms.weight = 0;
-    list.bhv[1].arms.call = 0;
-    list.bhv[1].arms.action = "wave";
-    list.bhv[1].arms.rate = 1;
-    list.bhv[1].arms.startTime = 30;
-    list.bhv[1].arms.endTime = 90;
-
-    list.bhv[1].legs.weight = 1;
-    list.bhv[1].legs.call = 1;
-    list.bhv[1].legs.target = "object";
-    list.bhv[1].legs.action = "face";
-    list.bhv[1].legs.rate = 2;
-    list.bhv[1].legs.distance = 2;
-    list.bhv[1].legs.startTime = 0;
-    list.bhv[1].legs.endTime = 40;
-
-    list.bhv[2].gaze.weight = 1;
-    list.bhv[2].gaze.call = 1;
-    list.bhv[2].gaze.target = "object";
-    list.bhv[2].gaze.startTime = 0;
-    list.bhv[2].gaze.endTime = 100;
-
-    list.bhv[2].emotion.weight = 3;
-    list.bhv[2].emotion.call = 1;
-    list.bhv[2].emotion.type = "slfmood";
-    list.bhv[2].emotion.startTime = 0;
-    list.bhv[2].emotion.endTime = 20;
-
-    list.bhv[2].speech.weight = 2;
-    list.bhv[2].speech.call = 1;
-    list.bhv[2].speech.content = "测温中，请耐心等待";
-    list.bhv[2].speech.tone = 2;
-    list.bhv[2].speech.rate = 2;
-    list.bhv[2].speech.startTime = 20;
-    list.bhv[2].speech.endTime = 50;
-
-    list.bhv[2].arms.weight = 0;
-    list.bhv[2].arms.call = 0;
-    list.bhv[2].arms.action = "0";
-    list.bhv[2].arms.rate = 0;
-    list.bhv[2].arms.startTime = 0;
-    list.bhv[2].arms.endTime = 0;
-
-    list.bhv[2].legs.weight = 2;
-    list.bhv[2].legs.call = 1;
-    list.bhv[2].legs.target = "object";
-    list.bhv[2].legs.action = "face";
-    list.bhv[2].legs.rate = 2;
-    list.bhv[2].legs.distance = 1;
-    list.bhv[2].legs.startTime = 0;
-    list.bhv[2].legs.endTime = 50;
-
-    list.bhv[3].gaze.weight = 1;
-    list.bhv[3].gaze.call = 1;
-    list.bhv[3].gaze.target = "Around";
-    list.bhv[3].gaze.startTime = 0;
-    list.bhv[3].gaze.endTime = 100;
-
-    list.bhv[3].emotion.weight = 0;
-    list.bhv[3].emotion.call = 0;
-    list.bhv[3].emotion.type = "slfmood";
-    list.bhv[3].emotion.startTime = 0;
-    list.bhv[3].emotion.endTime = 0;
-
-    list.bhv[3].speech.weight = 3;
-    list.bhv[3].speech.call = 1;
-    list.bhv[3].speech.content = "怎么还没有人来啊";
-    list.bhv[3].speech.tone = 2;
-    list.bhv[3].speech.rate = 2;
-    list.bhv[3].speech.startTime = 40;
-    list.bhv[3].speech.endTime = 60;
-
-    list.bhv[3].arms.weight = 0;
-    list.bhv[3].arms.call = 0;
-    list.bhv[3].arms.action = "0";
-    list.bhv[3].arms.rate = 0;
-    list.bhv[3].arms.startTime = 0;
-    list.bhv[3].arms.endTime = 0;
-
-    list.bhv[3].legs.weight = 1;
-    list.bhv[3].legs.call = 1;
-    list.bhv[3].legs.target = "none";
-    list.bhv[3].legs.action = "wander";
-    list.bhv[3].legs.rate = 2;
-    list.bhv[3].legs.distance = 0;
-    list.bhv[3].legs.startTime = 0;
-    list.bhv[3].legs.endTime = 100;    
-
-
-    list.bhv[4].gaze.weight = 1;
-    list.bhv[4].gaze.call = 1;
-    list.bhv[4].gaze.target = "object";
-    list.bhv[4].gaze.startTime = 0;
-    list.bhv[4].gaze.endTime = 100;
-
-    list.bhv[4].emotion.weight = 2;
-    list.bhv[4].emotion.call = 1;
-    list.bhv[4].emotion.type = "serious";
-    list.bhv[4].emotion.startTime = 20;
-    list.bhv[4].emotion.endTime = 60;
-
-    list.bhv[4].speech.weight = 1;
-    list.bhv[4].speech.call = 1;
-    list.bhv[4].speech.content = "没有通行码不能入校哦";
-    list.bhv[4].speech.tone = 0;
-    list.bhv[4].speech.rate = 0;
-    list.bhv[4].speech.startTime = 20;
-    list.bhv[4].speech.endTime = 100;
-
-    list.bhv[4].arms.weight = 1;
-    list.bhv[4].arms.call = 1;
-    list.bhv[4].arms.action = "stop";
-    list.bhv[4].arms.rate = 3;
-    list.bhv[4].arms.startTime = 20;
-    list.bhv[4].arms.endTime = 60;
-
-    list.bhv[4].legs.weight = 1;
-    list.bhv[4].legs.call = 1;
-    list.bhv[4].legs.target = "object";
-    list.bhv[4].legs.action = "face";
-    list.bhv[4].legs.rate = 3;
-    list.bhv[4].legs.distance = 1;
-    list.bhv[4].legs.startTime = 0;
-    list.bhv[4].legs.endTime = 20;  
-
-    list.bhv[5].gaze.weight = 0;
-    list.bhv[5].gaze.call = 0;
-    list.bhv[5].gaze.target = "object";
-    list.bhv[5].gaze.startTime = 0;
-    list.bhv[5].gaze.endTime = 100;
-
-    list.bhv[5].emotion.weight = 0;
-    list.bhv[5].emotion.call = 0;
-    list.bhv[5].emotion.type = "doubt";
-    list.bhv[5].emotion.startTime = 40;
-    list.bhv[5].emotion.endTime = 100;
-
-    list.bhv[5].speech.weight = 1;
-    list.bhv[5].speech.call = 1;
-    list.bhv[5].speech.content = "chat";
-    list.bhv[5].speech.tone = 2;
-    list.bhv[5].speech.rate = 2;
-    list.bhv[5].speech.startTime = 40;
-    list.bhv[5].speech.endTime = 100;
-
-    list.bhv[5].arms.weight = 0;
-    list.bhv[5].arms.call = 0;
-    list.bhv[5].arms.action = "wave";
-    list.bhv[5].arms.rate = 1;
-    list.bhv[5].arms.startTime = 30;
-    list.bhv[5].arms.endTime = 90;
-
-    list.bhv[5].legs.weight = 0;
-    list.bhv[5].legs.call = 0;
-    list.bhv[5].legs.target = "object";
-    list.bhv[5].legs.action = "face";
-    list.bhv[5].legs.rate = 2;
-    list.bhv[5].legs.distance = 2;
-    list.bhv[5].legs.startTime = 0;
-    list.bhv[5].legs.endTime = 40;
-
-    list.bhv[6].gaze.weight = 1;
-    list.bhv[6].gaze.call = 1;
-    list.bhv[6].gaze.target = "object";
-    list.bhv[6].gaze.startTime = 0;
-    list.bhv[6].gaze.endTime = 100;
-
-    list.bhv[6].emotion.weight = 0;
-    list.bhv[6].emotion.call = 0;
-    list.bhv[6].emotion.type = "doubt";
-    list.bhv[6].emotion.startTime = 40;
-    list.bhv[6].emotion.endTime = 100;
-
-    list.bhv[6].speech.weight = 1;
-    list.bhv[6].speech.call = 1;
-    list.bhv[6].speech.content = "answer";
-    list.bhv[6].speech.tone = 2;
-    list.bhv[6].speech.rate = 2;
-    list.bhv[6].speech.startTime = 0;
-    list.bhv[6].speech.endTime = 100;
-
-    list.bhv[6].arms.weight = 0;
-    list.bhv[6].arms.call = 0;
-    list.bhv[6].arms.action = "wave";
-    list.bhv[6].arms.rate = 1;
-    list.bhv[6].arms.startTime = 30;
-    list.bhv[6].arms.endTime = 90;
-
-    list.bhv[6].legs.weight = 1;
-    list.bhv[6].legs.call = 1;
-    list.bhv[6].legs.target = "object";
-    list.bhv[6].legs.action = "face";
-    list.bhv[6].legs.rate = 2;
-    list.bhv[6].legs.distance = 2;
-    list.bhv[6].legs.startTime = 0;
-    list.bhv[6].legs.endTime = 40;
-
-    list.bhv[7].gaze.weight = 1;
-    list.bhv[7].gaze.call = 1;
-    list.bhv[7].gaze.target = "object";
-    list.bhv[7].gaze.startTime = 0;
-    list.bhv[7].gaze.endTime = 100;
-
-    list.bhv[7].emotion.weight = 2;
-    list.bhv[7].emotion.call = 1;
-    list.bhv[7].emotion.type = "serious";
-    list.bhv[7].emotion.startTime = 20;
-    list.bhv[7].emotion.endTime = 100;
-
-    list.bhv[7].speech.weight = 1;
-    list.bhv[7].speech.call = 1;
-    list.bhv[7].speech.content = "请出示您的通行码";
-    list.bhv[7].speech.tone = 2;
-    list.bhv[7].speech.rate = 2;
-    list.bhv[7].speech.startTime = 20;
-    list.bhv[7].speech.endTime = 100;
-
-    list.bhv[7].arms.weight = 0;
-    list.bhv[7].arms.call = 0;
-    list.bhv[7].arms.action = "wave";
-    list.bhv[7].arms.rate = 1;
-    list.bhv[7].arms.startTime = 30;
-    list.bhv[7].arms.endTime = 90;
-
-    list.bhv[7].legs.weight = 1;
-    list.bhv[7].legs.call = 1;
-    list.bhv[7].legs.target = "object";
-    list.bhv[7].legs.action = "face";
-    list.bhv[7].legs.rate = 3;
-    list.bhv[7].legs.distance = 2;
-    list.bhv[7].legs.startTime = 0;
-    list.bhv[7].legs.endTime = 20;
-
-    list.bhv[8].gaze.weight = 0;
-    list.bhv[8].gaze.call = 0;
-    list.bhv[8].gaze.target = "object";
-    list.bhv[8].gaze.startTime = 0;
-    list.bhv[8].gaze.endTime = 100;
-
-    list.bhv[8].emotion.weight = 0;
-    list.bhv[8].emotion.call = 0;
-    list.bhv[8].emotion.type = "doubt";
-    list.bhv[8].emotion.startTime = 40;
-    list.bhv[8].emotion.endTime = 100;
-
-    list.bhv[8].speech.weight = 1;
-    list.bhv[8].speech.call = 1;
-    list.bhv[8].speech.content = "请大家保持秩序";
-    list.bhv[8].speech.tone = 2;
-    list.bhv[8].speech.rate = 2;
-    list.bhv[8].speech.startTime = 0;
-    list.bhv[8].speech.endTime = 100;
-
-    list.bhv[8].arms.weight = 2;
-    list.bhv[8].arms.call = 1;
-    list.bhv[8].arms.action = "wave";
-    list.bhv[8].arms.rate = 2;
-    list.bhv[8].arms.startTime = 0;
-    list.bhv[8].arms.endTime = 100;
-
-    list.bhv[8].legs.weight = 0;
-    list.bhv[8].legs.call = 0;
-    list.bhv[8].legs.target = "object";
-    list.bhv[8].legs.action = "face";
-    list.bhv[8].legs.rate = 2;
-    list.bhv[8].legs.distance = 2;
-    list.bhv[8].legs.startTime = 0;
-    list.bhv[8].legs.endTime = 40;
-
-    list.bhv[9].gaze.weight = 1;
-    list.bhv[9].gaze.call = 1;
-    list.bhv[9].gaze.target = "object";
-    list.bhv[9].gaze.startTime = 0;
-    list.bhv[9].gaze.endTime = 100;
-
-    list.bhv[9].emotion.weight = 0;
-    list.bhv[9].emotion.call = 0;
-    list.bhv[9].emotion.type = "doubt";
-    list.bhv[9].emotion.startTime = 40;
-    list.bhv[9].emotion.endTime = 100;
-
-    list.bhv[9].speech.weight = 1;
-    list.bhv[9].speech.call = 1;
-    list.bhv[9].speech.content = "remind";
-    list.bhv[9].speech.tone = 3;
-    list.bhv[9].speech.rate = 2;
-    list.bhv[9].speech.startTime = 40;
-    list.bhv[9].speech.endTime = 100;
-
-    list.bhv[9].arms.weight = 3;
-    list.bhv[9].arms.call = 1;
-    list.bhv[9].arms.action = "wave";
-    list.bhv[9].arms.rate = 1;
-    list.bhv[9].arms.startTime = 40;
-    list.bhv[9].arms.endTime = 100;
-
-    list.bhv[9].legs.weight = 1;
-    list.bhv[9].legs.call = 1;
-    list.bhv[9].legs.target = "object";
-    list.bhv[9].legs.action = "face";
-    list.bhv[9].legs.rate = 2;
-    list.bhv[9].legs.distance = 2;
-    list.bhv[9].legs.startTime = 0;
-    list.bhv[9].legs.endTime = 100;
-
-    list.bhv[10].gaze.weight = 0;
-    list.bhv[10].gaze.call = 0;
-    list.bhv[10].gaze.target = "object";
-    list.bhv[10].gaze.startTime = 0;
-    list.bhv[10].gaze.endTime = 100;
-
-    list.bhv[10].emotion.weight = 0;
-    list.bhv[10].emotion.call = 0;
-    list.bhv[10].emotion.type = "doubt";
-    list.bhv[10].emotion.startTime = 40;
-    list.bhv[10].emotion.endTime = 100;
-
-    list.bhv[10].speech.weight = 0;
-    list.bhv[10].speech.call = 0;
-    list.bhv[10].speech.content = "doubt";
-    list.bhv[10].speech.tone = 2;
-    list.bhv[10].speech.rate = 2;
-    list.bhv[10].speech.startTime = 40;
-    list.bhv[10].speech.endTime = 100;
-
-    list.bhv[10].arms.weight = 0;
-    list.bhv[10].arms.call = 0;
-    list.bhv[10].arms.action = "wave";
-    list.bhv[10].arms.rate = 1;
-    list.bhv[10].arms.startTime = 30;
-    list.bhv[10].arms.endTime = 90;
-
-    list.bhv[10].legs.weight = 1;
-    list.bhv[10].legs.call = 1;
-    list.bhv[10].legs.target = "charger";
-    list.bhv[10].legs.action = "face";
-    list.bhv[10].legs.rate = 2;
-    list.bhv[10].legs.distance = 1;
-    list.bhv[10].legs.startTime = 0;
-    list.bhv[10].legs.endTime = 100;
-
-    list.bhv[11].gaze.weight = 2;
-    list.bhv[11].gaze.call = 1;
-    list.bhv[11].gaze.target = "object";
-    list.bhv[11].gaze.startTime = 0;
-    list.bhv[11].gaze.endTime = 100;
-
-    list.bhv[11].emotion.weight = 0;
-    list.bhv[11].emotion.call = 0;
-    list.bhv[11].emotion.type = "doubt";
-    list.bhv[11].emotion.startTime = 40;
-    list.bhv[11].emotion.endTime = 100;
-
-    list.bhv[11].speech.weight = 1;
-    list.bhv[11].speech.call = 1;
-    list.bhv[11].speech.content = "您的体温正常，可以进学校";
-    list.bhv[11].speech.tone = 2;
-    list.bhv[11].speech.rate = 2;
-    list.bhv[11].speech.startTime = 40;
-    list.bhv[11].speech.endTime = 100;
-
-    list.bhv[11].arms.weight = 2;
-    list.bhv[11].arms.call = 1;
-    list.bhv[11].arms.action = "Pass";
-    list.bhv[11].arms.rate = 1;
-    list.bhv[11].arms.startTime = 30;
-    list.bhv[11].arms.endTime = 90;
-
-    list.bhv[11].legs.weight = 1;
-    list.bhv[11].legs.call = 1;
-    list.bhv[11].legs.target = "target";
-    list.bhv[11].legs.action = "face";
-    list.bhv[11].legs.rate = 2;
-    list.bhv[11].legs.distance = 1;
-    list.bhv[11].legs.startTime = 0;
-    list.bhv[11].legs.endTime = 100;
 }
 //任务执行状态监控 返回分解点
 
 int CanInterrupt(Queue_para* ptr, social_msg::bhvReply item)
 {
     //if(((item.reply < ptr->data[ptr->front].speech.endTime) && (item.reply > ptr->data[ptr->front].speech.startTime)) || item.reply > 70)
-    if((item.reply > 70) && (ptr->data[ptr->front].num/100 == 0))
+    if((item.reply > 90) && (ptr->data[ptr->front].num/100 == 0))
         return 0;
     return item.reply + 1;
 }
@@ -724,26 +748,74 @@ void TaskInsert(Queue_para* ptr, social_msg::bhvPara item)
         TransTask.TotalOrder = 4;
 
         //插入行为
-        InsertTask = item;
-        // InsertTask.HeadBehavior = item.Needs;
-        // InsertTask.HeadBehavior_person = item.gaze.target;
-        InsertTask.num = 100;
-        InsertTask.Needs = item.Needs;
-        InsertTask.CurOrder = 3;
-        InsertTask.TotalOrder = 4;
-        InsertTask.gaze.IsYellow = 1;
-        InsertTask.emotion.IsYellow = 1;
-        InsertTask.speech.IsYellow = 1;
-        InsertTask.arms.IsYellow = 1;
-        InsertTask.legs.IsYellow = 1;
-
+        if(OriTask.Needs == "MeasureTempareture" && item.Needs == "Greet")
+        {
+            InsertTask = item;
+            InsertTask.num = 100;
+            InsertTask.Needs = item.Needs;
+            InsertTask.CurOrder = 3;
+            InsertTask.TotalOrder = 4;
+            InsertTask.legs = OriTask.legs;
+            InsertTask.gaze.IsYellow = 1;
+            InsertTask.emotion.IsYellow = 1;
+            InsertTask.speech.IsYellow = 1;
+            InsertTask.arms.IsYellow = 1;
+            InsertTask.legs.IsYellow = 0;
+        }
+        // else if(OriTask.Needs == "MeasureTempareture" && item.Needs == "KeepOrder")
+        // {
+            
+        // }
+        else
+        {
+            InsertTask = item;
+            // InsertTask.HeadBehavior = item.Needs;
+            // InsertTask.HeadBehavior_person = item.gaze.target;
+            InsertTask.num = 100;
+            InsertTask.Needs = item.Needs;
+            InsertTask.CurOrder = 3;
+            InsertTask.TotalOrder = 4;
+            InsertTask.gaze.IsYellow = 1;
+            InsertTask.emotion.IsYellow = 1;
+            InsertTask.speech.IsYellow = 1;
+            InsertTask.arms.IsYellow = 1;
+            InsertTask.legs.IsYellow = 1;
+        }
         //恢复原执行行为
-        TaskContinue = OriTask;
-        TaskContinue.num = 100;
-        TaskContinue.Needs = TransTask.Needs;
-        TaskContinue.CurOrder = 4;
-        TaskContinue.TotalOrder = 4;
-        TaskContinue.progress = CanInterrupt(ptr,tasks.states);
+        if(OriTask.Needs == "MeasureTempareture" && item.Needs == "Greet")
+        {
+            TaskContinue = OriTask;
+            TaskContinue.num = 0;
+            TaskContinue.TotalTime = OriTask.TotalTime*(100 - CanInterrupt(ptr,tasks.states))/100;
+            TaskContinue.Needs = TransTask.Needs;
+            TaskContinue.CurOrder = 1;
+            TaskContinue.TotalOrder = 1;
+            TaskContinue.speech.content = "嗯";
+            //TaskContinue.progress = CanInterrupt(ptr,tasks.states) + 20;
+        }
+        else if(OriTask.Needs == "MeasureTempareture" && item.Needs == "KeepOrder")
+        {
+            TaskContinue = OriTask;
+            TaskContinue.num = 0;
+            TaskContinue.TotalTime = OriTask.TotalTime*(100 - CanInterrupt(ptr,tasks.states))/100;
+            TaskContinue.Needs = TransTask.Needs;
+            TaskContinue.CurOrder = 1;
+            TaskContinue.TotalOrder = 1;
+            TaskContinue.emotion.type = "Calm";
+            TaskContinue.emotion.rob_emotion_intensity = 1;
+            TaskContinue.speech.content = "我们继续测体温";
+            //TaskContinue.progress = CanInterrupt(ptr,tasks.states);
+
+        }
+        else
+        {
+            TaskContinue = OriTask;
+            //TaskContinue.num = 100;
+            TaskContinue.Needs = TransTask.Needs;
+            TaskContinue.CurOrder = 4;
+            TaskContinue.TotalOrder = 4;
+            TaskContinue.progress = CanInterrupt(ptr,tasks.states);
+        }
         //恢复处理，主要是语音
 
         //4个任务入队
@@ -755,6 +827,10 @@ void TaskInsert(Queue_para* ptr, social_msg::bhvPara item)
         //Insert(ptr, 1, TransTask);
         Insert(ptr, 1, OriTask);
         InsertAndConcurFlag = 1;
+    }
+    else
+    {
+        Append(ptr,item);
     }
 }
 
@@ -793,7 +869,7 @@ void ParaInsert(Queue_para* ptr, social_msg::bhvPara item)
             //chat\wander判断
             if(CurrentTaskName == "Wander"){
                 //检查队列，有wander不添加
-                if(QueueCheck(Q_List,"Wander"));//如果wander存在则不做处理
+                if(QueueCheck(Q_List,"Wander")&&(item.Needs == "Wander"));//如果wander存在则不做处理
                 else{
                     Append(ptr,item);
                     tasks.flag = 1;
@@ -814,6 +890,7 @@ void ParaInsert(Queue_para* ptr, social_msg::bhvPara item)
                 for(i=1; i<n; i++){
                     if(item.weight > ptr->data[(ptr->front+i)%20].weight){
                         Insert(ptr,i+1,item);
+                        //Insert(ptr,i,item);
                         break;
                     }
                 }
@@ -835,9 +912,13 @@ void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList li
         temp_list = Buf;
         shiftneedlist(temp_list);
         temp_Qpara = list.bhv[temp_list.need];
-        temp_Qpara.gaze.target = temp_list.person_name;
-        temp_Qpara.legs.target = temp_list.person_name;     //(1) temp_Qpara.legs.target存储的是
-        temp_Qpara.emotion.type = temp_list.rob_emotion;    // (2)这怎么办？
+        if(temp_list.need_name == "Wander");
+        else{
+            temp_Qpara.gaze.target = temp_list.person_name;
+            temp_Qpara.legs.target = temp_list.person_name;     //(1) temp_Qpara.legs.target存储的是
+        }
+        temp_Qpara.emotion.type = temp_list.rob_emotion;    // (2)这怎么办？ 使用默认心情便注释掉这行
+        temp_Qpara.emotion.rob_emotion_intensity = temp_list.rob_emotion_intensity;
         //to solve speech content bug
         if(temp_list.speech != "")
             temp_Qpara.speech.content = temp_list.speech;
@@ -868,12 +949,29 @@ void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList li
 
 
 //可插入时刻标定（断句处理）
-void Punctuate(Queue_para* ptr)
+void Punctuate(string content)
 {
 
 }
+//行为分割
+//将单个行为分割为若干小行为，便于插入和并发
+//分割标准为说话前，说话后，说话中的分割以逗号为分界线
+void behavior_seg(social_msg::bhvPara item)
+{
+    int seg_point_1,seg_point_2,seg_point_3;
+    social_msg::bhvPara bhv1,bhv2,bhv3,bhv4;
+    if(item.speech.call)
+    {
+        seg_point_1 = item.speech.startTime;
+        seg_point_3 = item.speech.endTime;
 
-
+    }
+    else
+    {
+        //不分割直接入队执行
+    }
+    
+}
 
 void needCallback(const social_msg::need_msg::ConstPtr& msg)
 {

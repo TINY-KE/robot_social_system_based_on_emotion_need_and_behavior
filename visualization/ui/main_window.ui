@@ -2443,7 +2443,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>181</width>
+      <width>195</width>
       <height>761</height>
      </rect>
     </property>
@@ -3008,6 +3008,9 @@
       <height>200</height>
      </size>
     </property>
+    <property name="locale">
+     <locale language="Chinese" country="China"/>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -3018,7 +3021,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_emotion_express_2">
+   <widget class="QLabel" name="label_real_express">
     <property name="geometry">
      <rect>
       <x>1370</x>
@@ -3043,53 +3046,6 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <zorder>dock_status</zorder>
-   <zorder>label_xiaopang</zorder>
-   <zorder>label_27</zorder>
-   <zorder>label_42</zorder>
-   <zorder>label_48</zorder>
-   <zorder>label_58</zorder>
-   <zorder>label_59</zorder>
-   <zorder>lineEdit_behavior_gaze_target</zorder>
-   <zorder>label_22</zorder>
-   <zorder>label_47</zorder>
-   <zorder>lineEdit_behavior_arm_action</zorder>
-   <zorder>label_60</zorder>
-   <zorder>lineEdit_behavior_arm_rate</zorder>
-   <zorder>lineEdit_behavior_leg_action</zorder>
-   <zorder>label_61</zorder>
-   <zorder>lineEdit_behavior_leg_rate</zorder>
-   <zorder>label_62</zorder>
-   <zorder>lineEdit_behavior_leg_target</zorder>
-   <zorder>label_63</zorder>
-   <zorder>lineEdit_behavior_leg_distance</zorder>
-   <zorder>label_64</zorder>
-   <zorder>label_65</zorder>
-   <zorder>lineEdit_behavior_sounder_content</zorder>
-   <zorder>lineEdit_behavior_sounder_tone</zorder>
-   <zorder>label_66</zorder>
-   <zorder>label_67</zorder>
-   <zorder>lineEdit_behavior_sounder_rate</zorder>
-   <zorder>lineEdit_behavior_screen_type</zorder>
-   <zorder>label_68</zorder>
-   <zorder>line_6</zorder>
-   <zorder>line_7</zorder>
-   <zorder>line_8</zorder>
-   <zorder>line_9</zorder>
-   <zorder>line_10</zorder>
-   <zorder>label_26</zorder>
-   <zorder>formLayoutWidget</zorder>
-   <zorder>label_57</zorder>
-   <zorder>label_79</zorder>
-   <zorder>verticalLayoutWidget</zorder>
-   <zorder>verticalLayoutWidget</zorder>
-   <zorder>label_36</zorder>
-   <zorder>horizontalLayoutWidget_5</zorder>
-   <zorder>verticalLayoutWidget_7</zorder>
-   <zorder>verticalLayoutWidget_8</zorder>
-   <zorder>verticalLayoutWidget_6</zorder>
-   <zorder>label_emotion_express</zorder>
-   <zorder>label_emotion_express_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

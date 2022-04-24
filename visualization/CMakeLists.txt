@@ -11,11 +11,13 @@ add_compile_options(-std=c++11)
 
 # qt_build provides the qt cmake glue, roscpp the comms for a default talker
 find_package(catkin REQUIRED COMPONENTS qt_build roscpp
-    rospy
+      rospy
       std_msgs
       geometry_msgs
       message_generation
       cv_bridge
+
+      image_transport
       )
 
 #/home/zhjd/thirdparty/opencv3.4.10/opencv-3.4.10/build
@@ -25,6 +27,14 @@ find_package(OpenCV REQUIRED)
 
 find_package(QT NAMES Qt5 COMPONENTS Widgets Multimedia MultimediaWidgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Multimedia MultimediaWidgets REQUIRED)
+
+find_package(Qt5 ${USED_QT_VERSION} REQUIRED COMPONENTS
+    Core
+    Widgets
+    Svg
+    Multimedia
+    MultimediaWidgets
+)
 
 
 include_directories(${catkin_INCLUDE_DIRS}
@@ -75,6 +85,14 @@ file(GLOB_RECURSE QT_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINK
 ##############################################################################
 
 add_executable(main ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
-target_link_libraries(main ${QT_LIBRARIES} ${catkin_LIBRARIES}  ${OpenCV_LIBS})
+target_link_libraries(main ${QT_LIBRARIES} ${catkin_LIBRARIES}  ${OpenCV_LIBS}
+#    WidgetsLib
+#       DataAccessLayer
+       Qt5::Core
+       Qt5::Widgets
+       Qt5::Svg
+       Qt5::Multimedia
+       Qt5::MultimediaWidgets
+       )
 install(TARGETS main RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 

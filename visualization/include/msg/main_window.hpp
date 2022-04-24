@@ -16,6 +16,13 @@
 #include "ui_main_window.h"
 #include "qnode.hpp"
 
+
+#include <QVideoWidget>
+#include <QMediaPlayer>
+#include <QFileDialog>
+#include <QMediaPlaylist>
+
+
 //#include "emotion_image.h"
 
 //#include "cv2qimage.h"s
@@ -64,7 +71,7 @@ public Q_SLOTS:
     void updateLoggingView_need_satisfy();
 
     void updateLoggingView_emotion(); //add
-    void updateLoggingView_emotion_image(){} //add
+//    void updateLoggingView_emotion_image(){} //add
 
     void updateLoggingView_need();
 
@@ -72,6 +79,8 @@ public Q_SLOTS:
     void updateLoggingView_bhvReply();
     void updateLoggingView_bhvQueue();
 
+    void updateLoggingView_emotion_image(); //add
+    void updateLoggingView_real_image();
 
     QString calcValue(int, QString, QString, QString, int, int);
     void slt_valueChanged_gaze(int, int, int, QString);
@@ -81,7 +90,7 @@ public Q_SLOTS:
     void slt_valueChanged_leg(int, int, int, QString);
 public:
     std::vector<need> need_list;
-
+    cv::Mat frame;//定义一个变量把视频源一帧一帧显示
 
 private:
 	Ui::MainWindowDesign ui;

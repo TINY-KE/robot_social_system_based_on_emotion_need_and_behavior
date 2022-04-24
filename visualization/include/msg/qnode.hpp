@@ -42,6 +42,12 @@
 #include "social_msg/bhvQueue.h"
 
 #include "common.h"
+#include<cv_bridge/cv_bridge.h>
+#include<opencv2/opencv.hpp>
+#include<opencv2/highgui.hpp>
+#include<opencv2/imgproc.hpp>
+
+
 /*****************************************************************************
 ** Namespaces
 *****************************************************************************/
@@ -82,7 +88,7 @@ public:
   void Callback_need_satisfy(const social_msg::need_satisfy_msg &msg);
 
   void Callback_emotion(const social_msg::robot_emotion &msg);
-  void Callback_emotion_image(const sensor_msgs::Image &msg);
+  void Callback_emotion_wheel_image(const sensor_msgs::ImageConstPtr &msg);
 
   void Callback_need(const social_msg::need_msg &msg);
 
@@ -90,6 +96,8 @@ public:
   void Callback_bhvReply(const social_msg::bhvReply &msg);
   void Callback_bhvQueue(const social_msg::bhvQueue &msg);
 
+  void Callback_real_image(const sensor_msgs::ImageConstPtr &msg);
+  void Callback_emotion_image(const sensor_msgs::ImageConstPtr &msg);
 
 Q_SIGNALS:
 	void loggingUpdated();
@@ -101,7 +109,7 @@ Q_SIGNALS:
   void loggingUpdated_need_satisfy();
 
   void loggingUpdated_emotion();
-  void loggingUpdated_emotion_image();
+  void loggingUpdated_emotion_wheel_image();
 
   void loggingUpdated_need();
   void loggingUpdated_need_newest();
@@ -111,6 +119,8 @@ Q_SIGNALS:
   void loggingUpdated_bhvReply();
   void loggingUpdated_bhvQueue();
 
+  void loggingUpdated_real_image();
+  void loggingUpdated_emotion_image();
 private:
 	int init_argc;
 	char** init_argv;
@@ -123,7 +133,7 @@ private:
 
 
   ros::Subscriber subscriber_emotion;
-  ros::Subscriber subscriber_emotion_image;//  sensor_msgs/Image
+  ros::Subscriber subscriber_emotion_wheel_image;
 
   ros::Subscriber subscriber_need;
   ros::Subscriber subscriber_need_newest;
@@ -133,7 +143,14 @@ private:
   ros::Subscriber subscriber_bhvReply;
   ros::Subscriber subscriber_bhvQueue;
 
+  ros::Subscriber subscriber_emotion_image;
+  ros::Subscriber subscriber_real_image;
+
 public:
+   cv::Mat img_emotion_wheel;
+   cv::Mat img_emotion;
+   cv::Mat img_real;
+  cv::Mat frame;//定义一个变量把视频源一帧一帧显示
   //perception
   double per_time;
   std::string per_person;

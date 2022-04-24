@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-29 11:40:12
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-04-13 21:04:25
+ * @LastEditTime: 2022-04-20 15:18:29
  */
 #include "common_include.h"
 
@@ -14,7 +14,8 @@ class publish {
 private:
     int buletooth;
 
-    string  gaze_target_lastpub = "none", screen_type_lastpub = "none", 
+    string  gaze_target_lastpub = "none", 
+            screen_type_lastpub = "none", screen_intensity_lastpub = "none", 
             sounder_tone_lastpub = "none", sounder_rate_lastpub = "none", sounder_content_lastpub = "none", 
             arm_action_lastpub = "none", arm_rate_lastpub = "none", 
             leg_target_lastpub = "none", leg_aciton_lastpub = "none", leg_rate_lastpub = "none", leg_distance_lastpub = "none";
@@ -63,7 +64,8 @@ public:
 // 感觉直接改成需求更合适，为什么要通过感知信息而多此一举呢。甚至直接改为行为？）的生成。
     void run( social_msg::bhvPara& behavior,   int period_)
     {
-        string  gaze_target = "none", screen_type = "none", 
+        string  gaze_target = "none", 
+                screen_type = "none", screen_intensity = "none", 
                 sounder_tone = "none", sounder_rate = "none", sounder_content = "none", 
                 arm_action = "none", arm_rate = "none", 
                 leg_target = "none", leg_aciton = "none", leg_rate = "none", leg_distance = "none";
@@ -74,6 +76,7 @@ public:
     // publish_screen
         if(  (period_ >= behavior.emotion.startTime)  &&   (period_ <= behavior.emotion.endTime) )
             body_parameter_check(  behavior.emotion.type, screen_type,  screen_type_lastpub );
+            body_parameter_check(  to_string(behavior.emotion.rob_emotion_intensity), screen_intensity,  screen_intensity_lastpub );
         
     
     // publish_sounder
@@ -96,29 +99,39 @@ public:
             body_parameter_check(  to_string(behavior.legs.distance), leg_distance,  leg_distance_lastpub );  
         }
 
-
-        string block = "none";
-        string parameter_buletooth = 
-                    gaze_target +" "+ block +" "+ block +" "+ block +" "+ block +";"+ 
-                    screen_type +" "+ block +" "+ block +" "+ block +" "+ block +";"+ 
-                    arm_action +" "+ arm_rate +" "+ block +" "+ block +" "+ block +";"+ 
-                    sounder_tone +" "+ sounder_rate +" "+ sounder_content +" "+ block +" "+ block +";"+ 
-                    leg_target +" "+ leg_aciton +" "+ leg_rate+" "+ leg_distance +" "+ block +";"
-                    ;
-        if( arm_action != "none" ){
-            social_msg::Arms arm_msg;
-            arm_msg.action = arm_action;
-            arm_msg.rate = behavior.arms.rate;
-            pub_robotic_arm.publish(arm_msg);
+        if( gaze_target == "none" && 
+        screen_type == "none" &&  screen_intensity == "none" &&
+        arm_action == "none" &&  arm_rate == "none" &&
+        sounder_tone == "none" &&  sounder_rate == "none" &&  sounder_content == "none" &&
+        leg_target == "none" &&  leg_aciton == "none" && leg_rate == "none" && leg_distance == "none"
+        ){
+            return;
         }
-        // cout<< "        行为参数：" <<parameter_buletooth<<endl;
-        // char buf[] = "hello zhjd";
-        // string buf1 = buf;
-        char *parameter_buletooth_charstat = (char *)parameter_buletooth.c_str();
-        char parameter_buletooth_char[1000];
-        strcpy(  parameter_buletooth_char , parameter_buletooth_charstat );
-        printf( "行为参数 parameter_buletooth_char: %s \n" , parameter_buletooth_char);
-        write(buletooth, parameter_buletooth_char, strlen(parameter_buletooth_char));
+        else{
+            string block = "none";
+            string parameter_buletooth = 
+                        gaze_target +" "+ block +" "+ block +" "+ block +" "+ block +";"+ 
+                        screen_type +" "+ screen_intensity +" "+ block +" "+ block +" "+ block +";"+ 
+                        arm_action +" "+ arm_rate +" "+ block +" "+ block +" "+ block +";"+ 
+                        sounder_tone +" "+ sounder_rate +" "+ sounder_content +" "+ block +" "+ block +";"+ 
+                        leg_target +" "+ leg_aciton +" "+ leg_rate+" "+ leg_distance +" "+ block +";"
+                        ;
+            if( arm_action != "none" ){
+                social_msg::Arms arm_msg;
+                arm_msg.action = arm_action;
+                arm_msg.rate = behavior.arms.rate;
+                pub_robotic_arm.publish(arm_msg);
+            }
+            // cout<< "        行为参数：" <<parameter_buletooth<<endl;
+            // char buf[] = "hello zhjd";
+            // string buf1 = buf;
+            char *parameter_buletooth_charstat = (char *)parameter_buletooth.c_str();
+            char parameter_buletooth_char[1000];
+            strcpy(  parameter_buletooth_char , parameter_buletooth_charstat );
+            printf( "行为参数 parameter_buletooth_char: %s \n" , parameter_buletooth_char);
+            write(buletooth, parameter_buletooth_char, strlen(parameter_buletooth_char));
+            }
+        
 
     }
     void clear(){

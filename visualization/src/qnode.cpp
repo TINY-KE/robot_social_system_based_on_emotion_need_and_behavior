@@ -17,10 +17,13 @@
 #include <sstream>
 #include "../include/msg/qnode.hpp"
 
-
-
+#include<cv_bridge/cv_bridge.h>
+#include<opencv2/opencv.hpp>
+#include<opencv2/highgui.hpp>
+#include<opencv2/imgproc.hpp>
+#include<image_transport/subscriber.h>
+#include<sensor_msgs/Image.h>
 #include<sensor_msgs/image_encodings.h>
-
 
 /*****************************************************************************
 ** Namespaces
@@ -62,6 +65,7 @@ bool QNode::init(const std::string &master_url, const std::string &host_url) {
 	if ( ! ros::master::check() ) {
 		return false;
 	}
+
 	start();
 	return true;
 }
@@ -69,6 +73,8 @@ bool QNode::init(const std::string &master_url, const std::string &host_url) {
 void QNode::run() {
 
   std::cout << "change  2." << std::endl;
+
+
   ros::start(); // explicitly needed since our nodehandle is going out of scope.
   ros::NodeHandle n;
   // Add your ros communications here.
@@ -79,7 +85,7 @@ void QNode::run() {
 
 
   subscriber_emotion = n.subscribe("robot_emotion", 1000, &QNode::Callback_emotion, this);   //(2))
-  subscriber_emotion_image = n.subscribe("emotion_img", 1000, &QNode::Callback_emotion_image, this);   //    subscriber_emotion_image;//  sensor_msgs/Image
+  subscriber_emotion_wheel_image = n.subscribe("emotion_img", 1000, &QNode::Callback_emotion_wheel_image, this);   //    subscriber_emotion_image;//  sensor_msgs/Image
 
   subscriber_need = n.subscribe("need_lists", 1000, &QNode::Callback_need, this);
 //  subscriber_need_newest =  no use
@@ -87,6 +93,9 @@ void QNode::run() {
   subscriber_bhvPara = n.subscribe("behavior_pub", 1000, &QNode::Callback_bhvPara, this);
   subscriber_bhvReply = n.subscribe("behavior_Reply", 1000, &QNode::Callback_bhvReply, this);
   subscriber_bhvQueue = n.subscribe("behaviorQ_pub", 1000, &QNode::Callback_bhvQueue, this);
+
+  subscriber_emotion_image = n.subscribe("emotion_img", 1000, &QNode::Callback_emotion_image, this);
+  subscriber_real_image = n.subscribe("/usb_cam/image_raw", 1000, &QNode::Callback_real_image, this);
   ros::spin();
   std::cout << "Ros shutdown, proceeding to close the gui." << std::endl;
   Q_EMIT rosShutdown(); // used to signal the gui for a shutdown (useful to roslaunch)
@@ -152,13 +161,15 @@ void QNode::Callback_emotion(const social_msg::robot_emotion &msg)
   emotion8 = msg.emotion8;
   Q_EMIT loggingUpdated_emotion();      //(2.2)  singal to qt
 }
-void QNode::Callback_emotion_image(const sensor_msgs::Image &msg)
+void QNode::Callback_emotion_wheel_image(const sensor_msgs::ImageConstPtr &msg) //sensor_msgs::Image &msg)   //sensor_msgs::ImageConstPtr &msg
 {
-  std::cout << "QNode::Callback_emotion_image" << std::endl;
-//  cv::Mat image = cv_bridge::toCvShare(msg, "bgr8")->image;
-//  cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
-//  cv::imshow("view", cv_ptr->image);
-  Q_EMIT loggingUpdated_emotion();      //(2.2)  singal to qt
+  cv_bridge::CvImagePtr cv_ptr;
+
+     /*change to CVImage*/
+  cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);//将ros::sensor_msgs转为opencv格式
+  img_emotion_wheel = cv_ptr->image;//转为opencv图像格式
+
+  Q_EMIT loggingUpdated_emotion_wheel_image();      //(2.2)  singal to qt
 }
 
 
@@ -260,6 +271,41 @@ void QNode::Callback_bhvQueue(const social_msg::bhvQueue &msg){
   }
 
   Q_EMIT loggingUpdated_bhvQueue();
+}
+
+
+void QNode::Callback_emotion_image(const sensor_msgs::ImageConstPtr &msg) //sensor_msgs::Image &msg)   //sensor_msgs::ImageConstPtr &msg
+{
+//  std::cout << "QNode::Callback_emotion_image" << std::endl;
+//  cv::Mat image = cv_bridge::toCvShare(msg, "bgr8")->image;
+//  cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+//  cv::imshow("view", cv_ptr->image);
+
+
+  cv_bridge::CvImagePtr cv_ptr;
+
+     /*change to CVImage*/
+  cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);//将ros::sensor_msgs转为opencv格式
+  img_emotion = cv_ptr->image;//转为opencv图像格式
+
+  Q_EMIT loggingUpdated_emotion_image();      //(2.2)  singal to qt
+}
+
+void QNode::Callback_real_image(const sensor_msgs::ImageConstPtr &msg) //sensor_msgs::Image &msg)   //sensor_msgs::ImageConstPtr &msg
+{
+//  std::cout << "QNode::Callback_emotion_image" << std::endl;
+//  cv::Mat image = cv_bridge::toCvShare(msg, "bgr8")->image;
+//  cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+//  cv::imshow("view", cv_ptr->image);
+
+
+  cv_bridge::CvImagePtr cv_ptr;
+
+     /*change to CVImage*/
+  cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);//将ros::sensor_msgs转为opencv格式
+  img_real = cv_ptr->image;//转为opencv图像格式
+
+  Q_EMIT loggingUpdated_real_image();      //(2.2)  singal to qt
 }
 
 bool QNode::comp( need &a,need &b)

@@ -148,18 +148,18 @@ void run_PriorNeed(){
                     // printf( GREEN "    QT_order: %d:\n"NONE, need_output.qt_order); 
                     // sleep(0.1); // TODO: 重要。
                 }
-            else{
-                    social_msg::need_msg need_output;
-                    need_output.IDtype = "";
-                    need_output.rob_emotion = "";//TODO: need_lists[i].rob_emotion;
-                    need_output.person_emotion = "";//need_lists[i].person_emotion
-                    need_output.need_name = "";  
-                    need_output.weight = 0;
-                    need_output.speech = "";
-                    need_output.person_name =  "";
-                    need_output.qt_order = period_cur;
-                    need_output.satisfy_value = 0;
-                    pub.publish(need_output);
+            else{  //此部分用途：用于刷新qt中need list。如果本周期，没有新的need发送过，那么qt中的need list还是会显示之前的need，就可能会对中期测试中本没有need生成的情况  造成误解。
+                    // social_msg::need_msg need_output;
+                    // need_output.IDtype = "";
+                    // need_output.rob_emotion = "";//TODO: need_lists[i].rob_emotion;
+                    // need_output.person_emotion = "";//need_lists[i].person_emotion
+                    // need_output.need_name = "";  
+                    // need_output.weight = 0;
+                    // need_output.speech = "";
+                    // need_output.person_name =  "";
+                    // need_output.qt_order = period_cur;
+                    // need_output.satisfy_value = 0;
+                    // pub.publish(need_output);
             }
             period_cur++;     
         }

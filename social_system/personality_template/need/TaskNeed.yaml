@@ -2,7 +2,7 @@
   intention: ReturnHome
   IDtype: Family
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.9
@@ -12,7 +12,7 @@
   intention: Query
   IDtype: Family
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85
@@ -22,7 +22,7 @@
   intention: BringMing
   IDtype: Family
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.8
@@ -32,7 +32,7 @@
   intention: FeelDepressed
   IDtype: Family
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.77
@@ -42,7 +42,7 @@
   intention: GameAnswer
   IDtype: Family
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
@@ -52,7 +52,7 @@
   intention: Game
   IDtype: Family
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
@@ -72,7 +72,7 @@
   intention: EnterHospital
   IDtype: Patient
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.9
@@ -83,7 +83,7 @@
   intention: EnterHospital
   IDtype: Patient
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.84
@@ -106,7 +106,7 @@
   intention: AskOtherIntention
   IDtype: Patient
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.95
@@ -117,7 +117,7 @@
   intention: Query
   IDtype: Patient
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85
@@ -129,7 +129,7 @@
   intention: Call
   IDtype: Patient
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.83
@@ -140,7 +140,7 @@
   intention: PrintReport
   IDtype: Patient
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.8
@@ -151,7 +151,7 @@
   intention: PhysicalExamination
   IDtype: Patient
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.8
@@ -163,7 +163,7 @@
   intention: ScheduledDialysis
   IDtype: Patient
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.8
@@ -175,7 +175,7 @@
   intention: UnscheduledDialysis
   IDtype: Patient
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.8
@@ -206,7 +206,7 @@
   intention: EnterSchool
   IDtype: Teacher
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.9
@@ -215,7 +215,7 @@
   intention: EnterSchool
   IDtype: Student
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.88
@@ -224,7 +224,7 @@
   intention: EnterSchool
   IDtype: Parent
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.86 
@@ -242,28 +242,28 @@
 
 
 - need_name: MeasureTempareture
-  intention: EnterSchool
+  intention: MeasureTempareture
   IDtype: Teacher
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
   satisfy_value: 2
 - need_name: MeasureTempareture
-  intention: EnterSchool
+  intention: MeasureTempareture
   IDtype: Student
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
   satisfy_value: 2
 - need_name: MeasureTempareture
-  intention: EnterSchool
+  intention: MeasureTempareture
   IDtype: Parent
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.75
@@ -273,7 +273,7 @@
   intention: pass
   IDtype: Teacher
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.95
@@ -282,7 +282,7 @@
   intention: pass
   IDtype: Student
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.95
@@ -291,7 +291,7 @@
   intention: pass
   IDtype: Parent
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.95
@@ -301,7 +301,7 @@
   intention: EnterSchool
   IDtype: Parent
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0
   weight: 0.80
@@ -313,7 +313,7 @@
   intention: Query
   IDtype: Teacher
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85
@@ -322,7 +322,7 @@
   intention: Query
   IDtype: Student
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85
@@ -331,7 +331,7 @@
   intention: Query
   IDtype: Parent
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85 
@@ -340,7 +340,7 @@
   intention: Query
   IDtype: Stranger
   person_emotion: Happy
-  rob_emotion: [0.5, 0, 0, 0, 0, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.05
   weight: 0.85 

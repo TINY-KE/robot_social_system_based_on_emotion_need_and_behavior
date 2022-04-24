@@ -77,6 +77,7 @@ struct need {
     // std::string IDtype;
     std::vector<double> rob_emotion;
     std::string robot_emotion_str = "";
+    int robot_emotion_intensity = 0;
     std::string person_emotion = "";
     std::vector<double> rob_status;
     /* 权重 */
@@ -120,12 +121,19 @@ enum NeedType {
     TaskNeed = 1
 };
 
+
+
+
 static int NeedTypeCheck(std::string name){
     if(name == "Greet" || name == "MeasureTempareture" || name == "Anwser" || name == "ParentIdentity")
         return  TaskNeed;
     if(name == "Doubt" || name == "Chat" || name == "Charge" || name == "Wander")
         return InnerNeed;
 }
+
+
+
+
 
 
 #endif
