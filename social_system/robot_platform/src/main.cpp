@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-04-20 14:57:03
+ * @LastEditTime: 2022-05-10 21:09:40
  */
 /* 
 4）行为的发布：
@@ -270,7 +270,7 @@ void  PeriodDetection(){
             if( flag == false ) {
                 // 当前周期（endtime）不能通过，次数到达阈值， 生成 消极需求满足
                 delay_time ++;
-                if( delay_time > 20 ){   //TODO: delay time的阈值  还得斟酌。
+                if( delay_time > 1000 ){   //TODO: delay time的阈值  还得斟酌。
                     need_satisfy_pub( behavior , false );
                     delay_time = 0;
                 }

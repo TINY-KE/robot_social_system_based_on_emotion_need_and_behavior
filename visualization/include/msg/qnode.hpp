@@ -208,6 +208,7 @@ public:
   int leg_rate;
   int leg_distance;
   std::string screen_type;
+  int screen_intensity;
   int sound_tone;
   int sound_rate;
   std::string speech_content;

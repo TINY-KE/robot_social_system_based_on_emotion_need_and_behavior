@@ -466,25 +466,25 @@ void MainWindow::updateLoggingView_emotion() {
   ui.progressBar_emotion8->setValue(int(qnode.emotion8*100));
   ui.lineEdit_emotion8->setText(QString::number(qnode.emotion8,'f',2));
   sleep(0);
-  QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
-  QImage* img=new QImage;
-  if(! ( img->load(filename) ) ) //加载图像
-  {
-  QMessageBox::information(this,
-  tr("打开图像失败"),
-   tr("打开图像失败!"));
-  delete img;
-  return;
-  }
-  int width = (*img).width();      int height =  (*img).height();
-//    QRect rect(width-height/2,0, height,height);
-//  qDebug() << width << " " <<  height ;
-  QRect rect( (width/2 - height/2),0, height,height);
-  QImage img_cut = (*img).copy(rect);
-  ui.label_emotion_image->setPixmap(QPixmap::fromImage(
-                                                        img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
-                                                      )
-                                    );
+//  QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
+//  QImage* img=new QImage;
+//  if(! ( img->load(filename) ) ) //加载图像
+//  {
+//  QMessageBox::information(this,
+//  tr("打开图像失败"),
+//   tr("打开图像失败!"));
+//  delete img;
+//  return;
+//  }
+// int width = (*img).width();      int height =  (*img).height();
+////    QRect rect(width-height/2,0, height,height);
+////  qDebug() << width << " " <<  height ;
+//  QRect rect( (width/2 - height/2),0, height,height);
+//  QImage img_cut = (*img).copy(rect);
+//  ui.label_emotion_image->setPixmap(QPixmap::fromImage(
+//                                                        img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
+//                                                      )
+//                                    );
 
 }
 
@@ -532,6 +532,7 @@ void MainWindow::updateLoggingView_bhvPara() {
     }
     if(qnode.screen_call != 0){
       ui.lineEdit_behavior_screen_type->setText(QString::fromStdString(qnode.screen_type));
+      ui.lineEdit_behavior_screen_intensity->setText(QString::number(qnode.screen_intensity));
     }
     if(qnode.sound_call != 0){
       ui.lineEdit_behavior_sounder_tone->setText(QString::number(qnode.sound_tone,'f',2));

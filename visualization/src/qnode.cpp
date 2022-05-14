@@ -236,6 +236,7 @@ void QNode::Callback_bhvPara(const social_msg::bhvPara &msg){
   }
   if(msg.emotion.call != 0){
     screen_type = msg.emotion.type;
+    screen_intensity = msg.emotion.rob_emotion_intensity;
     screen_startTime = msg.emotion.startTime;
     screen_endTime = msg.emotion.endTime;
    // screen_call = msg.emotion.call;

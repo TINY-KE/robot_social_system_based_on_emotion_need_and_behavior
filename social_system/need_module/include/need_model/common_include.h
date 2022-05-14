@@ -49,7 +49,8 @@
 #include "social_msg/need_satisfy_msg.h"
 #include "social_msg/bhvPara.h"
 #include "social_msg/bhvReply.h"
-
+#include "social_msg/bhvReply.h"
+#include "perception.h"
 
 using namespace std; 
 #define NONE "\033[m"   //正常终端颜色

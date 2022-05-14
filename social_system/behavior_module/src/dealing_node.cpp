@@ -53,6 +53,16 @@ int test_i=0,test_j=0;
 
 social_msg::bhvQueue Q_List;
 
+// //全局变量  动作表情开关
+// typedef struct e_switch{
+//     bool Wander = 1;
+//     bool Greet = 1;
+//     bool MeasureTempareture = 1;
+//     bool KeepOrder = 1;
+//     bool Pass = 1;
+// }emotion_switch;
+
+
 void Queue_init(Queue_para* ptr) { //初始化队列
     ptr->count = 0;
     ptr->front = 0;
@@ -134,7 +144,7 @@ void LoclistInit(LocalList &list){
     list.bhv[0].emotion.call = 1;
     list.bhv[0].emotion.type = "Joy";
     list.bhv[0].emotion.rob_emotion_intensity = 2;
-    list.bhv[0].emotion.startTime = 50;
+    list.bhv[0].emotion.startTime = 0;
     list.bhv[0].emotion.endTime = 100;
 
     list.bhv[0].speech.weight = 1;
@@ -143,13 +153,13 @@ void LoclistInit(LocalList &list){
     list.bhv[0].speech.tone = 3;
     list.bhv[0].speech.rate = 2;
     list.bhv[0].speech.startTime = 0;
-    list.bhv[0].speech.endTime = 100;
+    list.bhv[0].speech.endTime = 70;
 
     list.bhv[0].arms.weight = 3;
     list.bhv[0].arms.call = 1;
     list.bhv[0].arms.action = "wave";
     list.bhv[0].arms.rate = 2;
-    list.bhv[0].arms.startTime = 50;
+    list.bhv[0].arms.startTime = 0;
     list.bhv[0].arms.endTime = 100;
 
     list.bhv[0].legs.weight = 1;
@@ -212,8 +222,8 @@ void LoclistInit(LocalList &list){
 
     list.bhv[2].emotion.weight = 3;
     list.bhv[2].emotion.call = 1;
-    list.bhv[2].emotion.type = "slfmood";
-    list.bhv[2].emotion.rob_emotion_intensity = 2;
+    list.bhv[2].emotion.type = "Joy";
+    list.bhv[2].emotion.rob_emotion_intensity = 1;
     list.bhv[2].emotion.startTime = 0;
     list.bhv[2].emotion.endTime = 20;
 
@@ -251,7 +261,7 @@ void LoclistInit(LocalList &list){
     list.bhv[3].gaze.endTime = 100;
 
     list.bhv[3].emotion.weight = 0;
-    list.bhv[3].emotion.call = 0;
+    list.bhv[3].emotion.call = 1;
     list.bhv[3].emotion.type = "Boring";
     list.bhv[3].emotion.rob_emotion_intensity = 2;
     list.bhv[3].emotion.startTime = 0;
@@ -454,7 +464,7 @@ void LoclistInit(LocalList &list){
     list.bhv[8].emotion.call = 1;
     list.bhv[8].emotion.type = "Anger";
     list.bhv[8].emotion.rob_emotion_intensity = 2;
-    list.bhv[8].emotion.startTime = 40;
+    list.bhv[8].emotion.startTime = 0;
     list.bhv[8].emotion.endTime = 100;
 
     list.bhv[8].speech.weight = 1;
@@ -463,11 +473,11 @@ void LoclistInit(LocalList &list){
     list.bhv[8].speech.tone = 2;
     list.bhv[8].speech.rate = 2;
     list.bhv[8].speech.startTime = 0;
-    list.bhv[8].speech.endTime = 100;
+    list.bhv[8].speech.endTime = 70;
 
     list.bhv[8].arms.weight = 2;
     list.bhv[8].arms.call = 1;
-    list.bhv[8].arms.action = "curl";
+    list.bhv[8].arms.action = "shake";
     list.bhv[8].arms.rate = 3;
     list.bhv[8].arms.startTime = 0;
     list.bhv[8].arms.endTime = 100;
@@ -572,9 +582,9 @@ void LoclistInit(LocalList &list){
 
     list.bhv[11].emotion.weight = 2;
     list.bhv[11].emotion.call = 1;
-    list.bhv[11].emotion.type = "Calm";
+    list.bhv[11].emotion.type = "Joy";
     list.bhv[11].emotion.rob_emotion_intensity = 1;
-    list.bhv[11].emotion.startTime = 40;
+    list.bhv[11].emotion.startTime = 0;
     list.bhv[11].emotion.endTime = 100;
 
     list.bhv[11].speech.weight = 1;
@@ -583,14 +593,14 @@ void LoclistInit(LocalList &list){
     list.bhv[11].speech.tone = 2;
     list.bhv[11].speech.rate = 2;
     list.bhv[11].speech.startTime = 0;
-    list.bhv[11].speech.endTime = 100;
+    list.bhv[11].speech.endTime = 50;
 
     list.bhv[11].arms.weight = 2;
     list.bhv[11].arms.call = 1;
     list.bhv[11].arms.action = "direct";
     list.bhv[11].arms.rate = 1;
     list.bhv[11].arms.startTime = 30;
-    list.bhv[11].arms.endTime = 90;
+    list.bhv[11].arms.endTime = 100;
 
     list.bhv[11].legs.weight = 1;
     list.bhv[11].legs.call = 1;
@@ -901,6 +911,16 @@ void ParaInsert(Queue_para* ptr, social_msg::bhvPara item)
             //     Append(ptr, item);
         }
 }
+
+//根据emotion_switch决定是否返回默认情绪  0--使用默认情绪  1--不使用
+bool Be_emotion_switch(string behavior){
+    if(behavior == "Wander") return 0;
+    else if(behavior == "Greet") return 0;
+    else if(behavior == "MeasureTempareture") return 0;
+    else if(behavior == "KeepOrder") return 0;
+    else if(behavior == "Pass") return 0;
+    else return 1;
+}
 //根据行为参数将需求清单生成对应的行为
 void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList list){
     social_msg::bhvPara temp_Qpara;
@@ -917,8 +937,10 @@ void Behavior_Create(social_msg::need_msg &Buf, Queue_para* Q_para, LocalList li
             temp_Qpara.gaze.target = temp_list.person_name;
             temp_Qpara.legs.target = temp_list.person_name;     //(1) temp_Qpara.legs.target存储的是
         }
-        temp_Qpara.emotion.type = temp_list.rob_emotion;    // (2)这怎么办？ 使用默认心情便注释掉这行
-        temp_Qpara.emotion.rob_emotion_intensity = temp_list.rob_emotion_intensity;
+        if(Be_emotion_switch(temp_list.need_name))
+            temp_Qpara.emotion.type = temp_list.rob_emotion;    // (2)这怎么办？ 使用默认心情便注释掉这行
+
+        // temp_Qpara.emotion.rob_emotion_intensity = temp_list.rob_emotion_intensity;
         //to solve speech content bug
         if(temp_list.speech != "")
             temp_Qpara.speech.content = temp_list.speech;
@@ -1031,7 +1053,6 @@ int main(int argc,char **argv)
     
     setlocale(LC_CTYPE, "zh_CN.utf8");
     // social_msg::bhvGet bGet;
-    
     Queue_init(Q);
     tasks.flag = 1;
     //名称初始化时要求唯一

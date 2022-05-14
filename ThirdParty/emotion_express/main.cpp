@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2022-04-14 22:17:45
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-04-15 17:13:15
+ * @LastEditTime: 2022-05-13 17:49:09
  */
 #include<ros/ros.h>
 #include<string>
@@ -20,10 +20,12 @@
 #include<stdio.h>
 
 #include <social_msg/need_msg.h>
+#include <social_msg/bhvPara.h>
 using namespace cv;
 using namespace std;
 
 ros::Subscriber sub_need;
+ros::Subscriber sub_bhv;
 image_transport::Publisher pub;
 void video_transport( string video_location){
     ros::Rate loop_rate(24);
@@ -63,6 +65,22 @@ void needCallback(const social_msg::need_msg &msg){
     video_transport(video_location);
 }
 
+void bhvCallback(const social_msg::bhvPara &msg){
+    std::cout << "QNode::Callback_bhv" << std::endl;
+    int behavior_type_1 = msg.num / 1%10;	
+    int behavior_type_10 = msg.num / 10%10;
+    int behavior_type_100 = msg.num / 100%10;
+    if( (behavior_type_100 == 1) && ((behavior_type_10 != 0) || (behavior_type_1 != 0)) ){
+        
+    }
+    else{
+        string emotion = msg.emotion.type;
+        string intensity = to_string(msg.emotion.rob_emotion_intensity);
+        string video_location = "/home/zhjd/ws/src/ThirdParty/emotion_express/video/" + emotion + intensity + ".mp4";
+        video_transport(video_location);
+    }
+}
+
 
 int main(int argc, char** argv)
 {
@@ -74,10 +92,17 @@ int main(int argc, char** argv)
      // 定义pub节点句柄   
     image_transport::ImageTransport it(n);
     //image_transport::Publisher pub = it.advertise("/camera/rgb/image_raw", 1);
+    
+    // string emotion = "Calm";
+    // string intensity = to_string(0);
+    // string video_location = "/home/zhjd/ws/src/ThirdParty/emotion_express/video/" + emotion + intensity + ".mp4";
+    // video_transport(video_location);
+
     pub = it.advertise("emotion_img", 10);
            
      // 定义sub节点句柄 
-    sub_need = n.subscribe("need_lists", 10,   needCallback);  //<social_msg::need_msg>
+    // sub_need = n.subscribe("need_lists", 10,   needCallback);  //<social_msg::need_msg>
+    sub_bhv = n.subscribe("behavior_pub", 10,   bhvCallback);  //<social_msg::bhvPara
     ros::spin();
     return 0;
 }

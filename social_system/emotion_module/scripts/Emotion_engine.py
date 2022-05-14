@@ -1,28 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-
+import os
 import numpy as np
 import math
 from bisect import bisect_left
 import pandas as pd
 import csv
+import rospy
 
+#获取pkg目录
+root=os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
 ##### 实时参数初始化
 emtionNumber = 8
 delta_epre = np.zeros(emtionNumber)
 delta_e = np.zeros(emtionNumber)      # 情绪增量向量 [ delta_emotion0 , delta_emotion1,... ]
 current_e = np.zeros(emtionNumber) # 当前情感强度向量 [ float_emotion0 , emotion1,...]
-current_m = 0.1                                              # 当前心境值，初始为0.1
-delta_m = 0.001                                                      # 心境值增量
-stimulus_t= 3                                                 # 刺激持续时间，现默认所有刺激均持续5s
+current_m = 0.01                                              # 当前心境值，初始为0.01
+delta_m = 0                                                      # 心境值增量
+stimulus_t=25                                                   # 刺激持续时间，现默认所有刺激均持续15s
 t_flag = 0                                                           # 判断是否处于刺激持续循环内
 e_count=0                                                        # 记录情绪更新周期的参数
-
+beta = 0.5
 
 ##### 情绪参数
 tmp_lst = []
-with open("/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'emotion_param.csv', 'r') as f:
+### 引用原始参数（新参数表是变化参数）
+with open(os.path.join(root, 'scripts/csv/emotion_param.csv'), 'r') as f:
         reader = csv.reader(f)
         for row in reader:
                 tmp_lst.append(row)
@@ -32,20 +36,37 @@ df_list=df.values.tolist()
 increaseKP=df_list[0]                              # 情感更新时持续时间延长系数（大于0小于1）
 eci=[int(float(i))for i in df_list[1] ]       # 情绪类别
 kmi=[float(i)for i in df_list[2] ]              # 心境对情绪的作用系数
-a=df_list[3]                                                   # 幅度值（未启用）
-b=df_list[4]                                                   # 衰减系数（未启用）
-h0=0
-h1=[float(i)for i in df_list[5] ]                 # unaware情绪阈值为[h0,h1]
-h2=[float(i)for i in df_list[6] ]                 # mild情绪阈值为(h1,h2]
-h3=[float(i)for i in df_list[7] ]                 # moderate情绪阈值为(h2,h3]
-h4=[float(i)for i in df_list[8] ]                 # intense情绪阈值为(h3,h4]
+a=df_list[3]                                                   # 幅度值
+b=df_list[4]                                                   # 衰减系数
+h0=0.01
+### 设置人格
+personality='extrovert'
+## 设置内向introvert，外向与default的人格阈值
+if personality == 'introvert':
+    h1=[float(i)for i in df_list[5] ]                 # unaware情绪阈值为[h0,h1]
+    h2=[float(i)for i in df_list[6] ]                 # mild情绪阈值为(h1,h2]
+    h3=[float(i)for i in df_list[7] ]                 # moderate情绪阈值为(h2,h3]
+    h4=[float(i)for i in df_list[8] ]                 # intense情绪阈值为(h3,h4]
+elif personality == 'extrovert':
+    h1=[float(i)for i in df_list[12] ]               
+    h2=[float(i)for i in df_list[13] ]                 
+    h3=[float(i)for i in df_list[14] ]                 
+    h4=[float(i)for i in df_list[15] ]
+else:
+    h1=[float(i)for i in df_list[16] ]               
+    h2=[float(i)for i in df_list[17] ]                 
+    h3=[float(i)for i in df_list[18] ]                 
+    h4=[float(i)for i in df_list[19] ]
 
+
+beta=[float(i)for i in df_list[10] ]             # 人格变化参数
+beta_star=[float(i)for i in df_list[11] ] # 人格变化参数*
 
 ##### 心境参数
-d_m = 0.0077                                                # 衰减系数（未启用）
-b_m = 0                                                           # 情绪偏置，设置性格（未启用）
+d_m = 0.0077                                                # 衰减系数
+b_m = 0                                                           # 情绪偏置，设置性格
 kei = 0.2                                                           # 情绪对心境的作用系数,先默认在同向情绪下相同
-updatecount = 10                                        # 情绪更新周期数，默认为10
+updatecount = 5                                        # 情绪更新周期数，默认为10
 
 
 class Emtion_engine:
@@ -97,10 +118,11 @@ class Emtion_engine:
             if mode[i]==0:
                 self.current_e[i] = self.delta_e[i]+flag
             if mode[i]==1:
-                if self.current_e[i] > h1[i]:
-                    threshold = [h1[i],h2[i],h3[i],h4[i]]
-                    h = bisect_left(threshold,self.current_e[i])
-                    eai=(math.log(abs(self.current_e[i]))-math.log(threshold[int(h-1)]))/(float(increaseKP[i])*stimulus_t )* delta_t 
+                if self.current_e[i] > h0:
+                    threshold = [h0,h1[i],h2[i],h3[i],h4[i]]
+                    #h = bisect_left(threshold,self.current_e[i])
+                    h = min(threshold, key=lambda x: abs(x - self.current_e[i]))
+                    eai=(math.log(abs(self.current_e[i]))-math.log(threshold[int(h)]))/(float(increaseKP[i])*stimulus_t )* delta_t 
                     self.current_e[i] = self.current_e[i]*math.exp((-1)*eai) # 比自然衰减多了时间延长系数
             if mode[i]==2:
                 self.current_e[i] = [self.current_e[i],self.delta_e[i]][self.delta_e[i]>self.current_e[i]] 
@@ -124,10 +146,11 @@ class Emtion_engine:
         if (current_t-start_t)<1:
             e_val *=1
         else:
-            if e_val > h1[i]:
-                threshold = [h1[i],h2[i],h3[i],h4[i]] 
-                h = bisect_left(threshold,e_val) # 由情感值向下取第一个阈值
-                eai=(math.log(e_val)-math.log(threshold[h-1]))/stimulus_t * (current_t-start_t)
+            if e_val > h0:
+                threshold = [h0,h1[i],h2[i],h3[i],h4[i]] 
+                #h = bisect_left(threshold,e_val) # 由情感值向下取第一个阈值
+                h = min(threshold, key=lambda x: abs(x - self.current_e[i]))
+                eai=(math.log(abs(e_val))-math.log(threshold[int(h)]))/stimulus_t * (current_t-start_t)
                 e_val = e_val*math.exp((-1)*eai)
             else:
                 e_val *=1
@@ -136,22 +159,22 @@ class Emtion_engine:
 
     def update_m(self):
         '''
-        *心境变化（目前不区分刺激持续状态与自然衰减状态）
+        *心境变化与人格参数
         '''
         global e_count,delta_m
         for i in range(len(self.current_e)):
-            l=np.nonzero(self.delta_e)
-            delta_m += eci[i]*kei*self.delta_e[i]/(np.array(l).ndim*updatecount)
+            l=np.nonzero(self.current_e)
+            delta_m += eci[i]*kei*self.current_e[i]/(np.array(l).ndim*updatecount)
         e_count +=1 # e_count为记录情绪更新次数的参数
         if e_count == updatecount:
             self.current_m +=delta_m
             e_count = 0
+            delta_m = 0
         else:
             self.current_m +=0
         return self.current_m
-                
-
-    ##### 心境自然变化规律（目前未启用）        
+                       
     def natural_attenuation_m(self,current_tm,start_tm):
         self.current_m *= math.exp((-1)*d_m*(current_tm-start_tm))+ b_m
         return self.current_e
+

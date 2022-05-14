@@ -5,16 +5,13 @@
 #include <ros/ros.h>
 #include "std_msgs/String.h"
 #include <sstream>
-#include <perception.h>
 #include "social_msg/perception_msg.h"
 #include "social_msg/need_msg.h"
 #include "social_msg/robot_emotion.h"
 #include "social_msg/robot_status.h"
 #include "dynamic_reconfigure/server.h" 
-
+#include "need_satisfied.h"
 //内部头文件
-
-#include "perception.h"
 #include "prior_need.h"
 #include "perception_filter.h"
 
@@ -26,6 +23,7 @@ perception_filter *Filter = new perception_filter(20);   //TODO: 确定合适的
 ros::Subscriber sub_perception;
 ros::Subscriber sub_robot_emotion;
 ros::Subscriber sub_robot_status;
+ros::Subscriber sub_behavior_Reply;
 ros::Subscriber sub_needCompare;
 ros::Publisher pub;
 
@@ -40,7 +38,8 @@ void operator >> (const social_msg::need_msg& msg, need_wu & need) {
 // 需求模型
 prior_need PriorNeed;
 void run_PriorNeed();
-
+// 需求满足节点
+NeedSatisfied need_satisfied;
 
 // 回调函数
 void PerceptionUpdate(const social_msg::perception_msg& msg){
@@ -64,6 +63,9 @@ void PerceptionUpdate(const social_msg::perception_msg& msg){
     if( Filter->Whether_OK(per) )    //如果，“感知过滤器”认为当前感知是有效的，则update
         PriorNeed.PerceptionUpdate(per);
     // Monitor.emotionUpdate(per);  
+    
+    // 【暂时】需求满足节点，生成need_satisfied
+    need_satisfied.perception_to_needSatisfied( per );
 }
 
 void RobotEmotionUpdate(const social_msg::robot_emotion& msg){
@@ -95,26 +97,35 @@ void RobotStatusUpdate(const social_msg::robot_status& msg){
     PriorNeed.RobotStatusUpdate(status);
 }
 
+void BehaviorReplyUpdate(const social_msg::bhvReply& msg){
+    need_satisfied.behaviorProcess_to_needSatisfied(   msg );
+}
+
 int main(int argc, char** argv){
     // ROS
     ros::init(argc, argv, "need_module");
     ros::NodeHandle n;
+    need_satisfied.set_ros_node(n);
     cout<< "Start to Subscribe（接收ROS信息） !!\n";
     
     //状态更新
     sub_perception = n.subscribe("perceptions", 1000, PerceptionUpdate);
     sub_robot_emotion = n.subscribe("robot_emotion", 1000, RobotEmotionUpdate);
     sub_robot_status = n.subscribe("robot_status", 1000, RobotStatusUpdate);
+    sub_behavior_Reply = n.subscribe("behavior_Reply", 1000, BehaviorReplyUpdate);  //social_msg::bhvReply
+    
     ros::spinOnce();
     
     // 需求发布
     pub = n.advertise<social_msg::need_msg>("need_lists", 10);  
     // ros::Rate loop_rate(0.1);  //5s一次
-    ros::Rate loop_rate(0.4);  //5s一次
+    ros::Rate loop_rate(0.6);  //5s一次
     // 为需求模型的运行  创建单独的线程 。  
     // std::thread PriorNeedThread(run_PriorNeed);
     cout<< "Wait to run PriorNeed !!\n";
     while(ros::ok){
+        if( ros::isShuttingDown() )
+            break;
         run_PriorNeed();
         ros::spinOnce();
         loop_rate.sleep();
@@ -134,6 +145,10 @@ void run_PriorNeed(){
             vector<need> need_lists = PriorNeed.need_compute_all();
             if( need_lists.size() != 0 )
                 for(int j =0 ; j< need_lists.size(); j++){
+                    // 添加到需求满足节点中
+                    need_satisfied.insert_need_list(need_lists[j]);
+                    
+                    // 将need发布出去
                     social_msg::need_msg need_output;
                     need_output.IDtype = need_lists[j].IDtype;
                     need_output.rob_emotion = need_lists[j].robot_emotion_str;//TODO: need_lists[i].rob_emotion;
@@ -168,34 +183,3 @@ void run_PriorNeed(){
 }
 
 
-
-
-
-
-
-// void run_PriorNeed(){
-//     cout<< "Running PriorNeed !!\n";
-//     int i=1 ;
-//     // while(1)
-//     {
-//         if(PriorNeed.updateInit())
-//         {
-//             printf( GREEN "Run %dth PriorNeed（运行先验模型） !!\n"NONE, i);            
-//             vector<need> need_lists = PriorNeed.need_compute_all();
-//             for(int j =0 ; j< need_lists.size(); j++){
-//                 social_msg::need_msg need_output;
-//                 need_output.IDtype = need_lists[j].IDtype;
-//                 need_output.rob_emotion = "";//need_lists[i].rob_emotion;
-//                 need_output.person_emotion = need_lists[j].person_emotion;//need_lists[i].person_emotion
-//                 need_output.need_name = need_lists[j].need_name;  
-//                 need_output.weight = need_lists[j].weight;
-//                 need_output.speech = need_lists[j].speech;
-//                 need_output.person_name =  need_lists[j].person_name;
-//                 need_output.qt_order = i;
-//                 pub.publish(need_output);
-//             }
-//             sleep(10); i++;
-//         }
-//     }
-//     // cout<< "End PriorNeed !!\n";
-// }

@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-09-21 21:16:50
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-04-16 00:48:46
+ * @LastEditTime: 2022-05-08 22:11:18
  */
 #include "perception.h"
 #include "task_paremeter_rw.h"
@@ -51,8 +51,8 @@ class task_need{
                     intention_ ==  iter->intention  &&
                     IDtype_ == iter->IDtype  &&
                     // person_emotion_ == iter->person_emotion  &&
-                    rob_emotion_ >= iter->rob_emotion  &&                    
-                    rob_status_ >= iter->rob_status  
+                    vector8_compare(rob_emotion_ , iter->rob_emotion)  &&                    
+                    vector8_compare(rob_status_ , iter->rob_status ) 
                 ){
                     iter->person_name = person_name_;
                     iter->speech = speech_;
@@ -71,6 +71,15 @@ class task_need{
             }
 
             return output_need_lists;
+        }
+        bool vector8_compare(std::vector<double>& a, std::vector<double> &b){
+            if(
+                a[0] >= b[0]  &&   a[1] >= b[1]  &&   a[2] >= b[2]  &&    a[3] >= b[3]  &&
+                a[4] >= b[4]  &&   a[5] >= b[5]  &&   a[6] >= b[6]  &&    a[7] >= b[7]  
+            )
+                return true;
+            else
+                return false;            
         }
 
         void wirte(){

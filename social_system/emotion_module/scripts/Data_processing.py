@@ -3,12 +3,12 @@
 
 import csv
 import copy
+import time
 import numpy as np
 import pandas as pd
 from aip import AipNlp
 import rospy
 import main
-import time
 from Emotion_engine import *
 from social_msg.msg import robot_emotion
 from collections import deque
@@ -20,10 +20,9 @@ attitude_eval=[]
 perception_eval=[]
 delta_elist=[]                                         # 总情绪变化列表 [ float_情绪种类，float_情绪变化强度... ]
 msg_list=[]                                             # msg列表，记录每时刻接收到刺激的内容
-
 unique_msg=deque(maxlen=10) # 消息的唯一性队列，存储被判定为不同刺激的消息内容
-msg_dt=10                                             # 两次内容相同消息，但作为不同刺激输入的最小时间阈值（s）
-
+msg_dt=10000                                             # 两次内容相同消息，但作为不同刺激输入的最小时间阈值
+e_rec=[]                                                   # 记录情感变化值数组
 
 ##### 配置百度文本情感趋势分析接口
 APP_ID = '25295465'
@@ -32,8 +31,29 @@ SECRET_KEY = '9oGOc6MmGGkFcYp6aGaRRy1fT87TYQ1t'
 client = AipNlp(APP_ID, API_KEY, SECRET_KEY)   
 
 # 身体状态对无聊情绪的影响
-global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
+# global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring
+time_init   = 0
 idleState_flag = 0
+
+def callback_robot_status( robot_status_msg ):  
+       '''
+       * 身体状态信息处理，用于“无聊情绪”
+       :param robot_status_msg：订阅自我满足需求信息
+       :output ：身体状态 引起的情绪变化列表？？？[ float_情绪种类，float_情绪变化强度... ]
+       '''
+       print("接收robot_status_msg ")
+       rospy.loginfo( "I heard %s ",robot_status_msg.idleState )
+       global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
+
+       # 现在的：
+       if ( robot_status_msg.idleState == 1 ):
+              print("接收到robot 处于闲置状态")
+              time_init = time.time()
+              idleState_flag = 1
+       else:
+              idleState_flag = 0
+       # idleState_last = robot_status_msg.idleState
+
 
 
 ##### 发布话题 
@@ -85,11 +105,15 @@ def unique_judge(msg):
        :output flag：该msg是否构成刺激(0 & 1)
        '''
        global unique_msg,msg_dt
+       msg_init=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
        if len(unique_msg)==0:
               unique_msg.append(msg)
-              return 1
+              flag=1
+       # 判断msg_list是否为初始状态，非初始状态则进行唯一性判断
+       elif len(set(msg_init).symmetric_difference(set(msg)))<3:
+              flag=0
        else:
-              #print(unique_msg)
+              #print("unique_msg:",unique_msg)
               flag=0;
               l=copy.deepcopy(unique_msg)
               # 判断两个消息列表中差集元素是否大于1
@@ -100,7 +124,7 @@ def unique_judge(msg):
                      if abs(msg[0]-l[-1][0])>=msg_dt:
                             unique_msg.append(msg)
                             flag=1
-              return flag
+       return flag
 
 
 def delta_echange(need_eval,attitude_eval,perception_eval):
@@ -112,11 +136,11 @@ def delta_echange(need_eval,attitude_eval,perception_eval):
        delta_elist=need_eval+attitude_eval+perception_eval
        for i in range(len(delta_elist[::2])):
               delta_e[int(delta_elist[::2][i])]+=delta_elist[1::2][i]
-       
+
 
 def caculate_e(delta_e,delta_epre):
        '''
-       *开启情感计算，共分为5种情况调用（详见README.md）
+       *开启情感计算，共分为5种情况调用
        :param delta_e ：直接更新全局变量（情绪增量向量）
        :param delta_epre ：上一时刻情绪增量向量
        '''
@@ -133,21 +157,23 @@ def caculate_e(delta_e,delta_epre):
        ### 情绪增量全零情况
        if not(np.any(delta_e)): 
               if t_flag == 0:
-                     #print("case1")
+                     print("case1")
+                     #print("delta_time:", current_t-unique_msg[-1][0]-stimulus_t)
                      for i in range(len(current_e)):
                             current_e[i]=E.natural_attenuation_e(current_e[i],i,current_t,unique_msg[-1][0]+stimulus_t)
-                            current_m=E.update_m()   
+                     current_m=E.update_m()   
               else:
                      delta_e = copy.deepcopy(delta_epre)
                      ## 情绪强度向量全零情况
                      if not(np.any(current_e)): 
-                            #print("case2")
+                            print("case2")
                             current_e+=delta_e #直接加和情绪增量
                             for i in range(len(current_e)):
                                    current_e[i] = max(min(0, max(current_e[i],h4[i])), min(current_e[i], h4[i])) 
+                            current_m=E.update_m() 
                      ## 情绪强度向量非零情况
                      else:
-                            #print("case3")
+                            print("case3")
                             mode=E.judge_mode()
                             current_e=E.empathize_e(mode,current_t,unique_msg[-1][0])
                             current_m=E.update_m()  
@@ -155,16 +181,18 @@ def caculate_e(delta_e,delta_epre):
        else:
               ## 情绪强度向量全零情况
               if not(np.any(current_e)): 
-                     #print("case4")
+                     print("case4")
                      current_e+=delta_e #直接加和情绪增量，形成情绪突跳，对心境无影响
                      for i in range(len(current_e)):
                             current_e[i] = max(min(0, max(current_e[i],h4[i])), min(current_e[i], h4[i]))
+                     current_m=E.update_m() 
               ## 情绪强度向量非零情况
               else:
-                     #print("case5")
+                     print("case5")
                      mode=E.judge_mode()
                      current_e=E.empathize_e(mode,current_t,unique_msg[-1][0])
-                     current_m=E.update_m()                                         
+                     current_m=E.update_m()      
+                                          
                            
                      
 def callback_need(need_satisfy_msg):
@@ -173,16 +201,14 @@ def callback_need(need_satisfy_msg):
        :param need_satisfy_msg：订阅自我满足需求信息
        :output need_eval：自我需求满足引起的情绪变化列表[ float_情绪种类，float_情绪变化强度... ]
        '''
-       #rospy.loginfo( "I heard %s %d", need_satisfy_msg.need_name,need_satisfy_msg.satisfy_value)
+       rospy.loginfo( "I heard %s %d", need_satisfy_msg.need_name,need_satisfy_msg.satisfy_value)
 
        ### 更新msg列表
-       # msg_list.append(need_satisfy_msg.need_name) 
-       # msg_list.append(need_satisfy_msg.satisfy_value)  
-       msg_list[1] = (need_satisfy_msg.need_name) 
-       msg_list[2] = (need_satisfy_msg.satisfy_value)  
+       msg_list.append(need_satisfy_msg.need_name) 
+       msg_list.append(need_satisfy_msg.satisfy_value)  
 
        #### 自我满足信息处理，通过查找dataframe实现值映射
-       csv_name  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'need_satisfy.csv'
+       csv_name  = os.path.join(root,'scripts/csv/need_satisfy.csv')
        index_name = "satisfy_value"
        index_val = str(need_satisfy_msg.satisfy_value)
        column_val = need_satisfy_msg.need_name
@@ -198,64 +224,38 @@ def callback_a_p(attitude_msg,perception_msg):
        *调用移情计算
        *开启可视化、机器人情感topic发布
        '''
-       #rospy.loginfo( "I heard %s %s %s %s %s",perception_msg.person_name,perception_msg.speech,\
-              #perception_msg.person_emotion,attitude_msg.person_name,attitude_msg.attitude)
+       rospy.loginfo( "I heard %s %s %s %s %s",perception_msg.person_name,perception_msg.speech,\
+              perception_msg.person_emotion,attitude_msg.person_name,attitude_msg.attitude)
 
        #### 更新msg列表
        global msg_list
-       # msg_list.extend([perception_msg.person_name,attitude_msg.person_name,\
-       #                                    perception_msg.person_emotion,attitude_msg.attitude,perception_msg.speech])
-       # msg_list.insert(0,perception_msg.time)
-       msg_list[0] = perception_msg.time
-       msg_list[3] = perception_msg.person_name
-       msg_list[4] = attitude_msg.person_name
-       msg_list[5] = perception_msg.person_emotion
-       msg_list[6] = attitude_msg.attitude
-       msg_list[7] = perception_msg.speech
-
-def callback_robot_status( robot_status_msg ):  
-       '''
-       * 身体状态信息处理，用于“无聊情绪”
-       :param robot_status_msg：订阅自我满足需求信息
-       :output ：身体状态 引起的情绪变化列表？？？[ float_情绪种类，float_情绪变化强度... ]
-       '''
-       print("接收robot_status_msg ")
-       
-       global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
-       # 原来的：
-       # idleState_last = 0
-       # if ( (idleState_last == 0) and  (robot_status_msg.idleState == 1) ):
-       #        time_init = time.time()
-       # idleState_last = robot_status_msg.idleState
-       # idleState_flag = 1
-       # print("×××××展示%f"%(idleState_flag))
-
-       # 现在的：
-       if ( robot_status_msg.idleState == 1 ):
-              print("接收到robot 处于闲置状态")
-              time_init = time.time()
-              idleState_flag = 1
-       else:
-              idleState_flag = 0
-       # idleState_last = robot_status_msg.idleState
+       msg_list.extend([perception_msg.person_name,attitude_msg.person_name,\
+                                          perception_msg.person_emotion,attitude_msg.attitude,perception_msg.speech])
+       msg_list.insert(0,perception_msg.time)
        
 
 
 def data_process():
        global msg_list,current_e,current_m,delta_e,delta_epre
        if  (not msg_list):
-       # if( len(msg_list) < 8 ):
               msg_list=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
-       print("Msg list: ",msg_list)
+       elif len(msg_list)==2:
+              msg_list.insert(0,rospy.get_time())
+              msg_list.extend(['None', 'None', 'None', 'enthusiastic', 'None'])
+       elif len(msg_list)!=8:
+              msg_list.insert(1,0)
+              msg_list.insert(1,'None')
+       print("Msg list: ",msg_list)       
        flag=unique_judge(msg_list)
+       
        print("Whether_work: ",flag)
-
+       
        #### 更新情绪增量列表
        if flag :
               #print('Internal_eval: ',need_eval)
               ### 社交态度信息处理
               if msg_list[3] == msg_list[4]:
-                     csv_name  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'attitude.csv'
+                     csv_name  = os.path.join(root, 'scripts/csv/attitude.csv')
                      index_name = "person_emotion"
                      index_val = msg_list[5]
                      column_val = msg_list[6]
@@ -277,7 +277,7 @@ def data_process():
                      except:
                             print("API failed !")
                             eclass='none'
-              csv_name1  = "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'perception.csv'
+              csv_name1  =  os.path.join(root,'scripts/csv/perception.csv')
               index_name1 = "speech_emotion"
               index_val1 = str(eclass)
               column_val1 = 'empathy'
@@ -291,39 +291,32 @@ def data_process():
        else:
               delta_e = np.zeros(emtionNumber) # 当信息不构成刺激时，情绪增量向量为0向量
        print("List of emotion change: ",delta_e)
-      
-       #### 调用移情计算
-       caculate_e(delta_e,delta_epre)
-       # msg_list=[] # msg列表初始化  TODO:
-       msg_list=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
 
-       # 闲置状态对无聊情绪的影响   
-       # 原来的：
-       # global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
-       # if idleState_flag :
-       #        print("运行robot_status_msg to boring ")
-       #        time_cur = time.time()
-       #        print("机器人闲置了%f秒"%(time_cur - time_init)) 
-       #        if ( (time_cur - time_init) > 30 ):
-       #               # idleState_to_boring = 0.8
-       #               current_e[7] = 0.5
-       #               idleState_last = 0
-       #               time_init =  time.time()
-       #               print("无聊情绪置为 0.8")
-       # 现在的：
-       global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
+       
+       
+       # zhjd 闲置状态对无聊情绪的影响
+       global  idleState_flag, time_init, time_cur,t_flag,stimulus_t
        if idleState_flag :
-              print("运行robot_status_msg to boring ")
+              #print("运行robot_status_msg to boring ")
               time_cur = time.time()
               print("机器人闲置了%f秒"%(time_cur - time_init)) 
               if ( (time_cur - time_init) > 30 ):
-                     # idleState_to_boring = 0.8
-                     current_e[7] = 0.5
+                     delta_e[7] = 0.6   #current_e  delta_e
+                     unique_msg.append([rospy.get_time()-stimulus_t, 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None'])
                      idleState_flag  = 0
-                     print("无聊情绪置为 0.8")
+                     print("无聊情绪置为 0.6")
+      
+       #### 调用移情计算
+       caculate_e(delta_e,delta_epre)
 
-       #### 可视化
+
+       msg_list=[] 
+
+       #### 情感可视化
        main.visualization()
+       #main.visualization3d()
 
+       print("current_mood:",current_m)       
        #### 机器人情感topic发布
        publish()
+       

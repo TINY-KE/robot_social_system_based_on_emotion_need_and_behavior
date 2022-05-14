@@ -351,38 +351,38 @@
   intention: Uncooperate
   IDtype: Teacher
   person_emotion: Happy
-  rob_emotion: [0, 0, 0, 0, 0.5, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0.4, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
   weight: 0.85 
-  satisfy_value: 2 
+  satisfy_value: 1 
 - need_name: KeepOrder
   intention: Uncooperate
   IDtype: Student
   person_emotion: Happy
-  rob_emotion: [0, 0, 0, 0, 0.5, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
   weight: 0.85 
-  satisfy_value: 2 
+  satisfy_value: 1 
 - need_name: KeepOrder
   intention: Uncooperate
   IDtype: Parent
   person_emotion: Happy
-  rob_emotion: [0, 0, 0, 0, 0.5, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0.4, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
   weight: 0.85
-  satisfy_value: 2  
+  satisfy_value: 1  
 - need_name: KeepOrder
   intention: Uncooperate
   IDtype: Stranger
   person_emotion: Happy
-  rob_emotion: [0, 0, 0, 0, 0.5, 0, 0, 0 ]
+  rob_emotion: [0, 0, 0, 0, 0.4, 0, 0, 0 ]
   rob_status: [0.1, 1, 1, 1, 1, 1, 1, 0 ]
   time: 0.0
   weight: 0.85
-  satisfy_value: 2  
+  satisfy_value: 1  
 
 
 - need_name:  Remind

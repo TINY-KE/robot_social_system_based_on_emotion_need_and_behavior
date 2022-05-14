@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-08 09:34:12
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-04-22 20:31:50
+ * @LastEditTime: 2022-05-13 11:07:55
  */
 #include "ros/ros.h"
 #include "std_msgs/String.h"
@@ -123,12 +123,12 @@ int main(int argc,char **argv)
 
                 
             attitude.person_name = "李老师";
-            attitude.attitude = "enthusiastic";
+            attitude.attitude = "respectful";
             pub_attitude.publish(attitude);
 
             ROS_INFO("\n%s,  %s,\n",perception.person_name.c_str(), perception.intention.c_str() );  
         }
-        int Li_EnterSchool = 10+10;   //跟李老师打招呼，过了10秒，扭回头来。转头回来继续测温5秒。小明扰乱秩序。
+        int Li_EnterSchool = 10+15;   //跟李老师打招呼，过了10秒，扭回头来。转头回来继续测温5秒。小明扰乱秩序。
         // int Li_EnterSchool = 10+10;   //跟李老师打招呼，过了10秒，扭回头来。转头回来继续测温5秒。小明扰乱秩序。
 
 
@@ -143,7 +143,29 @@ int main(int argc,char **argv)
             perception.intention_2 = "";
             perception.p_2 = 0;
             perception.person_speech = "";
-            perception.speech = "小明,请不要扰乱秩序,站着别动";
+            perception.speech = "小明,请站在原地别乱动,我没法给你测体温了";
+            perception.person_emotion = "Happy";
+            pub_perception.publish(perception);
+
+                
+            // attitude.person_name = "小明";
+            // attitude.attitude = "enthusiastic";
+            // pub_attitude.publish(attitude);
+        }
+        int Li_Pass = 35;   //小明进校说，“小胖再见”
+
+        time_flag += Li_Pass;
+        if(count==time_flag)
+        {   
+            perception.time = count;
+            perception.person_name = "李老师";
+            perception.IDtype = "Teacher";
+            perception.intention = "MeasureTempareture";
+            perception.p = 0.9;
+            perception.intention_2 = "";
+            perception.p_2 = 0;
+            perception.person_speech = "";
+            perception.speech = "李老师,久等了,我来给您测体温";
             perception.person_emotion = "Happy";
             pub_perception.publish(perception);
 
