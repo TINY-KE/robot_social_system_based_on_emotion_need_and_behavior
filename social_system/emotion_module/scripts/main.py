@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import time
+import copy
 import rospy
 import math
 import sys
 import signal
 import threading
 import Data_processing
+from Data_processing import *
 import message_filters
 from Emotion_engine import *
+from visualize_3d import *
 import PIL.Image as Image
 from social_msg.msg import attitude_msg
 from social_msg.msg import need_satisfy_msg
@@ -56,6 +59,8 @@ class myThread(threading.Thread):
                 else:
                     time.sleep(1)
                     Data_processing.data_process()
+        # else:
+        #     visualize_3d()
  
 
 def data_get():
@@ -68,8 +73,10 @@ def data_get():
         t3 = message_filters.Subscriber("perceptions", perception_msg)
         t4 = message_filters.Subscriber("robot_status", robot_status)
         ts = message_filters.ApproximateTimeSynchronizer([t1, t3], 1, 1, allow_headerless=True)
+        t1.registerCallback(Data_processing.callback_attitude)
         t2.registerCallback(Data_processing.callback_need)
-        ts.registerCallback(Data_processing.callback_a_p)
+        # ts.registerCallback(Data_processing.callback_a_p)
+        t3.registerCallback(Data_processing.callback_perception)
         t4.registerCallback(Data_processing.callback_robot_status)
         rospy.spin() # spin() simply keeps python from exiting until this node is stopped
 
@@ -161,18 +168,25 @@ def visualization():
 
         final_img.save(os.path.join(root,"image/emotion_img.png"))
 
-
-# def visualization3d():
-#     plt.ion() 
-#     fig = plt.figure(figsize=(9.6, 8.4)) # 图像像素大小为960*840
-#     while True:
-#         update_visual(current_e,fig)
-
+def visualize_3d():
+    # global current_eq,m
+    # # 判断两个消息列表中差集元素是否大于1
+    # if len(set( m[-1]).symmetric_difference(set(current_e.insert(0,rospy.get_time()))))>0:
+    #     update_visual(current_e,fig)
+    #     m = copy.deepcopy(current_eq)
+    global current_e
+    while True:
+        # print("Draw aready")
+        c_e=copy.deepcopy(current_e)
+    #     # update_visual(c_e,fig)
+    
+        
 
 if __name__ == '__main__':
     Watcher()
     thread1=myThread("Listener-thread",'listener')
     thread2=myThread("Publisher-thread",'publisher')
+    thread3=myThread("Visualize_3D",'visualize')
     thread1.start()
     thread2.start()
-
+    # thread3.start()

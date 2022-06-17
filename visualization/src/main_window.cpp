@@ -56,27 +56,22 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     setWindowIcon(QIcon(":/images/icon.png"));
     QObject::connect(&qnode, SIGNAL(rosShutdown()), this, SLOT(close()));
 
-/*xiaopang robot*/
+//1.picture of real xiaopang robot
     QImage *img2=new QImage; //新建一个image对象
     img2->load(":/new/prefix1/images/xiaopang.png"); //将图像资源载入对象img，注意路径，可点进图片右键复制路径
     ui.label_xiaopang -> setPixmap(QPixmap::fromImage(*img2));
 
-//    emotion_image = new Emotion_image( &ui );
-
-/*emotion image*/
+//2.picture of wheel emotion image
     QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
     QImage* img=new QImage;
     if(! ( img->load(filename) ) ) //加载图像
     {
-    QMessageBox::information(this,
-    tr("打开图像失败"),
-     tr("打开图像失败!"));
-    delete img;
-//    return;
+      QMessageBox::information(this,
+      tr("打开图像失败"),
+       tr("打开图像失败!"));
+      delete img;
     }
     int width = (*img).width();      int height =  (*img).height();
-//    QRect rect(width-height/2,0, height,height);
-//    qDebug() << width << " " <<  height ;
     int width_new = height*4.8/5;
     QRect rect( (width/2 - width_new/2),0, width_new,height);
     QImage img_cut = (*img).copy(rect);
@@ -84,47 +79,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
                                                           img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
                                                         ));
 
-/*********************
-**emotion express video
-**********************/
-
-//    cv::VideoCapture cap;
-//    bool suc = false;
-//    suc = cap.open("/home/zhjd/ws/src/visualization/emotion_express/raw/normalspeak.mp4");
-//    if (!suc)
-//      {
-//        std::cout << "播放失败"<<std::endl;
-//      }
-//    else{
-//        std::cout << "播放 success" <<std::endl;
-//            while (1)
-//            {
-
-//              cap >> frame;
-//              if (frame.empty())
-//              {
-//                std::cout << "Finish" << std::endl;
-//                break;
-//              }
-//              cv::Mat rgb;
-//              QImage img;
-//              //cvt Mat BGR 2 QImage RGB
-//              cv::cvtColor(frame ,rgb, CV_BGR2RGB);
-//              img =QImage((const unsigned char*)(frame.data),
-//                          frame.cols,frame.rows,
-//                          frame.cols*frame.channels(),
-//                          QImage::Format_RGB888);
-
-//              ui.label_emotion_image ->setPixmap(QPixmap::fromImage(img));
-//              ui.label_emotion_image ->setScaledContents(true);
-//              sleep(0.05);
-//            }
-//    }
-
-  /*********************
-	** Logging
-	**********************/
-
+//3. singal for ros -- Logging
     QObject::connect(&qnode, SIGNAL(loggingUpdated()), this, SLOT(updateLoggingView()));
 
     QObject::connect(&qnode, SIGNAL(loggingUpdated_perception()), this, SLOT(updateLoggingView_perception()));
@@ -144,13 +99,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 
     QObject::connect(&qnode, SIGNAL(loggingUpdated_emotion_image()), this, SLOT(updateLoggingView_emotion_image()));
     QObject::connect(&qnode, SIGNAL(loggingUpdated_real_image()), this, SLOT(updateLoggingView_real_image()));
-//    loggingUpdated_real_image
-    //(1.1)qt  connect   ros singal  and  ui_progrem
-//    QObject::connect(&qnode, SIGNAL(loggingUpdated_need()), this, SLOT(updateLoggingView_need()));
 
-    /*********************
-    ** Auto Start
-    **********************/
+//4. Auto Start
     qnode.init();
 //    if ( ui.checkbox_remember_settings->isChecked() ) {
 //        on_button_connect_clicked(true);
@@ -218,10 +168,6 @@ void MainWindow::on_checkbox_use_environment_stateChanged(int state) {
  * this will drop the cursor down to the last line in the QListview to ensure
  * the user can always see the latest log message.
  */
-//(2))  progrem to update ui
-//void updateLoggingView_behavior(){}
-//void updateLoggingView_reply(){}
-//void updateLoggingView_behavior_queue(){}
 
 void MainWindow::updateLoggingView() {
 }
@@ -304,6 +250,8 @@ void MainWindow::slt_valueChanged_gaze(int value, int breakpoint1, int breakpoin
       "}").arg(calcValue(value,"white", color, "white", breakpoint1, breakpoint2)));
 }
 
+
+
 void MainWindow::slt_valueChanged_screen(int value, int breakpoint1, int breakpoint2,  QString color){
   ui.progressBar_behavior_screen->setValue(value);
   ui.progressBar_behavior_screen->setStyleSheet(QString(""
@@ -328,6 +276,7 @@ void MainWindow::slt_valueChanged_screen(int value, int breakpoint1, int breakpo
 
       "}").arg(calcValue(value,"white", color, "white", breakpoint1, breakpoint2)));
 }
+
 
 void MainWindow::slt_valueChanged_sounder(int value, int breakpoint1, int breakpoint2,  QString color){
   ui.progressBar_behavior_sounder->setValue(value);
@@ -403,7 +352,131 @@ void MainWindow::slt_valueChanged_leg(int value, int breakpoint1, int breakpoint
 
       "}").arg(calcValue(value,"white", color, "white", breakpoint1, breakpoint2)));
 }
+//新添加：Greet 小明 设置专用进度条显示
+void MainWindow::slt_valueChanged_gaze_g(int value, int breakpoint1, int breakpoint2,  QString color){
+  ui.progressBar_behavior_gaze->setValue(value);
+  ui.progressBar_behavior_gaze->setStyleSheet(QString(""
 
+      "	QProgressBar {"
+
+      "	border: 2px solid grey;"
+
+      "	border-radius: 5px;"
+
+      ""
+
+      "}"
+
+
+
+      "QProgressBar::chunk {"
+
+          "	background-color: "
+
+          "%1;"
+
+      "}").arg(calcValue(value,"green", color, "green", breakpoint1, breakpoint2)));
+}
+
+void MainWindow::slt_valueChanged_screen_g(int value, int breakpoint1, int breakpoint2,  QString color){
+  ui.progressBar_behavior_screen->setValue(value);
+  ui.progressBar_behavior_screen->setStyleSheet(QString(""
+
+      "	QProgressBar {"
+
+      "	border: 2px solid grey;"
+
+      "	border-radius: 5px;"
+
+      ""
+
+      "}"
+
+
+
+      "QProgressBar::chunk {"
+
+          "	background-color: "
+
+          "%1;"
+
+      "}").arg(calcValue(value,"green", color, "green", breakpoint1, breakpoint2)));
+}
+
+void MainWindow::slt_valueChanged_sounder_g(int value, int breakpoint1, int breakpoint2,  QString color){
+  ui.progressBar_behavior_sounder->setValue(value);
+  ui.progressBar_behavior_sounder->setStyleSheet(QString(""
+
+      "	QProgressBar {"
+
+      "	border: 2px solid grey;"
+
+      "	border-radius: 5px;"
+
+      ""
+
+      "}"
+
+
+
+      "QProgressBar::chunk {"
+
+          "	background-color: "
+
+          "%1;"
+
+      "}").arg(calcValue(value,"green", color, "green", breakpoint1, breakpoint2)));
+}
+
+void MainWindow::slt_valueChanged_arm_g(int value, int breakpoint1, int breakpoint2,  QString color){
+  ui.progressBar_behavior_arm->setValue(value);
+  ui.progressBar_behavior_arm->setStyleSheet(QString(""
+
+      "	QProgressBar {"
+
+      "	border: 2px solid grey;"
+
+      "	border-radius: 5px;"
+
+      ""
+
+      "}"
+
+
+
+      "QProgressBar::chunk {"
+
+          "	background-color: "
+
+          "%1;"
+
+      "}").arg(calcValue(value,"green", color, "green", breakpoint1, breakpoint2)));
+}
+
+void MainWindow::slt_valueChanged_leg_g(int value, int breakpoint1, int breakpoint2,  QString color){
+  ui.progressBar_behavior_leg->setValue(value);
+  ui.progressBar_behavior_leg->setStyleSheet(QString(""
+
+      "	QProgressBar {"
+
+      "	border: 2px solid grey;"
+
+      "	border-radius: 5px;"
+
+      ""
+
+      "}"
+
+
+
+      "QProgressBar::chunk {"
+
+          "	background-color: "
+
+          "%1;"
+
+      "}").arg(calcValue(value,"green", color, "green", breakpoint1, breakpoint2)));
+}
 
 
 void MainWindow::updateLoggingView_perception() {
@@ -466,25 +539,22 @@ void MainWindow::updateLoggingView_emotion() {
   ui.progressBar_emotion8->setValue(int(qnode.emotion8*100));
   ui.lineEdit_emotion8->setText(QString::number(qnode.emotion8,'f',2));
   sleep(0);
-//  QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
-//  QImage* img=new QImage;
-//  if(! ( img->load(filename) ) ) //加载图像
-//  {
-//  QMessageBox::information(this,
-//  tr("打开图像失败"),
-//   tr("打开图像失败!"));
-//  delete img;
-//  return;
-//  }
-// int width = (*img).width();      int height =  (*img).height();
-////    QRect rect(width-height/2,0, height,height);
-////  qDebug() << width << " " <<  height ;
-//  QRect rect( (width/2 - height/2),0, height,height);
-//  QImage img_cut = (*img).copy(rect);
-//  ui.label_emotion_image->setPixmap(QPixmap::fromImage(
-//                                                        img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
-//                                                      )
-//                                    );
+  QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
+  QImage* img=new QImage;
+  if(! ( img->load(filename) ) ) //加载图像
+  {
+      QMessageBox::information(this,
+      tr("打开图像失败"),
+       tr("打开图像失败!"));
+      delete img;
+      return;
+  }
+  int width = (*img).width();      int height =  (*img).height();
+  QRect rect( (width/2 - height/2),0, height,height);
+  QImage img_cut = (*img).copy(rect);
+  ui.label_emotion_image->setPixmap(QPixmap::fromImage(
+                                                        img_cut.scaled(ui.label_emotion_image->size(), Qt::KeepAspectRatio)
+                                                      ));
 
 }
 
@@ -509,6 +579,7 @@ void MainWindow::updateLoggingView_need() {
   }
 
 }
+
 
 void MainWindow::updateLoggingView_bhvPara() {
   //QPalette pal =ui.lineEdit_executing_behavior_type->QPalette();
@@ -587,60 +658,93 @@ void MainWindow::updateLoggingView_bhvPara() {
         ui.lineEdit_head_behavior_person->setStyleSheet(QString("color:black"));
       }
   }
+
   //设置进度条
-  //设置进度条
-  if(qnode.gaze_call){
-      if(qnode.gaze_color_flag) {
-          slt_valueChanged_gaze(100, qnode.gaze_startTime, qnode.gaze_endTime, "orange");
+    if(qnode.gaze_call){
+        if(qnode.Ebhv_action == "Greet" && qnode.Ebhv_target == "小明")
+        {
+            slt_valueChanged_gaze_g(100, 70, 71, "white");
+        }
+        else {
+        if(qnode.gaze_color_flag) {
+            slt_valueChanged_gaze(100, qnode.gaze_startTime, qnode.gaze_endTime, "orange");
+        }
+        else {
+            slt_valueChanged_gaze(100, qnode.gaze_startTime, qnode.gaze_endTime, "green");
+        }
       }
-      else {
-          slt_valueChanged_gaze(100, qnode.gaze_startTime, qnode.gaze_endTime, "green");
-      }
-  }
-  if(qnode.screen_call){
-      if(qnode.screen_color_flag) {
-          slt_valueChanged_screen(100, qnode.screen_startTime, qnode.screen_endTime, "orange");
-      }
-      else {
-          slt_valueChanged_screen(100, qnode.screen_startTime, qnode.screen_endTime, "green");
-      }
-  }
-  if(qnode.sound_call){
-      if(qnode.sound_color_flag) {
-          slt_valueChanged_sounder(100, qnode.sound_startTime, qnode.sound_endTime, "orange");
-      }
-      else {
-          slt_valueChanged_sounder(100, qnode.sound_startTime, qnode.sound_endTime, "green");
-      }
-  }
-  if(qnode.arm_call){
-      if(qnode.arm_color_flag) {
-          slt_valueChanged_arm(100, qnode.arm_startTime, qnode.arm_endTime, "orange");
-      }
-      else {
-          slt_valueChanged_arm(100, qnode.arm_startTime, qnode.arm_endTime, "green");
-      }
-  }
-  if(qnode.leg_call){
-      if(qnode.leg_color_flag) {
-          slt_valueChanged_leg(100, qnode.leg_starTime, qnode.leg_endTime, "orange");
-      }
-      else {
-          slt_valueChanged_leg(100, qnode.leg_starTime, qnode.leg_endTime, "green");
-      }
-  }
-  //xiaoming temp
-
-  //xiaogang temp
-
-
+    }
+    if(qnode.screen_call){
+        if(qnode.Ebhv_action == "Greet" && qnode.Ebhv_target == "小明")
+        {
+            slt_valueChanged_screen_g(100, 70, 71, "white");
+        }
+        else {
+        if(qnode.screen_color_flag) {
+            slt_valueChanged_screen(100, qnode.screen_startTime, qnode.screen_endTime, "orange");
+        }
+        else {
+            slt_valueChanged_screen(100, qnode.screen_startTime, qnode.screen_endTime, "green");
+        }
+    }
+    }
+    if(qnode.sound_call){
+//        if(qnode.Ebhv_action == "Greet" && qnode.Ebhv_target == "小明")
+//        {
+//            slt_valueChanged_sounder_g(0, 70, 71, "white");
+//        }
+//        else
+        {
+        if(qnode.sound_color_flag) {
+            slt_valueChanged_sounder(100, qnode.sound_startTime, qnode.sound_endTime, "orange");
+        }
+        else {
+            slt_valueChanged_sounder(100, qnode.sound_startTime, qnode.sound_endTime, "green");
+        }
+        }
+    }
+    if(qnode.arm_call){
+        if(qnode.Ebhv_action == "Greet" && qnode.Ebhv_target == "小明")
+        {
+            slt_valueChanged_arm_g(100, 70, 71, "white");
+        }
+        else {
+        if(qnode.arm_color_flag) {
+            slt_valueChanged_arm(100, qnode.arm_startTime, qnode.arm_endTime, "orange");
+        }
+        else {
+            slt_valueChanged_arm(100, qnode.arm_startTime, qnode.arm_endTime, "green");
+        }
+        }
+    }
+    if(qnode.leg_call){
+        if(qnode.Ebhv_action == "Greet" && qnode.Ebhv_target == "小明")
+        {
+            slt_valueChanged_leg_g(100, 70, 71, "white");
+        }
+        else {
+        if(qnode.leg_color_flag) {
+            slt_valueChanged_leg(100, qnode.leg_starTime, qnode.leg_endTime, "orange");
+        }
+        else {
+            slt_valueChanged_leg(100, qnode.leg_starTime, qnode.leg_endTime, "green");
+        }
+        }
+    }
+    //xiaoming temp
 }
 void MainWindow::updateLoggingView_bhvReply() {
+
       if( int(qnode.bhv_Reply) < 0)
           ui.progressBar_behavior_progress->setStyleSheet("QProgressBar::chunk{border-radius:5px;background:red}");
-      else
+      else{
           ui.progressBar_behavior_progress->setStyleSheet("QProgressBar::chunk{border-radius:5px;background:orange}");
-       ui.progressBar_behavior_progress->setValue(int(qnode.bhv_Reply));
+          if(qnode.Ebhv_action == "Greet"   && int(qnode.bhv_Reply)>70  ){
+                ui.lineEdit_behavior_arm_action->setText("curl");
+          }
+      }
+
+      ui.progressBar_behavior_progress->setValue(int(qnode.bhv_Reply));
 //proBar->setStyleSheet("QProgressBar{background:white;} QProgressBar::chunk{background:blue}");
 
     if(qnode.bhv_Reply == 100){

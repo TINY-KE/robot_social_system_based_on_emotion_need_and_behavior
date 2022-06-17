@@ -7,9 +7,12 @@ from bisect import bisect_left
 import pandas as pd
 import csv
 import rospy
+import matplotlib.pyplot as plt
+plt.switch_backend('agg') 
 
 #获取pkg目录
 root=os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+fig = plt.figure(figsize=(9.6, 8.4)) # 图像像素大小为960*840
 
 ##### 实时参数初始化
 emtionNumber = 8
@@ -18,7 +21,7 @@ delta_e = np.zeros(emtionNumber)      # 情绪增量向量 [ delta_emotion0 , de
 current_e = np.zeros(emtionNumber) # 当前情感强度向量 [ float_emotion0 , emotion1,...]
 current_m = 0.01                                              # 当前心境值，初始为0.01
 delta_m = 0                                                      # 心境值增量
-stimulus_t=25                                                   # 刺激持续时间，现默认所有刺激均持续15s
+stimulus_t=30                                                   # 刺激持续时间，现默认所有刺激均持续15s
 t_flag = 0                                                           # 判断是否处于刺激持续循环内
 e_count=0                                                        # 记录情绪更新周期的参数
 beta = 0.5
@@ -89,6 +92,7 @@ class Emtion_engine:
                     mode[i] = 0 # 当前情绪值为前一时刻心境和当前刺激的综合作用
                 else:
                     mode[i] = 1 # 仅延长了情绪体验时间
+                # mode[i] = 1
             else:
                 if (self.delta_e[i]+self.current_e[i])>abs(flag):
                     mode[i] = 2 # 情绪值为情绪与刺激间影响力更强的
@@ -107,7 +111,7 @@ class Emtion_engine:
         :output current_e：直接更新全局变量（当前的情感强度）
         '''
         #print("case x.1")
-        #print(mode)
+        print(mode)
         delta_t=current_t-start_t
         if (delta_t)<1:
             delta_t=stimulus_t
@@ -125,7 +129,13 @@ class Emtion_engine:
                     eai=(math.log(abs(self.current_e[i]))-math.log(threshold[int(h)]))/(float(increaseKP[i])*stimulus_t )* delta_t 
                     self.current_e[i] = self.current_e[i]*math.exp((-1)*eai) # 比自然衰减多了时间延长系数
             if mode[i]==2:
-                self.current_e[i] = [self.current_e[i],self.delta_e[i]][self.delta_e[i]>self.current_e[i]] 
+                # self.current_e[i] = [self.current_e[i],self.delta_e[i]][self.delta_e[i]>self.current_e[i]] 
+                if self.current_e[i] > h0:
+                    threshold = [h0,h1[i],h2[i],h3[i],h4[i]]
+                    #h = bisect_left(threshold,self.current_e[i])
+                    h = min(threshold, key=lambda x: abs(x - self.current_e[i]))
+                    eai=(math.log(abs(self.current_e[i]))-math.log(threshold[int(h)]))/(float(increaseKP[i])*stimulus_t )* delta_t 
+                    self.current_e[i] = self.current_e[i]*math.exp((-1)*eai) # 比自然衰减多了时间延长系数
             if mode[i]==3:
                 self.current_e[i] = E.natural_attenuation_e(self.current_e[i],i,current_t,start_t) # 开启情感的自然衰减
 

@@ -59,7 +59,7 @@
     <arg name="execution_type" value="$(arg execution_type)" />
   </include>
 
-  <!-- Sensors Functionality -->
+  <!-- Sensors Functionality 传感器配置-->
   <include ns="move_group" file="$(find rm_65_moveit_config)/launch/sensor_manager.launch.xml" if="$(arg allow_trajectory_execution)">
     <arg name="moveit_sensor_manager" value="rm_65" />
   </include>

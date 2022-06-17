@@ -123,17 +123,22 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
- include
+  include
   ${catkin_INCLUDE_DIRS}
+  /usr/include
 #  /usr/include/
 )
 
 #link_directories(/usr/lib/)
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/arm_control.cpp
-# )
+add_library(
+  ArmsActionManager
+  include/ArmsActionManager.h
+  src/ArmsActionManager.cpp
+)
+
+target_link_libraries(ArmsActionManager jsoncpp ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -145,7 +150,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(src/arm_control.cpp ${PROJECT_NAME}_generate_message_cpp)
 add_executable(arm_control src/arm_control.cpp)
-target_link_libraries(arm_control ${catkin_LIBRARIES})
+target_link_libraries(arm_control ArmsActionManager ${catkin_LIBRARIES} )
 
 #add_dependencies(arm_control arm_control_gencpp)
 

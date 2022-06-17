@@ -1,15 +1,20 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# -*- coding:utf-8 -*-
 
 import csv
+import sys
+reload(sys) 
+sys.setdefaultencoding('utf-8')
 import copy
 import time
 import numpy as np
 import pandas as pd
 from aip import AipNlp
+from sentiment import *
 import rospy
 import main
 from Emotion_engine import *
+from visualize_3d import *
 from social_msg.msg import robot_emotion
 from collections import deque
 
@@ -19,16 +24,16 @@ need_eval=[]
 attitude_eval=[]
 perception_eval=[]
 delta_elist=[]                                         # 总情绪变化列表 [ float_情绪种类，float_情绪变化强度... ]
-msg_list=[]                                             # msg列表，记录每时刻接收到刺激的内容
+msg_list=[time.time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']                                             # msg列表，记录每时刻接收到刺激的内容
 unique_msg=deque(maxlen=10) # 消息的唯一性队列，存储被判定为不同刺激的消息内容
 msg_dt=10000                                             # 两次内容相同消息，但作为不同刺激输入的最小时间阈值
 e_rec=[]                                                   # 记录情感变化值数组
 
 ##### 配置百度文本情感趋势分析接口
-APP_ID = '25295465'
-API_KEY = 'WxY0AiFTs0HgWZaSsWGB6lM4'
-SECRET_KEY = '9oGOc6MmGGkFcYp6aGaRRy1fT87TYQ1t'
-client = AipNlp(APP_ID, API_KEY, SECRET_KEY)   
+# APP_ID = '25295465'
+# API_KEY = 'WxY0AiFTs0HgWZaSsWGB6lM4'
+# SECRET_KEY = '9oGOc6MmGGkFcYp6aGaRRy1fT87TYQ1t'
+# client = AipNlp(APP_ID, API_KEY, SECRET_KEY)   
 
 # 身体状态对无聊情绪的影响
 # global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring
@@ -124,6 +129,13 @@ def unique_judge(msg):
                      if abs(msg[0]-l[-1][0])>=msg_dt:
                             unique_msg.append(msg)
                             flag=1
+              else:
+                     for item in unique_msg:
+                            if item[1]!=msg[1] and item[3]==msg[3]:
+                                   if msg[0]-item[0]<60:
+                                          flag=0
+                                   else:
+                                          flag=1
        return flag
 
 
@@ -157,6 +169,7 @@ def caculate_e(delta_e,delta_epre):
        ### 情绪增量全零情况
        if not(np.any(delta_e)): 
               if t_flag == 0:
+                     print(t_flag)
                      print("case1")
                      #print("delta_time:", current_t-unique_msg[-1][0]-stimulus_t)
                      for i in range(len(current_e)):
@@ -174,6 +187,8 @@ def caculate_e(delta_e,delta_epre):
                      ## 情绪强度向量非零情况
                      else:
                             print("case3")
+                            print('current_t:',current_t)
+                            print('start_t:',unique_msg[-1][0])
                             mode=E.judge_mode()
                             current_e=E.empathize_e(mode,current_t,unique_msg[-1][0])
                             current_m=E.update_m()  
@@ -201,11 +216,14 @@ def callback_need(need_satisfy_msg):
        :param need_satisfy_msg：订阅自我满足需求信息
        :output need_eval：自我需求满足引起的情绪变化列表[ float_情绪种类，float_情绪变化强度... ]
        '''
-       rospy.loginfo( "I heard %s %d", need_satisfy_msg.need_name,need_satisfy_msg.satisfy_value)
+       #rospy.loginfo( "I heard %s %d", need_satisfy_msg.need_name,need_satisfy_msg.satisfy_value)
 
        ### 更新msg列表
-       msg_list.append(need_satisfy_msg.need_name) 
-       msg_list.append(need_satisfy_msg.satisfy_value)  
+       # msg_list.append(need_satisfy_msg.need_name) 
+       # msg_list.append(need_satisfy_msg.satisfy_value) 
+       global need_eval,msg_list 
+       msg_list[1]=need_satisfy_msg.need_name
+       msg_list[2]=need_satisfy_msg.satisfy_value
 
        #### 自我满足信息处理，通过查找dataframe实现值映射
        csv_name  = os.path.join(root,'scripts/csv/need_satisfy.csv')
@@ -213,70 +231,115 @@ def callback_need(need_satisfy_msg):
        index_val = str(need_satisfy_msg.satisfy_value)
        column_val = need_satisfy_msg.need_name
        ### 由  自我状态满足  带来的情绪变化状况 [ float_情绪种类，float_情绪变化强度 ]
-       global need_eval,msg_list
        need_eval= map(float,caculate_edelta(csv_name,index_name,index_val,column_val)) 
 
 
-def callback_a_p(attitude_msg,perception_msg):  
-       '''
-       *更新msg列表和情绪增量列表
-       *处理用户情绪迁移 + 用户语音输入信息（这两种刺激会作时间对齐处理）
-       *调用移情计算
-       *开启可视化、机器人情感topic发布
-       '''
-       rospy.loginfo( "I heard %s %s %s %s %s",perception_msg.person_name,perception_msg.speech,\
-              perception_msg.person_emotion,attitude_msg.person_name,attitude_msg.attitude)
+# def callback_a_p(attitude_msg,perception_msg):  
+#        '''
+#        *更新msg列表和情绪增量列表
+#        *处理用户情绪迁移 + 用户语音输入信息（这两种刺激会作时间对齐处理）
+#        *调用移情计算
+#        *开启可视化、机器人情感topic发布
+#        '''
+#        #rospy.loginfo( "I heard %s %s %s %s %s",perception_msg.person_name,perception_msg.speech,\
+#               #perception_msg.person_emotion,attitude_msg.person_name,attitude_msg.attitude)
 
-       #### 更新msg列表
+#        #### 更新msg列表
+#        global msg_list
+#        msg_list.extend([perception_msg.person_name,attitude_msg.person_name,\
+#                                           perception_msg.person_emotion,attitude_msg.attitude,perception_msg.speech])
+#        msg_list.insert(0,perception_msg.time)
+def callback_attitude(attitude_msg):      
+       # rospy.loginfo( "I heard %s %s ",attitude_msg.person_name,attitude_msg.attitude)
        global msg_list
-       msg_list.extend([perception_msg.person_name,attitude_msg.person_name,\
-                                          perception_msg.person_emotion,attitude_msg.attitude,perception_msg.speech])
-       msg_list.insert(0,perception_msg.time)
-       
+       msg_list[4]=attitude_msg.person_name
+       msg_list[6]=attitude_msg.attitude
+       # msg_list.extend([attitude_msg.person_name,attitude_msg.attitude])
+
+def callback_perception(perception_msg): 
+       global msg_list
+       # msg_list.insert(2,perception_msg.person_name)
+       # msg_list.insert(4,perception_msg.person_emotion)
+       # msg_list.append(perception_msg.speech)
+       # msg_list.insert(0,perception_msg.time)
+       msg_list[3]=perception_msg.person_name
+       msg_list[5]=perception_msg.person_emotion
+       # reload(sys) 
+       # sys.setdefaultencoding('utf-8')
+       # msg_list[7]=perception_msg.speech.encode().decode("raw_unicode_escape") 
+       msg_list[7]=perception_msg.speech
+       # msg_list[7].encode('raw_unicode_escape').decode()
+       msg_list[0]=perception_msg.time
 
 
 def data_process():
        global msg_list,current_e,current_m,delta_e,delta_epre
-       if  (not msg_list):
-              msg_list=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
-       elif len(msg_list)==2:
-              msg_list.insert(0,rospy.get_time())
-              msg_list.extend(['None', 'None', 'None', 'enthusiastic', 'None'])
-       elif len(msg_list)!=8:
-              msg_list.insert(1,0)
-              msg_list.insert(1,'None')
-       print("Msg list: ",msg_list)       
+       # if  (not msg_list):
+       #        msg_list=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
+       # elif len(msg_list)==2:
+       #        msg_list.insert(0,rospy.get_time())
+       #        msg_list.extend(['None', 'None', 'None', 'enthusiastic', 'None'])
+       # elif len(msg_list)!=8:
+       #        msg_list.insert(1,0)
+       #        msg_list.insert(1,'None')
+       print("Msg list: ",msg_list) 
+       # print('u'+msg_list[7])       
        flag=unique_judge(msg_list)
-       
        print("Whether_work: ",flag)
        
        #### 更新情绪增量列表
        if flag :
               #print('Internal_eval: ',need_eval)
               ### 社交态度信息处理
-              if msg_list[3] == msg_list[4]:
-                     csv_name  = os.path.join(root, 'scripts/csv/attitude.csv')
-                     index_name = "person_emotion"
-                     index_val = msg_list[5]
-                     column_val = msg_list[6]
-                     ## 由  社交态度  带来的情绪变化状况 [ float_情绪种类，float_情绪变化强度 ]
-                     global perception_eval,need_eval,attitude_eval
-                     attitude_eval= map(float,caculate_edelta(csv_name,index_name,index_val,column_val)) 
-                     #print ('PeopleEmotionTransfer_eval: ',attitude_eval)                
-              else:
-                     print("The social attitude object is different from the conversation object ! ")
+              # if msg_list[3] == msg_list[4]:
+              #        csv_name  = os.path.join(root, 'scripts/csv/attitude.csv')
+              #        index_name = "person_emotion"
+              #        index_val = msg_list[5]
+              #        column_val = msg_list[6]
+              #        ## 由  社交态度  带来的情绪变化状况 [ float_情绪种类，float_情绪变化强度 ]
+              #        global perception_eval,need_eval,attitude_eval
+              #        attitude_eval= map(float,caculate_edelta(csv_name,index_name,index_val,column_val)) 
+              #        #print ('PeopleEmotionTransfer_eval: ',attitude_eval)                
+              # else:
+              #        print("The social attitude object is different from the conversation object ! ")
+              csv_name  = os.path.join(root, 'scripts/csv/attitude.csv')
+              index_name = "person_emotion"
+              index_val = msg_list[5]
+              column_val = msg_list[6]
+              ## 由  社交态度  带来的情绪变化状况 [ float_情绪种类，float_情绪变化强度 ]
+              global perception_eval,need_eval,attitude_eval
+              attitude_eval= map(float,caculate_edelta(csv_name,index_name,index_val,column_val)) 
+              #print ('PeopleEmotionTransfer_eval: ',attitude_eval)              
+
+
 
               ### 他人评价信息处理
-              if msg_list[7]=='None':
+              if 'u'+msg_list[7]=='u'+'None':
                      eclass= 'none'
               else:
                      text = msg_list[7]
-                     charset="UTF-8"
+                     # charset="UTF-8"
+                     # try:
+                     #        eclass=client.sentimentClassify(text)[u'items'][0][u'sentiment'] #文本对应情感类别标签
+                     # except:
+                     #        print("API failed !")
+                     #        eclass='none'
                      try:
-                            eclass=client.sentimentClassify(text)[u'items'][0][u'sentiment'] #文本对应情感类别标签
+                            senti = Sentiment()
+                            result = senti.sentiment_count(text)
+                            if result['pos']!=0:
+                                   eclass=2
+                            elif result['neg']!=0:
+                                   eclass=0
+                            else:
+                                   eclass=1
                      except:
-                            print("API failed !")
+                            print("Emotion recognition failed !")
                             eclass='none'
+                     # senti=Sentiment()
+                     # result = senti.sentiment_count("你真棒")
+                     # print("result:",result)
+                     
               csv_name1  =  os.path.join(root,'scripts/csv/perception.csv')
               index_name1 = "speech_emotion"
               index_val1 = str(eclass)
@@ -299,7 +362,7 @@ def data_process():
        if idleState_flag :
               #print("运行robot_status_msg to boring ")
               time_cur = time.time()
-              print("机器人闲置了%f秒"%(time_cur - time_init)) 
+              print("机器人~~~~~~闲置了%f秒"%(time_cur - time_init)) 
               if ( (time_cur - time_init) > 30 ):
                      delta_e[7] = 0.6   #current_e  delta_e
                      unique_msg.append([rospy.get_time()-stimulus_t, 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None'])
@@ -308,13 +371,13 @@ def data_process():
       
        #### 调用移情计算
        caculate_e(delta_e,delta_epre)
-
-
-       msg_list=[] 
+       msg_list=[rospy.get_time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']
 
        #### 情感可视化
        main.visualization()
-       #main.visualization3d()
+       #main.visualize_3d()
+       # global current_eq
+       # current_eq.append(current_e.insert(0,rospy.get_time()))
 
        print("current_mood:",current_m)       
        #### 机器人情感topic发布

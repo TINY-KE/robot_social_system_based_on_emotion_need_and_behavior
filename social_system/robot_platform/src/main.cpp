@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-05-10 21:09:40
+ * @LastEditTime: 2022-05-17 23:21:34
  */
 /* 
 4）行为的发布：
@@ -178,7 +178,7 @@ void BehaviorUpdate(const social_msg::bhvPara::ConstPtr& behavior_ ,  ros::NodeH
         // 机器人脱离 闲置状态
         // if( behavior_name != "Wander"  &&  behavior_name != "Chat" )  TODO: 
             idlestate = false;
-
+        
         //更新行为
         behavior = *behavior_;
         behavior_cur_exist = true;

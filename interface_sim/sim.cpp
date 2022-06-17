@@ -27,7 +27,8 @@ void callback(sim::simConfig &config, uint32_t level)
                 if(config.O_____per_switch == true)
                 {
                 social_msg::perception_msg perception;
-                perception.time = config.per_time;
+                ros::Time now = ros::Time::now();
+                perception.time = now.sec;
                 perception.person_name = config.per_person_name;
                 perception.IDtype = config.per_person_IDtype;
                 perception.intention = config.per_intention;
@@ -127,9 +128,10 @@ int main(int argc, char **argv)
         // 需求
         pub_needlist  = n.advertise<social_msg::need_msg>("need_lists", 10);
         // 行为
-
+        
         dynamic_reconfigure::Server<sim::simConfig> server;
         dynamic_reconfigure::Server<sim::simConfig>::CallbackType f;
+        sleep(2);
         f = boost::bind(&callback, _1, _2);
         server.setCallback(f);
         ros::spin();

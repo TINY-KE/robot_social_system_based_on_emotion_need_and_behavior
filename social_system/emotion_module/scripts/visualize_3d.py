@@ -1,19 +1,12 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import os
 import csv
 import pandas as pd
 import math
-import time
-import message_filters
-import rospy
-import sys
-import signal
-import threading
-import Data_processing
-from social_msg.msg import robot_emotion
 from bisect import bisect_left
 import matplotlib.pyplot as plt
+# plt.switch_backend('agg') 
 import numpy as np
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
@@ -21,64 +14,6 @@ from matplotlib.animation import FuncAnimation
 
 ### 获取pkg目录
 root=os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-current_e=[]
-
-
-
-class Watcher():
-    '''
-        *线程管理类，用于键盘结束多线程程序
-    '''
-    def __init__(self):
-        self.child = os.fork()
-        if self.child == 0:
-            return
-        else:
-            self.watch()
- 
-    def watch(self):
-        try:
-            os.wait()
-        except KeyboardInterrupt:
-            self.kill()
-        sys.exit()
- 
-    def kill(self):
-        try:
-            os.kill(self.child, signal.SIGKILL)
-        except OSError:
-            pass
-
-class myThread(threading.Thread):
-    def __init__(self,  name, content):
-        threading.Thread.__init__(self)
-        self.name = name
-        self.content = content
-    def run(self):
-        print ("Starting ", self.name)
-        if self.content == 'listener':
-            data_get()
-        elif self.content == 'visualize':
-            while True:
-                update_visual(current_e)
-
-def callback_robot_emotion( robot_emotion_msg ):  
-       '''
-       *
-       '''
-       global current_e
-       for i in range(8):
-               current_e[i]=(robot_emotion_msg.emotion[i])
-       
-
-def data_get():
-        '''
-        *启动模块
-        '''
-        rospy.init_node('visual_message', anonymous=True,disable_signals=True)
-        t1 = message_filters.Subscriber("robot_emotion", robot_emotion)
-        t1.registerCallback(Data_processing.callback_robot_status)
-        rospy.spin() # spin() simply keeps python from exiting until this node is stopped
 
 def getLinearEquation(p1x, p1y, p2x, p2y):
         '''
@@ -94,8 +29,9 @@ def getLinearEquation(p1x, p1y, p2x, p2y):
         return [a, b, c]
 
 
-def update_visual(current_e):
-        #plt.clf()
+def update_visual(current_e,fig,ii):
+        #fig.clf()
+        plt.clf()
         ### 读取x,y,z
         tmp_lst = []
         with open(os.path.join(root, 'scripts/csv/personality.csv'), 'r') as f:
@@ -113,9 +49,7 @@ def update_visual(current_e):
         z=list(map(float,z_introvert))
         zz =  [z[i]-z[i]-0.3 for i in range(0,len(z))]
         ### 三维图画布
-        
         sub=fig.add_subplot(111,projection='3d')
-
         ### 轴标签与取值范围
         sub.set_xlabel(r'$h_{ijx}$')
         sub.set_ylabel(r'$h_{ijy}$')
@@ -133,10 +67,18 @@ def update_visual(current_e):
         line_moderate = zip(pd_12,pd_22,pd_62,pd_82,pd_42,pd_72,pd_52, pd_32,pd_12)
         line_intense = zip(pd_13,pd_23,pd_63,pd_83,pd_43,pd_73,pd_53, pd_33,pd_13)
         line_max = zip(pd_14,pd_24,pd_64,pd_84,pd_44,pd_74,pd_54, pd_34,pd_14)
-        sub.plot3D( '--',label='Mild', color='#999999', linewidth=1,*line_mild)
-        sub.plot3D( '--', label='Moderate', color='#666666', linewidth=1,*line_moderate)
-        sub.plot3D('--', label='Intense', color='#333333', linewidth=1,*line_intense)
-        sub.plot3D('--',label='Max',  color='#000000', linewidth=1,*line_max )
+        sub.plot( [list(i) for i in line_mild][0],[list(i) for i in line_mild][1],[list(i) for i in line_mild][2],'--',label='Mild', color='#999999', linewidth=1)
+        sub.plot( [list(i) for i in line_moderate][0],[list(i) for i in line_moderate][1],[list(i) for i in line_moderate][2],'--',label='Moderate', color='#666666', linewidth=1)
+        sub.plot( [list(i) for i in line_intense][0],[list(i) for i in line_intense][1],[list(i) for i in line_intense][2],'--',label='Intense', color='#333333', linewidth=1)
+        sub.plot( [list(i) for i in line_max][0],[list(i) for i in line_max][1],[list(i) for i in line_max][2],'--',label='Max',  color='#000000', linewidth=1)
+        #sub.plot( '--',label='Mild', color='#999999', linewidth=1,*line_mild)
+        # sub.plot3D( '--', label='Moderate', color='#666666', linewidth=1,*line_moderate)
+        # sub.plot3D('--', label='Intense', color='#333333', linewidth=1,*line_intense)
+        # sub.plot3D('--',label='Max',  color='#000000', linewidth=1,*line_max )
+        # sub.plot3D( *line_mild,'--',label='Mild', color='#999999', linewidth=1)
+        # sub.plot3D(*line_moderate, '--', label='Moderate', color='#666666', linewidth=1)
+        # sub.plot3D(*line_intense,'--', label='Intense', color='#333333', linewidth=1)
+        # sub.plot3D(*line_max,'--',label='Max',  color='#000000', linewidth=1 )
         ## Joy
         lines_0 = zip(p_00,p_11, p_12,p_13,p_14)
         sub.plot3D(label='Joy', color='#fcb001', linewidth=3,zdir='z',    
@@ -197,12 +139,12 @@ def update_visual(current_e):
         sub.plot3D( color='#02ccfe', linewidth=2,    marker='o',    
                 mfc='#02ccfe',   mec='#02ccfe',   ms=4,*lines_d7)  
         ## 打标签
-        zdir = ('Joy', 'Sadness', 'Anger', 'Fear', 'Trust', 'Disgust', 'Antipation', 'Boring')
+        zdir = ('Joy', 'Trust', 'Antipation' ,'Sadness', 'Anger', 'Fear', 'Disgust', 'Boring')
         point_list=[p_14,p_24,p_34,p_44,p_54,p_64,p_74,p_84]
         for i in range(len(point_list)):
                 sub.text(point_list[i][0], point_list[i][1],point_list[i][2] , r'$%s$'%zdir[i])
-        plt.legend() # 添加图例
-
+        plt.legend(loc=(0.8,0.5)) # 添加图例
+        
 
 
         ### 生成图
@@ -222,8 +164,8 @@ def update_visual(current_e):
                         h = bisect_left(threshold,y)
                         a,b,c=getLinearEquation(threshold[int(h-1)],point_clist[int(h-1)][2],threshold[int(h)],point_clist[int(h)][2])
                         z=(-a*y-c)/b
-                        sub.scatter(x,y,z,s=100,fc='#fcb001',edgecolors='#000000',linewidth=3)
-                        sub.scatter(x,y,-0.3,s=40,fc='#fcb001',edgecolors='#000000',linewidth=1)
+                        sub.scatter(x,y,z,s=100,color='#fcb001',edgecolors='#000000',linewidth=3)
+                        sub.scatter(x,y,-0.3,s=40,color='#fcb001',edgecolors='#000000',linewidth=1)
                 if i == 3: # Sadness
                         x=0;y=current_e[i]
                         point_clist= [p_00,p_41,p_42,p_43,p_44]
@@ -231,8 +173,8 @@ def update_visual(current_e):
                         h = bisect_left(threshold,y)
                         a,b,c=getLinearEquation(threshold[int(h-1)],point_clist[int(h-1)][2],threshold[int(h)],point_clist[int(h)][2])
                         z=(-a*y-c)/b
-                        sub.scatter(x,-y,z,s=100,fc='#0e87cc',edgecolors='#000000',linewidth=3)
-                        sub.scatter(x,-y,-0.3,s=40,fc='#0e87cc',edgecolors='#000000',linewidth=1)
+                        sub.scatter(x,-y,z,s=100,color='#0e87cc',edgecolors='#000000',linewidth=3)
+                        sub.scatter(x,-y,-0.3,s=40,color='#0e87cc',edgecolors='#000000',linewidth=1)
                 if i == 4: # Anger
                         y=0;x=current_e[i]
                         point_clist= [p_00,p_51,p_52,p_53,p_54]
@@ -240,8 +182,8 @@ def update_visual(current_e):
                         h = bisect_left(threshold,x)
                         a,b,c=getLinearEquation(threshold[int(h-1)],point_clist[int(h-1)][2],threshold[int(h)],point_clist[int(h)][2])
                         z=(-a*x-c)/b
-                        sub.scatter(-x,y,z,s=100,fc='#ff0789',edgecolors='#000000',linewidth=3)
-                        sub.scatter(-x,y,-0.3,s=40,fc='#ff0789',edgecolors='#000000',linewidth=1)
+                        sub.scatter(-x,y,z,s=100,color='#ff0789',edgecolors='#000000',linewidth=3)
+                        sub.scatter(-x,y,-0.3,s=40,color='#ff0789',edgecolors='#000000',linewidth=1)
                 if i == 5: # Fear
                         y=0;x=current_e[i]
                         point_clist= [p_00,p_61,p_62,p_63,p_64]
@@ -249,8 +191,8 @@ def update_visual(current_e):
                         h = bisect_left(threshold,x)
                         a,b,c=getLinearEquation(threshold[int(h-1)],point_clist[int(h-1)][2],threshold[int(h)],point_clist[int(h)][2])
                         z=(-a*x-c)/b
-                        sub.scatter(x,y,z,s=100,fc='#2a7e19',edgecolors='#000000',linewidth=3)
-                        sub.scatter(x,y,-0.3,s=40,fc='#2a7e19',edgecolors='#000000',linewidth=1)
+                        sub.scatter(x,y,z,s=100,color='#2a7e19',edgecolors='#000000',linewidth=3)
+                        sub.scatter(x,y,-0.3,s=40,color='#2a7e19',edgecolors='#000000',linewidth=1)
                 if i == 1: # Trust
                         x=current_e[i]/math.sqrt(2);y=x
                         point_clist= [p_00,p_21,p_22,p_23,p_24]
@@ -258,8 +200,8 @@ def update_visual(current_e):
                         h = bisect_left(threshold,x)
                         a,b,c=getLinearEquation(threshold[int(h-1)],point_clist[int(h-1)][2],threshold[int(h)],point_clist[int(h)][2])
                         z=(-a*x-c)/b
-                        sub.scatter(x,y,z,s=100,fc='#9ce143',edgecolors='#000000',linewidth=3)
-                        sub.scatter(x,y,-0.3,s=40,fc='#9ce143',edgecolors='#000000',linewidth=1)
+                        sub.scatter(x,y,z,s=100,color='#9ce143',edgecolors='#000000',linewidth=3)
+                        sub.scatter(x,y,-0.3,s=40,color='#9ce143',edgecolors='#000000',linewidth=1)
                 if i == 7: # Boring
                         x=current_e[i]/math.sqrt(2);y=-x
                         point_clist= [p_00,p_81,p_82,p_83,p_84]
@@ -267,8 +209,8 @@ def update_visual(current_e):
                         h = bisect_left(threshold,x)
                         a,b,c=getLinearEquation(threshold[int(h)-1],point_clist[int(h)-1][2],threshold[int(h)],point_clist[int(h)][2])
                         z=(-a*x-c)/b
-                        sub.scatter(x,y,z,s=100,fc='#02ccfe',edgecolors='#000000',linewidth=3)
-                        sub.scatter(x,y,-0.3,s=40,fc='#02ccfe',edgecolors='#000000',linewidth=1)
+                        sub.scatter(x,y,z,s=100,color='#02ccfe',edgecolors='#000000',linewidth=3)
+                        sub.scatter(x,y,-0.3,s=40,color='#02ccfe',edgecolors='#000000',linewidth=1)
                 if i == 6: # Disgust
                         x=current_e[i]/math.sqrt(2);y=x
                         point_clist= [p_00,p_71,p_72,p_73,p_74]
@@ -276,8 +218,8 @@ def update_visual(current_e):
                         h = bisect_left(threshold,x)
                         a,b,c=getLinearEquation(threshold[int(h-1)],point_clist[int(h-1)][2],threshold[int(h)],point_clist[int(h)][2])
                         z=(-a*x-c)/b
-                        sub.scatter(-x,-y,z,s=100,fc='#a442a0',edgecolors='#000000',linewidth=3)
-                        sub.scatter(-x,-y,-0.3,s=40,fc='#a442a0',edgecolors='#000000',linewidth=1)
+                        sub.scatter(-x,-y,z,s=100,color='#a442a0',edgecolors='#000000',linewidth=3)
+                        sub.scatter(-x,-y,-0.3,s=40,color='#a442a0',edgecolors='#000000',linewidth=1)
                 if i == 2: # Anticipation
                         y=current_e[i]/math.sqrt(2);x=y
                         point_clist= [p_00,p_31,p_32,p_33,p_34]
@@ -285,22 +227,44 @@ def update_visual(current_e):
                         h = bisect_left(threshold,x)
                         a,b,c=getLinearEquation(threshold[int(h-1)],point_clist[int(h-1)][2],threshold[int(h)],point_clist[int(h)][2])
                         z=(-a*x-c)/b
-                        sub.scatter(-x,y,z,s=100,fc='#ff5b00',edgecolors='#000000',linewidth=3)
-                        sub.scatter(-x,y,-0.3,s=40,fc='#ff5b00',edgecolors='#000000',linewidth=1)
+                        sub.scatter(-x,y,z,s=100,color='#ff5b00',edgecolors='#000000',linewidth=3)
+                        sub.scatter(-x,y,-0.3,s=40,color='#ff5b00',edgecolors='#000000',linewidth=1)
+
 
         ### 调整视角
         sub.view_init(elev=24,    # 仰角
                 azim=-103)   # 方位角
-        plt.show()
+        # print("Here is the visual value:",current_e)
+        # plt.show()
+        # plt.draw()
+        plt.savefig(os.path.join(root, 'image/test_boring/'+str(ii)+'test.png'))
+        # plt.pause(0.02)
+        # plt.ioff()
+        
+def read_goal():
+        temp_lst = []
+        with open(os.path.join(root, 'scripts/csv/test_boring.csv'), 'r') as f:
+                reader = csv.reader(f)
+                for row in reader:
+                        temp_lst.append(row)
+        return temp_lst
 
 if __name__ == '__main__':
-        # # current_e=[0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4]
-        # # current_e=[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+#         # # current_e=[0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4]
+#         # # current_e=[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
         # current_e=[0.6,0.6,0.6,0.6,0.6,0.4,0.6,0.6]
-        plt.ion() 
+        # current_e=[0,0,0,0,0,0,0,0]
+        # plt.ion() 
+
+        
+        current_elst=read_goal()
         fig = plt.figure(figsize=(9.6, 8.4)) # 图像像素大小为960*840
-        Watcher()
-        thread1=myThread("Listener-thread",'listener')
-        thread2=myThread("Publisher-thread",'visualize')
-        thread1.start()
-        thread2.start()
+        for i in range(1,len(current_elst)):
+                print([float(j) for j in current_elst[i]])
+                update_visual([float(j) for j in current_elst[i]],fig,i)
+        
+        # current_e=[0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4]
+        # elev_e=24
+        # azim_e=-103
+        # fig = plt.figure(figsize=(9.6, 8.4)) # 图像像素大小为960*840
+        # update_visual(current_e,fig)

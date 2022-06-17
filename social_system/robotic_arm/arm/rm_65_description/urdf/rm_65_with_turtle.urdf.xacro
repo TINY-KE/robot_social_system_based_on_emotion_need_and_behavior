@@ -1,15 +1,17 @@
 <?xml version="1.0" ?>
 <robot name="rm_65" xmlns:xacro="http://www.ros.org/wiki/xacro">
-<xacro:include filename="$(find rm_65_description)/urdf/rm_65.transmission.xacro"/>
-<xacro:include filename="$(find rm_65_description)/urdf/rm_65.gazebo.xacro"/>
-<!-- <xacro:include filename="$(find rm_65_description)/urdf/common.gazebo.xacro"/> -->
-<!-- Inertial matrix -->
-<xacro:macro name="inertial_matrix" params="mass">
-<inertial>
-    <mass value="${mass}" />
-    <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="1.0" />
-</inertial>
-</xacro:macro>
+  <xacro:include filename="$(find rm_65_description)/urdf/rm_65.transmission.xacro"/>
+  <xacro:include filename="$(find rm_65_description)/urdf/rm_65.gazebo.xacro"/>
+  <!-- <xacro:include filename="$(find rm_65_description)/urdf/common.gazebo.xacro"/> -->
+  <!-- Inertial matrix -->
+  <xacro:macro name="inertial_matrix" params="mass">
+    <inertial>
+        <mass value="${mass}" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+
+
   <link
     name="turtle_link">
     <inertial>

@@ -88,6 +88,11 @@ public Q_SLOTS:
     void slt_valueChanged_sounder(int, int, int, QString);
     void slt_valueChanged_arm(int, int, int, QString);
     void slt_valueChanged_leg(int, int, int, QString);
+    void slt_valueChanged_gaze_g(int, int, int, QString);
+    void slt_valueChanged_screen_g(int, int, int, QString);
+    void slt_valueChanged_sounder_g(int, int, int, QString);
+    void slt_valueChanged_arm_g(int, int, int, QString);
+    void slt_valueChanged_leg_g(int, int, int, QString);
 public:
     std::vector<need> need_list;
     cv::Mat frame;//定义一个变量把视频源一帧一帧显示

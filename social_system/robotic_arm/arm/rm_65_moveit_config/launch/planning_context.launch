@@ -11,13 +11,13 @@
   <!-- The semantic description that corresponds to the URDF -->
   <param name="$(arg robot_description)_semantic" textfile="$(find rm_65_moveit_config)/config/rm_65.srdf" />
 
-  <!-- Load updated joint limits (override information from URDF) -->
+  <!-- Load updated joint limits (override information from URDF) 关节速度和加速度的限制-->
   <group ns="$(arg robot_description)_planning">
     <rosparam command="load" file="$(find rm_65_moveit_config)/config/joint_limits.yaml"/>
     <rosparam command="load" file="$(find rm_65_moveit_config)/config/cartesian_limits.yaml"/>
   </group>
 
-  <!-- Load default settings for kinematics; these settings are overridden by settings in a node's namespace -->
+  <!--底盘运动学 Load default settings for kinematics; these settings are overridden by settings in a node's namespace -->
   <group ns="$(arg robot_description)_kinematics">
     <rosparam command="load" file="$(find rm_65_moveit_config)/config/kinematics.yaml"/>
 

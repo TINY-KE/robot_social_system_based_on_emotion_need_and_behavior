@@ -1,8 +1,8 @@
 controller_manager_ns: controller_manager
 controller_list:
   - name: arm/arm_joint_controller
-    action_ns: follow_joint_trajectory
-    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory  #推测：这是moveit发送的follow_joint_trajectory 的动作action信息（包含了一系列规划好的路径点轨迹） 
+    type: FollowJointTrajectory #推测：这是moveit发送的follow_joint_trajectory 的动作action信息的【名字】
     default: true
     joints:
       - joint1

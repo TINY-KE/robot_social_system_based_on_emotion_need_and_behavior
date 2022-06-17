@@ -418,6 +418,8 @@
 	  <dynamics damping="50" friction="1"/>
   </joint>
 
+
+
   <link name="tool_link">
   </link>
   <joint name="tool_joint" type="fixed">
@@ -425,6 +427,19 @@
     <parent link="Link6" />
     <child link="tool_link" />
   </joint>
+
+<!-- camera  <mesh  filename="package://rm_65_description/meshes/akdk_camera_cad1.STL" />
+          <box size="0.2 0.3 0.3"/>
+          -->
+<!-- kinect -->
+  <xacro:include filename="$(find rm_65_description)/urdf/yixiuge_d435i.xacro" />
+  <!--添加d435i的link即joint -->
+  <xacro:yixiuge_d435i>     </xacro:yixiuge_d435i>
+  <joint name="yixiuge_kinect_base_joint" type="fixed">
+    <origin xyz="0.025 0.0 0.0" rpy="0 0 0" />
+    <parent link="tool_link"/>
+    <child link="camera_base_link"/>
+  </joint> 
     <!-- Transmissions for ROS Control -->
     <xacro:macro name="transmission_block" params="joint_name">
         <transmission name="tran1">

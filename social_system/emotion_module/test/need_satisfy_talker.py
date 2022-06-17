@@ -10,7 +10,7 @@ def need_satisfy_talker():
     pub = rospy.Publisher('need_satisfied', need_satisfy_msg, queue_size=10)
     time.sleep(2)
     need=need_satisfy_msg()
-    need.need_name ="KeepOrder"
+    need.need_name ="MeasureTempareture"
     need.satisfy_value = -2
     pub.publish(need)
     rospy.loginfo("发布的消息3：%s,%d",need.need_name,need.satisfy_value)

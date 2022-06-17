@@ -223,7 +223,7 @@ void LoclistInit(LocalList &list){
     list.bhv[2].emotion.weight = 3;
     list.bhv[2].emotion.call = 1;
     list.bhv[2].emotion.type = "Joy";
-    list.bhv[2].emotion.rob_emotion_intensity = 1;
+    list.bhv[2].emotion.rob_emotion_intensity = 2;
     list.bhv[2].emotion.startTime = 0;
     list.bhv[2].emotion.endTime = 20;
 
@@ -260,12 +260,12 @@ void LoclistInit(LocalList &list){
     list.bhv[3].gaze.startTime = 0;
     list.bhv[3].gaze.endTime = 100;
 
-    list.bhv[3].emotion.weight = 0;
+    list.bhv[3].emotion.weight = 1;
     list.bhv[3].emotion.call = 1;
     list.bhv[3].emotion.type = "Boring";
     list.bhv[3].emotion.rob_emotion_intensity = 2;
     list.bhv[3].emotion.startTime = 0;
-    list.bhv[3].emotion.endTime = 0;
+    list.bhv[3].emotion.endTime = 100;
 
     list.bhv[3].speech.weight = 3;
     list.bhv[3].speech.call = 1;
@@ -280,7 +280,7 @@ void LoclistInit(LocalList &list){
     list.bhv[3].arms.action = "shrug";
     list.bhv[3].arms.rate = 2;
     list.bhv[3].arms.startTime = 0;
-    list.bhv[3].arms.endTime = 0;
+    list.bhv[3].arms.endTime = 100;
 
     list.bhv[3].legs.weight = 1;
     list.bhv[3].legs.call = 1;
@@ -477,7 +477,7 @@ void LoclistInit(LocalList &list){
 
     list.bhv[8].arms.weight = 2;
     list.bhv[8].arms.call = 1;
-    list.bhv[8].arms.action = "shake";
+    list.bhv[8].arms.action = "criticize";
     list.bhv[8].arms.rate = 3;
     list.bhv[8].arms.startTime = 0;
     list.bhv[8].arms.endTime = 100;
@@ -582,9 +582,9 @@ void LoclistInit(LocalList &list){
 
     list.bhv[11].emotion.weight = 2;
     list.bhv[11].emotion.call = 1;
-    list.bhv[11].emotion.type = "Joy";
+    list.bhv[11].emotion.type = "Calm";
     list.bhv[11].emotion.rob_emotion_intensity = 1;
-    list.bhv[11].emotion.startTime = 0;
+    list.bhv[11].emotion.startTime = 40;
     list.bhv[11].emotion.endTime = 100;
 
     list.bhv[11].speech.weight = 1;
@@ -593,14 +593,14 @@ void LoclistInit(LocalList &list){
     list.bhv[11].speech.tone = 2;
     list.bhv[11].speech.rate = 2;
     list.bhv[11].speech.startTime = 0;
-    list.bhv[11].speech.endTime = 50;
+    list.bhv[11].speech.endTime = 100;
 
     list.bhv[11].arms.weight = 2;
     list.bhv[11].arms.call = 1;
     list.bhv[11].arms.action = "direct";
     list.bhv[11].arms.rate = 1;
     list.bhv[11].arms.startTime = 30;
-    list.bhv[11].arms.endTime = 100;
+    list.bhv[11].arms.endTime = 90;
 
     list.bhv[11].legs.weight = 1;
     list.bhv[11].legs.call = 1;
@@ -1098,6 +1098,11 @@ int main(int argc,char **argv)
             taskNum ++;
             temp.num = taskNum*1000+temp.num;
             //调试
+            // todo：当前同一行为对不同对象的内容是相同的。只能出此下策    
+            if(temp.gaze.target == "李老师"  &&  temp.Needs == "Greet")
+            {
+                temp.arms.action = "respect";
+            }
             // temp.num = taskNum*1000+temp.num+100;
             temp.time = int64_t((ros::Time::now().toSec())*1000.0);
             sleep(1);

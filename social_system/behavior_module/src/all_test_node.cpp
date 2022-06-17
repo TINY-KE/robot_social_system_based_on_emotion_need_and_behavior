@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-12-08 09:34:12
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-05-13 11:07:55
+ * @LastEditTime: 2022-05-17 22:54:48
  */
 #include "ros/ros.h"
 #include "std_msgs/String.h"
@@ -59,7 +59,8 @@ int main(int argc,char **argv)
         int time_flag = init_time;
         if(count == time_flag)
         {   
-            perception.time = count;
+            // ros::Time now = ros::Time::now();
+            perception.time = ros::Time::now().sec;
             perception.person_name = "小明";
             perception.IDtype = "Student";
             perception.intention = "EnterSchool";
@@ -84,7 +85,7 @@ int main(int argc,char **argv)
         time_flag += Ming_EnterSchool;
         if(count==time_flag)
         {   
-            perception.time = count;
+            perception.time = ros::Time::now().sec;
             perception.person_name = "小明";
             perception.IDtype = "Student";
             perception.intention = "MeasureTempareture";
@@ -109,7 +110,7 @@ int main(int argc,char **argv)
         time_flag += Ming_MeasureTempareture;
         if(count==time_flag)
         {   
-            perception.time = count;
+            perception.time = ros::Time::now().sec;
             perception.person_name = "李老师";
             perception.IDtype = "Teacher";
             perception.intention = "EnterSchool";
@@ -135,7 +136,7 @@ int main(int argc,char **argv)
         time_flag += Li_EnterSchool;
         if(count==time_flag)
         {   
-            perception.time = count;
+            perception.time = ros::Time::now().sec;
             perception.person_name = "小明";
             perception.IDtype = "Student";
             perception.intention = "Uncooperate";
@@ -157,7 +158,7 @@ int main(int argc,char **argv)
         time_flag += Li_Pass;
         if(count==time_flag)
         {   
-            perception.time = count;
+            perception.time = ros::Time::now().sec;
             perception.person_name = "李老师";
             perception.IDtype = "Teacher";
             perception.intention = "MeasureTempareture";
