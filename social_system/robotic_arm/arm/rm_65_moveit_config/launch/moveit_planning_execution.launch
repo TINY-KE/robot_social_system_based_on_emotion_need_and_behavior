@@ -7,7 +7,9 @@
  #调用了rm_65_moveit_controller_manager.launch.xml，
  #进而调用了controllers_gazebo.yaml， 并将其中的param添加到了ROS参数服务器中
  <include file="$(find rm_65_moveit_config)/launch/move_group.launch">
-  <arg name="publish_monitored_planning_scene" value="true" />
+      <arg name="publish_monitored_planning_scene" value="true" />
+      <arg name="load_robot_description" value="false" />
+      <arg name="load_camera_and_tracer" value="true" />
  </include>
  # The visualization component of MoveIt!   这个只是用来可视化   没什么看的必要
  <include file="$(find rm_65_moveit_config)/launch/moveit_rviz.launch"/>

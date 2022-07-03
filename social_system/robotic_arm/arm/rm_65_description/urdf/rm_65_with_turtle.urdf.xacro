@@ -457,7 +457,7 @@
       upper="6.28"
       effort="300"
       velocity="1" />
-	<dynamics damping="50" friction="1"/>
+	  <dynamics damping="50" friction="1"/>
   </joint>
     <!-- Transmissions for ROS Control -->
     <xacro:macro name="transmission_block" params="joint_name">

@@ -440,6 +440,9 @@
     <parent link="tool_link"/>
     <child link="camera_base_link"/>
   </joint> 
+
+
+  
     <!-- Transmissions for ROS Control -->
     <xacro:macro name="transmission_block" params="joint_name">
         <transmission name="tran1">

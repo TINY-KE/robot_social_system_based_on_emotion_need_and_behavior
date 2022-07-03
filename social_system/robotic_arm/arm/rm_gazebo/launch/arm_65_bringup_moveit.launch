@@ -1,5 +1,5 @@
 <launch>
-  
+    <arg name="robot_namespace" default="/"  />
     <!-- Launch Gazebo  -->
     <include file="$(find rm_gazebo)/launch/arm_world.launch" />
 
@@ -12,4 +12,19 @@
     <!-- moveit launch file   包含了机械臂的controller配置参数-->
     <include file="$(find rm_65_moveit_config)/launch/moveit_planning_execution.launch" />
 
+    <!-- tracer的仿真控制器 -->
+        <!-- Load joint controller configurations from YAML file to parameter server  控制器的参数设置-->
+        <rosparam file="$(find tracer_gazebo_sim)/config/tracer_v1_control.yaml" command="load"/>
+
+        <!-- load the controllers -->
+        <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="tracer_state_controller tracer_motor_r_controller tracer_motor_l_controller "/>
+        <!-- 发布各link之间的变换关系，但因为上面的arm_gazebo_states.launch中已经启动了，所以这里注销
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" /> -->
+
+        <node name="tracer_skid_steer_controller" pkg="tracer_gazebo_sim" type="tracer_skid_steer_controller">
+            <param name="robot_namespace" type="string" value="$(arg robot_namespace)" />
+        </node>
+
+    <!-- tracer的控制器 ；  启动了  pkg="tracer_base" type="tracer_base_sim_node" -->
+    <include file="$(find tracer_base)/launch/tracer_base_sim.launch" />
 </launch>

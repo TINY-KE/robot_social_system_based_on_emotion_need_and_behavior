@@ -38,10 +38,12 @@
                 " />
   -->
 
-  <arg name="load_robot_description" default="true" />
+  <arg name="load_robot_description" default="false" />
+  <arg name="load_camera_and_tracer" default="true" />
   <!-- load URDF, SRDF and joint_limits configuration -->
   <include file="$(find rm_65_moveit_config)/launch/planning_context.launch">
     <arg name="load_robot_description" value="$(arg load_robot_description)" />
+    <arg name="load_camera_and_tracer" value="$(arg load_camera_and_tracer)" />
   </include>
 
   <!-- Planning Functionality -->
