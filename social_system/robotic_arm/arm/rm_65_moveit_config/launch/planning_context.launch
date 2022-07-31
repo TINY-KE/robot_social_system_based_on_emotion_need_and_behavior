@@ -5,8 +5,8 @@
   <!-- The name of the parameter under which the URDF is loaded -->
   <arg name="robot_description" default="robot_description"/>
 
-  <!-- Load universal robot description format (URDF) -->
-  <param if="$(arg load_camera_and_tracer)" name="$(arg robot_description)" command="$(find xacro)/xacro --inorder '$(find rm_65_description)/urdf/rm_65_flange_with_d435i_with_tracer.urdf.xacro'"/>
+  <!-- Load universal robot description format (URDF)  rm_65_flange_with_d435i_with_tracer.urdf.xacro -->
+  <param if="$(arg load_camera_and_tracer)" name="$(arg robot_description)" command="$(find xacro)/xacro --inorder '$(find rm_65_description)/urdf/rm_65_flange.urdf.xacro'"/>
 
   <!-- Load universal robot description format (URDF) -->
   <param if="$(arg load_robot_description)" name="$(arg robot_description)" command="xacro  '$(find rm_65_description)/urdf/rm_65_flange.urdf.xacro'"/>
