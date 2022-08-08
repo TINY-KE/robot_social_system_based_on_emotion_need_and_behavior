@@ -1,4 +1,17 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: Zhang Jiadong
+ * @Date: 2022-05-05 14:03:27
+ * @LastEditors: Zhang Jiadong
+ * @LastEditTime: 2022-08-08 19:44:13
+-->
 #  robot_social_system_based_on_emotion_need_and_behavior
+### 第三方测试专用程序 与 其他程序 的不同之处：
+1.  需求模块中增加了，根据先验和方差的四个判断条件
+2.  需求模块中“感知过滤”被删除
+3. 。。。。
+
 
 ### 一、安装第三方库：
 1.  百度api： 
