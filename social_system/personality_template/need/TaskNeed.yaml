@@ -242,7 +242,7 @@
 
 
 - need_name: MeasureTempareture
-  intention: MeasureTempareture
+  intention: EnterSchool
   IDtype: Teacher
   person_emotion: Happy
   rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
@@ -251,7 +251,7 @@
   weight: 0.75
   satisfy_value: 2
 - need_name: MeasureTempareture
-  intention: MeasureTempareture
+  intention: EnterSchool
   IDtype: Student
   person_emotion: Happy
   rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]
@@ -260,7 +260,7 @@
   weight: 0.75
   satisfy_value: 2
 - need_name: MeasureTempareture
-  intention: MeasureTempareture
+  intention: EnterSchool
   IDtype: Parent
   person_emotion: Happy
   rob_emotion: [0, 0, 0, 0, 0, 0, 0, 0 ]

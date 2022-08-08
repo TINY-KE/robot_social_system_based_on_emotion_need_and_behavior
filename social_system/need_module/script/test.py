@@ -14,7 +14,9 @@ from social_msg.msg import attitude_msg
 from social_msg.msg import perception_msg
 from social_msg.msg import robot_emotion
 from social_msg.msg import robot_status
+from social_msg.msg import need_msg
 import sys
+
 
 # "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'emotion_param.csv'
 # /home/zhjd/ws/src/social_system/emotion_module/scripts/"+'emotion_param.csv
@@ -25,11 +27,11 @@ sys.stdout.write( '选择刺激输入源，【1】动机生成，【2】应急�
 str = input();
 if str == 1 :
         print("Select motivation.csv")
-        csv_name = "/home/zhjd/ws/src/social_system/need_module/script/"+'motivation.csv'
+        csv_name = "/home/zhjd/ws_third_test/src/social_system/need_module/script/"+'motivation.csv'
 else:
     if str == 2 :
         print("Select emergency.csv")
-        csv_name = "/home/zhjd/ws/src/social_system/need_module/script/"+'emergency.csv'
+        csv_name = "/home/zhjd/ws_third_test/src/social_system/need_module/script/"+'emergency.csv'
 tmp_lst = []
 with open(csv_name, 'r') as f:
         reader = csv.reader(f)
@@ -49,6 +51,13 @@ with open(csv_name, 'r') as f:
 # print(t)
 # print(t[1])
 
+# global out_num, out_name
+# out_num = []
+# out_name = []
+# def callback( data):
+#     if data.need_name != "" :
+#         out_name.append(data.need_name)
+
 
 
 def talker():
@@ -56,16 +65,21 @@ def talker():
         pub_perception = rospy.Publisher('perceptions', perception_msg, queue_size=10)
         pub_emotion = rospy.Publisher('robot_emotion', robot_emotion, queue_size=10)
         pub_body = rospy.Publisher('robot_status', robot_status, queue_size=10)
+        # rospy.Subscriber("need_lists", need_msg, callback)
+        # rospy.spin()
         # rate = rospy.Rate(5)
-        rate = rospy.Rate(0.08) # 10s发一次
+        rate = rospy.Rate(0.2)  #5s发一次
+        #原版（用了很久的）：rate = rospy.Rate(0.08) # 10s发一次
         # while not rospy.is_shutdown():
         i = 1
         for row in  tmp_lst:
+            if not rospy.is_shutdown():
                 # if row[5] != '':
                         rate.sleep()
                         print(" ")
                         print(" ")
                         sys.stdout.write( '第 %s 次发布:\n' % row[0] )
+                        # out_num.append(row[0])
                         i = i+1
 
 
@@ -102,7 +116,7 @@ def talker():
                         sys.stdout.write( "    身体状态:")
                         print(body.body1,body.body2,body.body3,body.body4,body.body5,body.body6,body.body7,body.idleState)
     
-                        time.sleep(0.5)
+                        time.sleep(0.1)   #防止状态输入 滞后
                         if row[5] != 0 :
                                 per=perception_msg()
                                 per.person_name = row[2]
@@ -115,8 +129,19 @@ def talker():
                                 # rospy.loginfo("perception：%s,%s,%s,%s",per.person_name,per.IDtype,per.intention,per.intention_2)
                                 sys.stdout.write( "    感知信息:")
                                 print(per.person_name,per.IDtype,per.intention,per.intention_2)
+                        # rospy.Subscriber("need_lists", need_msg, callback)
                         sys.stdout.write( "    正确的需求:")     
                         print(row[10])
+        
+        # with open("/home/zhjd/ws_third_test/src/social_system/need_module/script/result.csv","w") as csvfile: 
+        #     writer = csv.writer(csvfile)
+
+        #     #先写入columns_name
+        #     writer.writerow(["index","name"])
+        #     #写入多行用writerows
+        #     writer.writerows([out_num,out_name])
+        #     sys.stdout.write( "结果保存在 result.csv")
+  
                         
                         
 if __name__ == '__main__':

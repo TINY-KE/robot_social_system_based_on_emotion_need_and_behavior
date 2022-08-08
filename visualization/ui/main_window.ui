@@ -2331,7 +2331,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Newest Need</string>
+            <string>Amergency Behavior</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignBottom|Qt::AlignHCenter</set>
@@ -3044,6 +3044,27 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_80">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>380</y>
+      <width>249</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>15</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Newest Motivation or</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignBottom|Qt::AlignHCenter</set>
     </property>
    </widget>
   </widget>

@@ -110,14 +110,16 @@ int main(int argc, char** argv){
     // 需求发布
     pub = n.advertise<social_msg::need_msg>("need_lists", 10);  
     // ros::Rate loop_rate(0.1);  //5s一次
-    ros::Rate loop_rate(0.4);  //5s一次
+    ros::Rate loop_rate(0.7);  //0.4
     // 为需求模型的运行  创建单独的线程 。  
     // std::thread PriorNeedThread(run_PriorNeed);
     cout<< "Wait to run PriorNeed !!\n";
     while(ros::ok){
+        if( ros::isShuttingDown() )
+            break;
         run_PriorNeed();
         ros::spinOnce();
-        loop_rate.sleep();
+        loop_rate.sleep(); 
     }
     
     // ros::spin();    //库是节点读取数据道消息响应循环，当消息到达的时候，回调函数就会被调用。当按下Ctrl+C时，节点会退出消息循环，于是循环结束。
@@ -127,8 +129,8 @@ int main(int argc, char** argv){
 int qt_order_debug = 0;
 void run_PriorNeed(){
     // while(1)
-    {
-        if(PriorNeed.updateInit())
+    {   
+        if(PriorNeed.updateInit() )
         {
             printf( GREEN "Run %dth PriorNeed（运行先验模型） !!\n"NONE, period_cur);            
             vector<need> need_lists = PriorNeed.need_compute_all();
@@ -148,18 +150,18 @@ void run_PriorNeed(){
                     // printf( GREEN "    QT_order: %d:\n"NONE, need_output.qt_order); 
                     // sleep(0.1); // TODO: 重要。
                 }
-            else{  //此部分用途：用于刷新qt中need list。如果本周期，没有新的need发送过，那么qt中的need list还是会显示之前的need，就可能会对中期测试中本没有need生成的情况  造成误解。
-                    // social_msg::need_msg need_output;
-                    // need_output.IDtype = "";
-                    // need_output.rob_emotion = "";//TODO: need_lists[i].rob_emotion;
-                    // need_output.person_emotion = "";//need_lists[i].person_emotion
-                    // need_output.need_name = "";  
-                    // need_output.weight = 0;
-                    // need_output.speech = "";
-                    // need_output.person_name =  "";
-                    // need_output.qt_order = period_cur;
-                    // need_output.satisfy_value = 0;
-                    // pub.publish(need_output);
+            else{
+                    social_msg::need_msg need_output;
+                    need_output.IDtype = "";
+                    need_output.rob_emotion = "";//TODO: need_lists[i].rob_emotion;
+                    need_output.person_emotion = "";//need_lists[i].person_emotion
+                    need_output.need_name = "";  
+                    need_output.weight = 0;
+                    need_output.speech = "";
+                    need_output.person_name =  "";
+                    need_output.qt_order = period_cur;
+                    need_output.satisfy_value = 0;
+                    pub.publish(need_output);
             }
             period_cur++;     
         }

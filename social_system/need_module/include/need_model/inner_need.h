@@ -27,12 +27,53 @@ class inner_need{
 
         /* 语音内容 */
         string speech_; 
+    private:
+        string robot_emotion_num2string( std::vector<double> rob_emotion ){
+            double temp  =  -1; 
+            int i_temp;
+            int i = 0;
+            for(  ; i < rob_emotion.size() ; i++) {
+                if( rob_emotion[i] > temp ){
+                    temp = rob_emotion[i];
+                    i_temp = i ;
+                }
+                // else if(rob_emotion[i] == temp){
+                //     ROS_DEBUG("robot_emotion_num2string: 最大情绪值存在两个： [%d] 和 [%d] ",i_temp,i);
+                // }
+            }
 
-        
+            switch( i_temp )
+                {
+                case 0:
+                    return "Joy"; 
+                    break;
+                case 1:
+                    return "Trust"; 
+                    break;
+                case 2:
+                    return "Suprise"; 
+                    break;
+                case 3:
+                    return "Sadness"; 
+                    break;
+                case 4:
+                    return "Anger"; 
+                    break;
+                case 5:
+                    return "Fear"; 
+                    break;
+                case 6:
+                    return "Disgust"; 
+                    break;
+                case 7:
+                    return "Boring"; 
+                    break;
+                }
+        }
     public:
         inner_need( ){
             /* 生成need */
-            YAML::Node inner_doc = YAML::LoadFile( "/home/zhjd/ws/src/social_system/personality_template/need/InnerNeed.yaml" );
+            YAML::Node inner_doc = YAML::LoadFile( "/home/zhjd/ws_third_test/src/social_system/personality_template/need/InnerNeed.yaml" );
             std::cout <<  "Read parameter for Inner Need !! 类型如下： " << "\n"; 
             inner_doc["Doubt_factor"] >> Doubt_factor ;
             inner_doc["Doubt_weight"] >> Doubt_weight ;
@@ -79,7 +120,7 @@ class inner_need{
             temp.intention = "";
             temp.IDtype = IDtype_; 
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-            robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
             temp.person_name = "itself";
             temp.IDtype = "itself";
             temp.person_emotion = "none";            
@@ -107,7 +148,7 @@ class inner_need{
             temp.intention = "";
             temp.IDtype = ""; 
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-            robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
             temp.person_name = "itself";
             temp.IDtype = "itself";
             temp.person_emotion = "none";            
@@ -130,7 +171,7 @@ class inner_need{
             else  temp.weight = 0;
             /* 语音内容 */
             // temp.speech = speech_;
-            temp.speech = "怎么还没有人来";
+            temp.speech = "怎么还没有人来啊";
             temp.satisfy_value = 2 ;
             return temp;
             }
@@ -142,7 +183,7 @@ class inner_need{
             temp.intention = "";
             temp.IDtype = ""; 
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-            robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
             temp.person_name = "itself";
             temp.IDtype = "itself";
             temp.person_emotion = "none";            
@@ -152,7 +193,7 @@ class inner_need{
             temp.weight = Chat_weight * (-1*pow(Chat_factor , rob_emotion_[7]*10) + 1);
             /* 语音内容 */
             // temp.speech = speech_;
-            temp.speech = "怎么还没有人来";
+            temp.speech = "怎么还没有人来啊";
             temp.satisfy_value = 2 ;
             return temp;
             }
@@ -165,7 +206,7 @@ class inner_need{
             temp.intention = "";
             temp.IDtype = IDtype_; 
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-            robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
             temp.person_name = "itself";
             temp.IDtype = "itself";
             temp.person_emotion = "none";            
@@ -188,7 +229,7 @@ class inner_need{
             temp.intention = "";
             temp.IDtype = ""; 
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
-            robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
+            temp.robot_emotion_str = robot_emotion_num2string( rob_emotion_ );
             temp.person_name = "itself";
             temp.IDtype = "itself";
             temp.person_emotion = "none";            
@@ -210,7 +251,7 @@ class inner_need{
             temp = Doubt();  if( temp.weight > 0.5 )    output_need_lists.push_back(temp);
             temp = Wander_boring();  if( temp.weight > 0.5 )    output_need_lists.push_back(temp);
             // temp = Wander();  if( temp.weight > 0.5 )   output_need_lists.push_back(temp);/* 应该让漫步的需求，永久输出？ */
-            // temp = Chat();   if( temp.weight > 0.5 )    output_need_lists.push_back(temp);
+            temp = Chat();   if( temp.weight > 0.5 )    output_need_lists.push_back(temp);
             temp = Charge(); if( temp.weight > 0.5 )    output_need_lists.push_back(temp);
 
             return output_need_lists;
@@ -244,76 +285,7 @@ class inner_need{
 
                 wirte();
         }
-
-private:   
-
-
-double emotion_calm_thresh = 0.3;
-double emotion_intensity_thresh_3 = 0.8;
-double emotion_intensity_thresh_2 = 0.5;
-double emotion_intensity_thresh_1 = 0.3;
-
-
-int robot_emotion_num2intensity( double& rob_emotion_value){
-            if(rob_emotion_value>emotion_intensity_thresh_3)
-                return 3;
-            else if(rob_emotion_value>emotion_intensity_thresh_2)
-                return 2;
-            else if(rob_emotion_value>emotion_intensity_thresh_1)
-                return 1;
-}
-
-
-void robot_emotion_num2string( std::vector<double> rob_emotion , string & rob_emotion_string , int & rob_emotion_intensity ){
-    int temp  =  -1; 
-    int i_EmotionMax;
-    int i = 0;
-    for(  ; i < rob_emotion.size() ; i++) {
-        if( rob_emotion[i] > temp ){
-            temp = rob_emotion[i];
-            i_EmotionMax = i ;
-        }
-        // else if(rob_emotion[i] == temp){
-        //     ROS_DEBUG("robot_emotion_num2string: 最大情绪值存在两个： [%d] 和 [%d] ",i_EmotionMax,i);
-        // }
-    }
-    
-    if( rob_emotion[i_EmotionMax] < emotion_calm_thresh){
-        rob_emotion_string =  "Calm";
-        rob_emotion_intensity = 0;
-    }
-    else{
-        rob_emotion_intensity = robot_emotion_num2intensity(rob_emotion[i_EmotionMax]);
-        switch( i_EmotionMax )
-        {
-        case 0:
-            rob_emotion_string =  "Joy"; 
-            break;
-        case 1:
-            rob_emotion_string =  "Trust"; 
-            break;
-        case 2:
-            rob_emotion_string =  "Suprise"; 
-            break;
-        case 3:
-            rob_emotion_string =  "Sadness"; 
-            break;
-        case 4:
-            rob_emotion_string =  "Anger"; 
-            break;
-        case 5:
-            rob_emotion_string =  "Fear"; 
-            break;
-        case 6:
-            rob_emotion_string =  "Disgust"; 
-            break;
-        case 7:
-            rob_emotion_string =  "Boring"; 
-            break;
-        }
-    }
-} 
-
+        
 };
 
 

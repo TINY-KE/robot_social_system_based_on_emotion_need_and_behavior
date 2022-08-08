@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2022-03-08 17:05:40
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-04-01 11:06:11
+ * @LastEditTime: 2022-05-05 16:59:57
  */
 
 #include "common_include.h"
@@ -18,7 +18,7 @@ class Emergency {
         std::vector<double> rob_emotion_;
         std::string person_emotion_;
         std::vector<double> rob_status_;
-        string yaml_name = "/home/zhjd/ws/src/social_system/personality_template/need/Emergency.yaml" ;
+        string yaml_name = "/home/zhjd/ws_third_test/src/social_system/personality_template/need/Emergency.yaml" ;
         string speech_; 
 
     public:

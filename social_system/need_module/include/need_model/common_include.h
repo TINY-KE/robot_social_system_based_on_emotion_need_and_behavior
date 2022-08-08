@@ -121,19 +121,12 @@ enum NeedType {
     TaskNeed = 1
 };
 
-
-
-
 static int NeedTypeCheck(std::string name){
     if(name == "Greet" || name == "MeasureTempareture" || name == "Anwser" || name == "ParentIdentity")
         return  TaskNeed;
     if(name == "Doubt" || name == "Chat" || name == "Charge" || name == "Wander")
         return InnerNeed;
 }
-
-
-
-
 
 
 #endif
