@@ -2,16 +2,10 @@
 // Created by zhjd on 2021/5/11.
 //
 //ros头文件
-#include <ros/ros.h>
-#include "std_msgs/String.h"
-#include <sstream>
-#include "social_msg/perception_msg.h"
-#include "social_msg/need_msg.h"
-#include "social_msg/robot_emotion.h"
-#include "social_msg/robot_status.h"
-#include "dynamic_reconfigure/server.h" 
-#include "need_satisfied.h"
+#include "common_include.h"
+
 //内部头文件
+// #include "need_satisfied.h"
 #include "prior_need.h"
 #include "perception_filter.h"
 
@@ -23,49 +17,62 @@ perception_filter *Filter = new perception_filter(20);   //TODO: 确定合适的
 ros::Subscriber sub_perception;
 ros::Subscriber sub_robot_emotion;
 ros::Subscriber sub_robot_status;
-ros::Subscriber sub_behavior_Reply;
-ros::Subscriber sub_needCompare;
-ros::Publisher pub;
-
+ros::Publisher pub;  //need
+ros::Publisher query_attitude;
+ros::Subscriber sub_idleState;
 //全局变量：
 int period_cur = 0;   //每个period的周期时长，由 sleep函数 决定。
+social_msg::attitude_msg  attitude_query_result; 
+
 //运算符
 void operator >> (const social_msg::need_msg& msg, need_wu & need) {
     need.need_name = msg.need_name;
     need.IDtype = msg.IDtype;
     need.weight = msg.weight;
 }
+
 // 需求模型
 prior_need PriorNeed;
-void run_PriorNeed();
-// 需求满足节点
-NeedSatisfied need_satisfied;
+void run_PriorNeed(ros::NodeHandle*  n_ptr);
+
 
 // 回调函数
 void PerceptionUpdate(const social_msg::perception_msg& msg){
     
-    perception per;
-    per.intention_ = msg.intention;
-    per.p_ = msg.p;
-    per.intention_2_ = msg.intention_2;
+    // 旧版
+    // perception per;
+    // per.intention_ = msg.intention;
+    // per.p_ = msg.p;
+    // per.intention_2_ = msg.intention_2;
+    // if(  msg.intention_2 == ""    || msg.p_2 == 0  || msg.p_2 == NULL ){
+    //     per.p_2_ = 0;
+    // }
+    // else{
+    //     per.p_2_ = msg.p_2;
+    // }
+    // per.person_name_ = msg.person_name;
+    // per.IDtype_ = msg.IDtype;
+    
+    // per.speech_ = msg.speech;
+    // per.person_emotion_ = msg.person_emotion;
+    
+    // 新版
+    social_msg::perception_msg per;
+    per = msg;
     if(  msg.intention_2 == ""    || msg.p_2 == 0  || msg.p_2 == NULL ){
-        per.p_2_ = 0;
+        per.p_2 = 0;
     }
     else{
-        per.p_2_ = msg.p_2;
+        per.p_2 = msg.p_2;
     }
-    per.person_name_ = msg.person_name;
-    per.IDtype_ = msg.IDtype;
-    
-    per.speech_ = msg.speech;
-    per.person_emotion_ = msg.person_emotion;
-    
+
+
     if( Filter->Whether_OK(per) )    //如果，“感知过滤器”认为当前感知是有效的，则update
         PriorNeed.PerceptionUpdate(per);
-    // Monitor.emotionUpdate(per);  
+
     
-    // 【暂时】需求满足节点，生成need_satisfied
-    need_satisfied.perception_to_needSatisfied( per );
+    // // 【暂时】需求满足节点，生成need_satisfied
+    // need_satisfied.perception_to_needSatisfied( per );
 }
 
 void RobotEmotionUpdate(const social_msg::robot_emotion& msg){
@@ -97,36 +104,91 @@ void RobotStatusUpdate(const social_msg::robot_status& msg){
     PriorNeed.RobotStatusUpdate(status);
 }
 
-void BehaviorReplyUpdate(const social_msg::bhvReply& msg){
-    need_satisfied.behaviorProcess_to_needSatisfied(   msg );
+// void BehaviorUpdate(const social_msg::bhvPara::ConstPtr& behavior_ ,  ros::NodeHandle*  n){
+void BehaviorFinishedUpdate(const social_msg::idleState::ConstPtr& msg,  ros::NodeHandle*  n_ptr){
+    
+    if(msg->hehavior_name == "MeasureTempareture"){
+        social_msg::need_msg need_output;
+        need_output.person_name =  msg->person_name;
+        need_output.IDtype = msg->IDtype;
+        need_output.need_name = "Pass";  
+        need_output.target_angle = msg->target_angle;
+        need_output.target_distance = msg->target_distance;
+        need_output.rob_emotion = "Joy";//TODO: need_lists[i].rob_emotion;
+        need_output.rob_emotion_intensity = 2;
+        need_output.person_emotion = msg->person_emotion;//need_lists[i].person_emotion
+        need_output.weight = 1.0;
+        need_output.speech = "";
+        need_output.qt_order = period_cur;
+        need_output.satisfy_value = 1.0;
+        
+        //接受社交态度及相关参数
+        social_msg::attitude_query query;
+        query.IDtype = need_output.IDtype;
+        query.motivation = need_output.need_name;
+        query.person_name = need_output.person_name;
+        query_attitude.publish(query);
+        ros::Duration timeout(0.5);
+        social_msg::attitude_msg::ConstPtr result = ros::topic::waitForMessage<social_msg::attitude_msg>("attitude", *n_ptr, timeout);
+        if (result != NULL)
+            {
+                if( need_output.person_name ==  result->person_name &&
+                    need_output.IDtype      ==  result->IDtype &&
+                    need_output.need_name   ==  result->motivation
+                    ){
+                    ROS_INFO("Received right social attitude");
+                    need_output.attitude    = result->attitude;
+                    need_output.move_speed  = result->move_speed;
+                    need_output.distance   = result->distance;
+                    need_output.voice_speed = result->voice_speed;
+                }
+                else{
+                    ROS_INFO("Received wrong social attitude");
+                    need_output.attitude    = "";
+                    need_output.move_speed  = 0;
+                    need_output.distance    = 0;
+                    need_output.voice_speed = 0;
+                }
+            }
+            else
+            {
+                ROS_WARN("Timeout: Failed to receive social attitude within 0.5 seconds");
+            }   
+        pub.publish(need_output);
+    }
 }
 
 int main(int argc, char** argv){
     // ROS
     ros::init(argc, argv, "need_module");
     ros::NodeHandle n;
-    need_satisfied.set_ros_node(n);
     cout<< "Start to Subscribe（接收ROS信息） !!\n";
     
-    //状态更新
+    //状态更新 
     sub_perception = n.subscribe("perceptions", 1000, PerceptionUpdate);
     sub_robot_emotion = n.subscribe("robot_emotion", 1000, RobotEmotionUpdate);
     sub_robot_status = n.subscribe("robot_status", 1000, RobotStatusUpdate);
-    sub_behavior_Reply = n.subscribe("behavior_Reply", 1000, BehaviorReplyUpdate);  //social_msg::bhvReply
+    sub_idleState = n.subscribe<social_msg::idleState>("idleState", 1000,   boost::bind(&BehaviorFinishedUpdate, _1, &n));
     
     ros::spinOnce();
     
     // 需求发布
     pub = n.advertise<social_msg::need_msg>("need_lists", 10);  
+
+    // 社交态度查询
+    query_attitude = n.advertise<social_msg::attitude_query>("attitude_query", 1);  
+
+    // 控制需求先验模型的运行周期
     // ros::Rate loop_rate(0.1);  //5s一次
     ros::Rate loop_rate(0.6);  //5s一次
+
     // 为需求模型的运行  创建单独的线程 。  
     // std::thread PriorNeedThread(run_PriorNeed);
     cout<< "Wait to run PriorNeed !!\n";
     while(ros::ok){
         if( ros::isShuttingDown() )
             break;
-        run_PriorNeed();
+        run_PriorNeed(&n);
         ros::spinOnce();
         loop_rate.sleep();
     }
@@ -136,7 +198,7 @@ int main(int argc, char** argv){
 }
 
 int qt_order_debug = 0;
-void run_PriorNeed(){
+void run_PriorNeed(ros::NodeHandle*  n_ptr){
     // while(1)
     {
         if(PriorNeed.updateInit())
@@ -145,20 +207,54 @@ void run_PriorNeed(){
             vector<need> need_lists = PriorNeed.need_compute_all();
             if( need_lists.size() != 0 )
                 for(int j =0 ; j< need_lists.size(); j++){
-                    // 添加到需求满足节点中
-                    need_satisfied.insert_need_list(need_lists[j]);
                     
-                    // 将need发布出去
+                    //接受社交态度及相关参数
+                    social_msg::attitude_query query;
+                    query.IDtype = need_lists[j].IDtype;
+                    query.motivation = need_lists[j].need_name;
+                    query.person_name = need_lists[j].person_name;
+                    query_attitude.publish(query);
+                    ros::Duration timeout(0.5);
+                    social_msg::attitude_msg::ConstPtr result = ros::topic::waitForMessage<social_msg::attitude_msg>("attitude", *n_ptr, timeout);
+
+                    // 将need发布给行为模块
                     social_msg::need_msg need_output;
+                    need_output.person_name =  need_lists[j].person_name;
                     need_output.IDtype = need_lists[j].IDtype;
-                    need_output.rob_emotion = need_lists[j].robot_emotion_str;//TODO: need_lists[i].rob_emotion;
-                    need_output.person_emotion = need_lists[j].person_emotion;//need_lists[i].person_emotion
                     need_output.need_name = need_lists[j].need_name;  
+                    need_output.target_angle = need_lists[j].target_angle;
+                    need_output.target_distance = need_lists[j].target_distance;
+                    need_output.rob_emotion = need_lists[j].robot_emotion_str;//TODO: need_lists[i].rob_emotion;
+                    need_output.rob_emotion_intensity = need_lists[j].robot_emotion_intensity;
+                    need_output.person_emotion = need_lists[j].person_emotion;//need_lists[i].person_emotion
                     need_output.weight = need_lists[j].weight;
                     need_output.speech = need_lists[j].speech;
-                    need_output.person_name =  need_lists[j].person_name;
                     need_output.qt_order = period_cur;
                     need_output.satisfy_value = need_lists[j].satisfy_value;
+                    if (result != NULL)
+                    {
+                        if( need_output.person_name ==  result->person_name &&
+                            need_output.IDtype      ==  result->IDtype &&
+                            need_output.need_name   ==  result->motivation
+                         ){
+                            ROS_INFO("Received right social attitude");
+                            need_output.attitude    = result->attitude;
+                            need_output.move_speed  = result->move_speed;
+                            need_output.distance   = result->distance;
+                            need_output.voice_speed = result->voice_speed;
+                        }
+                        else{
+                            ROS_INFO("Received wrong social attitude");
+                            need_output.attitude    = "";
+                            need_output.move_speed  = 0;
+                            need_output.distance    = 0;
+                            need_output.voice_speed = 0;
+                        }
+                    }
+                    else
+                    {
+                        ROS_WARN("Timeout: Failed to receive social attitude within 0.5 seconds");
+                    }   
                     pub.publish(need_output);
                     // printf( GREEN "    QT_order: %d:\n"NONE, need_output.qt_order); 
                     // sleep(0.1); // TODO: 重要。

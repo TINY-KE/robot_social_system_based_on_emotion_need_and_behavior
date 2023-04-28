@@ -43,14 +43,20 @@
 #include "yaml-cpp/yaml.h"
 
 #include "social_msg/robot_status.h"
-#include "social_msg/bhvReply.h"
-
+#include <ros/ros.h>
+#include "std_msgs/String.h"
+#include <sstream>
+#include "social_msg/perception_msg.h"
 #include "social_msg/need_msg.h"
-#include "social_msg/need_satisfy_msg.h"
-#include "social_msg/bhvPara.h"
-#include "social_msg/bhvReply.h"
-#include "social_msg/bhvReply.h"
-#include "perception.h"
+#include "social_msg/robot_emotion.h"
+#include "social_msg/robot_status.h"
+#include "social_msg/attitude_msg.h"
+#include "social_msg/attitude_query.h"
+#include "social_msg/idleState.h"
+#include "dynamic_reconfigure/server.h" 
+
+
+// #include "perception.h"
 
 using namespace std; 
 #define NONE "\033[m"   //正常终端颜色
@@ -75,7 +81,11 @@ struct need {
     std::string intention = "";
     std::string person_name = "";
     std::string IDtype = "";
-    // std::string IDtype;
+
+    // 课题二发送的用户坐标
+    double target_angle;        //交互对象角度
+    double target_distance;     //交互对象距离
+
     std::vector<double> rob_emotion;
     std::string robot_emotion_str = "";
     int robot_emotion_intensity = 0;
@@ -125,12 +135,12 @@ enum NeedType {
 
 
 
-static int NeedTypeCheck(std::string name){
-    if(name == "Greet" || name == "MeasureTempareture" || name == "Anwser" || name == "ParentIdentity")
-        return  TaskNeed;
-    if(name == "Doubt" || name == "Chat" || name == "Charge" || name == "Wander")
-        return InnerNeed;
-}
+// static int NeedTypeCheck(std::string name){
+//     if(name == "Greet" || name == "MeasureTempareture" || name == "Anwser" || name == "ParentIdentity")
+//         return  TaskNeed;
+//     if(name == "Doubt" || name == "Chat" || name == "Charge" || name == "Wander")
+//         return InnerNeed;
+// }
 
 
 

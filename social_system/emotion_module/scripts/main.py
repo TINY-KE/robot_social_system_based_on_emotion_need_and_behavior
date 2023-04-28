@@ -17,7 +17,7 @@ from social_msg.msg import attitude_msg
 from social_msg.msg import need_satisfy_msg
 from social_msg.msg import perception_msg
 from social_msg.msg import robot_status
-
+from social_msg.msg import attitude_query  
 class Watcher():
     '''
         *线程管理类，用于键盘结束多线程程序
@@ -72,7 +72,7 @@ def data_get():
         t2 = message_filters.Subscriber("need_satisfied", need_satisfy_msg)
         t3 = message_filters.Subscriber("perceptions", perception_msg)
         t4 = message_filters.Subscriber("robot_status", robot_status)
-        ts = message_filters.ApproximateTimeSynchronizer([t1, t3], 1, 1, allow_headerless=True)
+        # ts = message_filters.ApproximateTimeSynchronizer([t1, t3], 1, 1, allow_headerless=True)
         t1.registerCallback(Data_processing.callback_attitude)
         t2.registerCallback(Data_processing.callback_need)
         # ts.registerCallback(Data_processing.callback_a_p)
@@ -184,6 +184,7 @@ def visualize_3d():
 
 if __name__ == '__main__':
     Watcher()
+    print("debug: new emotion module ")
     thread1=myThread("Listener-thread",'listener')
     thread2=myThread("Publisher-thread",'publisher')
     thread3=myThread("Visualize_3D",'visualize')

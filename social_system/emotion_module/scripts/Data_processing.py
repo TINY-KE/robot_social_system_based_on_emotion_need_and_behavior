@@ -17,7 +17,7 @@ from Emotion_engine import *
 from visualize_3d import *
 from social_msg.msg import robot_emotion
 from collections import deque
-
+from social_msg.msg import attitude_query  
 
 ##### 全局参数初始化
 need_eval=[]
@@ -62,6 +62,7 @@ def callback_robot_status( robot_status_msg ):
 
 
 ##### 发布话题 
+pub_query = rospy.Publisher('attitude_query', attitude_query, queue_size=1)
 pub = rospy.Publisher('robot_emotion', robot_emotion, queue_size=10)
 def publish():
        '''
@@ -258,6 +259,14 @@ def callback_attitude(attitude_msg):
 
 def callback_perception(perception_msg): 
        global msg_list
+
+       query = attitude_query()
+       query.person_name = perception_msg.person_name
+       query.IDtype  = perception_msg.IDtype 
+       query.motivation = "Greet"
+       pub_query.publish(query)
+       rospy.loginfo(" 发送查询Greet的社交态度\n")
+
        # msg_list.insert(2,perception_msg.person_name)
        # msg_list.insert(4,perception_msg.person_emotion)
        # msg_list.append(perception_msg.speech)

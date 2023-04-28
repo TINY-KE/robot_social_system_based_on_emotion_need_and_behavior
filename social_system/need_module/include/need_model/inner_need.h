@@ -1,4 +1,3 @@
-#include "perception.h"
 #include "common_include.h"
 
 class inner_need{
@@ -10,13 +9,13 @@ class inner_need{
         time_t time_lastSpareStates;
         bool Init = true;
         /* need的判断信息 */
-        string intention_;
+        social_msg::perception_msg per_;
         string IDtype_ = "itself";
         std::vector<double> rob_emotion_;
         std::string person_emotion_;
         std::vector<double> rob_status_;
         std::vector<double> rob_status_last;
-        double p_;
+
         bool doubtflag_;
         /* inner的need的影响因子 */
         double  Doubt_factor ;      double  Doubt_weight = 0.95;
@@ -24,9 +23,6 @@ class inner_need{
         double  Chat_factor ;       double  Chat_weight = 0.8;
         double  Charge_factor ;     double  Charge_weight = 1;
 
-
-        /* 语音内容 */
-        string speech_; 
 
         
     public:
@@ -53,19 +49,16 @@ class inner_need{
 
         ~inner_need(){};
 
-        void update( perception per, double *emotion, double *body , bool doubtflag = false){
+        void update( social_msg::perception_msg per, double *emotion, double *body , bool doubtflag = false){
                 /* 读取need的判断信息 */
-                intention_ = per.intention_;
-                IDtype_ = per.IDtype_;
+                per_ = per;
                 doubtflag_ = doubtflag;
                 /* 更新外界状态 */
                 std::vector<double > temp(emotion, emotion+8); rob_emotion_.assign(temp.begin(), temp.end());
-                person_emotion_ = per.person_emotion_;
+                person_emotion_ = per.person_emotion;
                 rob_status_last.assign(rob_status_.begin(), rob_status_.end());
                 std::vector<double > temp2(body, body+8); rob_status_.assign(temp2.begin(), temp2.end());
-                p_ = per.p_;
-                /* 语音内容 */
-                speech_ = per.speech_;
+
                 /* 更新 time */
                 if(Init)  {time_lastSpareStates = time(NULL);  Init = false;}
                 else if(rob_status_[7] == 1  && rob_status_last[7] == 0 )  
@@ -78,6 +71,8 @@ class inner_need{
 
             temp.intention = "";
             temp.IDtype = IDtype_; 
+            temp.target_angle = 0.0;
+            temp.target_distance = 0.0;
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
             robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
             temp.person_name = "itself";
@@ -106,6 +101,8 @@ class inner_need{
             /* 评价标准 */
             temp.intention = "";
             temp.IDtype = ""; 
+            temp.target_angle = 0.0;
+            temp.target_distance = 0.0;
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
             robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
             temp.person_name = "itself";
@@ -141,6 +138,8 @@ class inner_need{
             /* 评价标准 */
             temp.intention = "";
             temp.IDtype = ""; 
+            temp.target_angle = 0.0;
+            temp.target_distance = 0.0;
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
             robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
             temp.person_name = "itself";
@@ -164,6 +163,8 @@ class inner_need{
             /* 评价标准 */
             temp.intention = "";
             temp.IDtype = IDtype_; 
+            temp.target_angle = 0.0;
+            temp.target_distance = 0.0;
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
             robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
             temp.person_name = "itself";
@@ -187,6 +188,8 @@ class inner_need{
             /* 评价标准 */
             temp.intention = "";
             temp.IDtype = ""; 
+            temp.target_angle = 0.0;
+            temp.target_distance = 0.0;
             temp.rob_emotion.assign(rob_emotion_.begin(), rob_emotion_.end());
             robot_emotion_num2string( rob_emotion_ ,temp.robot_emotion_str ,temp.robot_emotion_intensity );
             temp.person_name = "itself";

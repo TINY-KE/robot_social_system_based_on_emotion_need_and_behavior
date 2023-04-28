@@ -4,8 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-// #include "behavior.h"
-#include "perception.h"
 #include <map>
 #include "task_need.h"
 #include "inner_need.h"
@@ -30,9 +28,9 @@ private:
     Emergency *emergency_model = new Emergency(); 
     /* 结构体 ，用于发送给行为管理*/
     
-    perception per_;
-    perception per_second;
-    std::vector<perception> per_list ;
+    social_msg::perception_msg per_;
+    social_msg::perception_msg per_second;
+    std::vector<social_msg::perception_msg> per_list ;
     bool first_per_undeal = false;
     double emotion_[8];
     double body_[8];
@@ -42,11 +40,11 @@ private:
     bool updateInit_status = false;
 
 private:
-    double varianceTop2( perception & p ){
+    double varianceTop2( social_msg::perception_msg & p ){
         
-        double mean = p.p_/2.0 + p.p_2_/2.0;
+        double mean = p.p/2.0 + p.p_2/2.0;
         // double var =   ( (p.p_/2.0-mean)*(p.p_/2.0-mean)  + (p.p_2_/2.0-mean)*(p.p_2_/2.0-mean) ) /2.0;
-        double var = pow(p.p_-mean,2) + pow(p.p_2_-mean,2);
+        double var = pow(p.p-mean,2) + pow(p.p_2-mean,2);
         return var/2.0;
     }
 
@@ -55,23 +53,12 @@ public:
         perceptionClear();
      }
     
-    void PerceptionUpdate(perception per ){ 
-        // if( first_per_undeal) {
-        //     per_second = per;
-        //     printf(  YELLOW "     Update Peception second\n"NONE);
-        // }
-        // else{
-        //     per_ = per;
-        //     first_per_undeal = true;
-        //     printf(  YELLOW "     Update Peception first\n"NONE);
-        // }
-        per_ = per;
+    void PerceptionUpdate(social_msg::perception_msg per ){ 
+
         per_list.push_back( per );
         printf(  YELLOW "     Update Peception: "NONE);
-        cout<< per.intention_ <<" and "<<per.intention_2_<< endl;
+        cout<< per.intention <<" and "<<per.intention_2<< endl;
         updateInit_perception = true;
-        // cout<< "     Update Peception\n";
-        
     }
 
     void RobotEmotionUpdate(double emotion[8] ){ 
@@ -81,7 +68,6 @@ public:
             cout<< emotion[i] << " ";
         }
         updateInit_emotion = true;
-        // cout<< "     Update Robot Emotion \n";
         cout<< endl ;   
     }
 
@@ -92,24 +78,17 @@ public:
             cout<<  body[i] << " ";
         } 
         updateInit_status = true;
-        // cout<< "     Update Robot Status\n";
         cout<< endl ; 
     }
     
-    void input_update(perception per ,double emotion[8], double body[8] ){ 
-        per_ = per;
+    void input_update(social_msg::perception_msg per ,double emotion[8], double body[8] ){ 
+        
         for(int i = 0 ; i < 8 ; i ++ ) emotion_[i] = emotion[i];
         for(int i = 0 ; i < 8 ; i ++ ) body_[i] = body[i];
     }
 
     void perceptionClear(){
         per_list.clear();
-        // per_.intention_ = "";
-        // per_.person_name_ = "";
-        // per_.IDtype_ = "";
-        // per_.person_emotion_ = "";
-        // per_.speech_ = "";
-
     }
     
     bool updateInit(){  return (/* updateInit_perception &&  */updateInit_emotion && updateInit_status);}
@@ -121,8 +100,9 @@ public:
         
         // a）当不存在外界感知信息时，机器人根据自身的情感和身体状态，生成内在需求，包括散步、闲聊、充电。
         if( per_list.size() == 0  ){   //即便感知为空，还是要把情感状态和身体状态的发送给  需求计算模型。
-            perception per_none;  per_none.p_ = 0;
-            task_model -> update( per_none, emotion_, body_ );  //去掉这个会怎么样？？
+            social_msg::perception_msg per_none;  
+            per_none.p = 0;
+            task_model -> update( per_none, emotion_, body_ );  
             inner_model -> update(per_none, emotion_, body_); 
             
             // 任务性需求
@@ -140,7 +120,7 @@ public:
             {   
                 // b）当存在外界感知信息且意图感知信息的概率方差，大于0.0025时（两概率之差0.1），根据概率最高的意图生成需求。
                 // b）当存在外界感知信息且意图感知信息的概率方差，大于0.000625时（两概率之差0.05），根据概率最高的意图生成需求。
-                perception per = per_list[i];
+                social_msg::perception_msg per = per_list[i];
                 if( varianceTop2(per) > 0.0006251 ) {
                     task_model -> update( per, emotion_, body_ );
                     inner_model -> update(per, emotion_, body_); //此时，也会有内部需求生成。  
@@ -171,21 +151,21 @@ public:
 
                 else if(  varianceTop2(per) >= 0.00010000  ){
                     //有哪些先验
-                    if( per.intention_ == "EnterSchool" ||  per.intention_2_ == "EnterSchool" ){
-                        per.intention_ = "EnterSchool";
+                    if( per.intention == "EnterSchool" ||  per.intention_2 == "EnterSchool" ){
+                        per.intention = "EnterSchool";
                     }  //测试要求认为EnterSchool和Uncooperat都很重要。但实际程序认为EnterSchool更重要。
-                    else if( per.intention_ == "Uncooperate" ||  per.intention_2_ == "Uncooperate" ){
-                        per.intention_ = "Uncooperate";
+                    else if( per.intention == "Uncooperate" ||  per.intention_2 == "Uncooperate" ){
+                        per.intention = "Uncooperate";
                     }
-                    else if(per.intention_ == "EnterHospital" ||  per.intention_2_ == "EnterHospital"){
-                        per.intention_ = "EnterHospital";
+                    else if(per.intention == "EnterHospital" ||  per.intention_2 == "EnterHospital"){
+                        per.intention = "EnterHospital";
                     }
-                    else if( (per.intention_ == "ScheduledDialysis"  && per.intention_2_ == "UnscheduledDialysis") 
-                          ||  (per.intention_2_ == "ScheduledDialysis"  && per.intention_ == "UnscheduledDialysis") ){
-                        per.intention_ = "UnscheduledDialysis";
+                    else if( (per.intention == "ScheduledDialysis"  && per.intention_2 == "UnscheduledDialysis") 
+                          ||  (per.intention_2 == "ScheduledDialysis"  && per.intention == "UnscheduledDialysis") ){
+                        per.intention = "UnscheduledDialysis";
                     }
-                    else if(  per.intention_ == "ReturnHome" ||  per.intention_2_ == "ReturnHome"  ){
-                        per.intention_ = "ReturnHome";
+                    else if(  per.intention == "ReturnHome" ||  per.intention_2 == "ReturnHome"  ){
+                        per.intention = "ReturnHome";
                     }
                     else{ //没有先验了，生成doubt需求
                         inner_model -> update(per, emotion_, body_ , true);
@@ -221,7 +201,7 @@ public:
         }
 
         //清空 perception
-        perceptionClear();  //TODO: ??
+        perceptionClear();  //TODO: ?? 
         
         // printf 当前周期中生成的需求
         if( output_need_list.size() != 0 )
@@ -237,15 +217,6 @@ public:
         return output_need_list;
     }
 
-
-
-    // void task_wu(need_wu n){
-    //     task_model -> weightUpdate(n);
-    // }
-
-    // void inner_wu(need_wu n){
-    //     inner_model -> weightUpdate(n);
-    // }
 
 };
 #endif //TEST_CHECKRULE_H

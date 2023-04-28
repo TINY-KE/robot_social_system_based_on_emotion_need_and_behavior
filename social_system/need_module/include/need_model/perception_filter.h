@@ -3,23 +3,24 @@
  * @version: 
  * @Author: sueRimn
  * @Date: 2021-09-21 21:16:50
- * @LastEditors: sueRimn
- * @LastEditTime: 2021-09-29 13:39:42
+ * @LastEditors: Zhang Jiadong
+ * @LastEditTime: 2023-04-25 15:40:31
  */
 #ifndef TEST_FILTER_H
 #define TEST_FILTER_H
-#include "perception.h"
+
 #include "common_include.h"
+
 class perception_filter{
 public:
     double time_;
-    static std::vector<perception>  per_list;   /* 如何让这个list  始终不变。 static？？ */
-    perception per;
+    static std::vector<social_msg::perception_msg>  per_list;   /* 如何让这个list  始终不变。 static？？ */
+    social_msg::perception_msg per;
     double time_thresh;
 public:
     perception_filter(){};
     perception_filter( double time ): time_thresh(time){};
-    bool Whether_OK( perception per) ;
+    bool Whether_OK( social_msg::perception_msg per) ;
     
 };
 
