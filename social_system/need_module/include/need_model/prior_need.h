@@ -33,7 +33,7 @@ private:
     std::vector<social_msg::perception_msg> per_list ;
     bool first_per_undeal = false;
     double emotion_[8];
-    double body_[8];
+    double body_[8] =  {1, 1, 1, 1, 1, 1, 1, 0};
     int need_num;
     bool updateInit_perception = false;
     bool updateInit_emotion = false;
@@ -91,7 +91,7 @@ public:
         per_list.clear();
     }
     
-    bool updateInit(){  return (/* updateInit_perception &&  */updateInit_emotion && updateInit_status);}
+    bool updateInit(){  return (/* updateInit_perception &&  */ updateInit_emotion  /*&& updateInit_status*/ );}
     
     std::vector<need> need_compute_all(){
         cout<< "Start to Need Computation !!\n";

@@ -44,7 +44,12 @@ rosrun robot_platform platform 1
 + qt可视化
 roslaunch visualization  visualization.launch    
 
-+ 手动的仿真输入接口
++ 手动点击的仿真输入接口
 roslaunch interface_sim interface_sim_cfg.launch
+
++ 手动 闲置状态
+rostopic pub /idleState social_msg/idleState "{idleState: false, hehavior_name: 'MeasureTempareture', person_name: 'xiaoming', IDtype: 'Student', target_angle: 0.0,
+  target_distance: 0.0, person_emotion: 'happy', satisfy_value: 1}"
+
 
 

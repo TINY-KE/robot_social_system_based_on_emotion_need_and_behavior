@@ -20,11 +20,13 @@ from collections import deque
 from social_msg.msg import attitude_query  
 
 ##### 全局参数初始化
+local_attitude_set =[]
 need_eval=[]
 attitude_eval=[]
 perception_eval=[]
 delta_elist=[]                                         # 总情绪变化列表 [ float_情绪种类，float_情绪变化强度... ]
-msg_list=[time.time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']                                             # msg列表，记录每时刻接收到刺激的内容
+msg_list=[time.time(), 'None', 0, 'None', 'None', 'None', 'enthusiastic', 'None']      # msg列表，记录每时刻接收到刺激的内容
+# msg_list[6] is attitude.attitude ;    msg_list[5] is perception_msg.person_emotion
 unique_msg=deque(maxlen=10) # 消息的唯一性队列，存储被判定为不同刺激的消息内容
 msg_dt=10000                                             # 两次内容相同消息，但作为不同刺激输入的最小时间阈值
 e_rec=[]                                                   # 记录情感变化值数组
@@ -40,18 +42,18 @@ e_rec=[]                                                   # 记录情感变化�
 time_init   = 0
 idleState_flag = 0
 
-def callback_robot_status( robot_status_msg ):  
+def callback_robot_status( idleState ):  
        '''
        * 身体状态信息处理，用于“无聊情绪”
        :param robot_status_msg：订阅自我满足需求信息
        :output ：身体状态 引起的情绪变化列表？？？[ float_情绪种类，float_情绪变化强度... ]
        '''
        print("接收robot_status_msg ")
-       rospy.loginfo( "I heard %s ",robot_status_msg.idleState )
+       rospy.loginfo( "I heard %s ", idleState.idleState )
        global idleState_last, idleState_flag, time_init, time_cur, idleState_to_boring  
 
        # 现在的：
-       if ( robot_status_msg.idleState == 1 ):
+       if ( idleState.idleState == 1 ):
               print("接收到robot 处于闲置状态")
               time_init = time.time()
               idleState_flag = 1
@@ -211,7 +213,7 @@ def caculate_e(delta_e,delta_epre):
                                           
                            
                      
-def callback_need(need_satisfy_msg):
+def callback_need(idleState):
        '''
        * 自我满足信息处理
        :param need_satisfy_msg：订阅自我满足需求信息
@@ -223,14 +225,14 @@ def callback_need(need_satisfy_msg):
        # msg_list.append(need_satisfy_msg.need_name) 
        # msg_list.append(need_satisfy_msg.satisfy_value) 
        global need_eval,msg_list 
-       msg_list[1]=need_satisfy_msg.need_name
-       msg_list[2]=need_satisfy_msg.satisfy_value
+       msg_list[1]=idleState.hehavior_name
+       msg_list[2]=idleState.satisfy_value
 
        #### 自我满足信息处理，通过查找dataframe实现值映射
        csv_name  = os.path.join(root,'scripts/csv/need_satisfy.csv')
        index_name = "satisfy_value"
-       index_val = str(need_satisfy_msg.satisfy_value)
-       column_val = need_satisfy_msg.need_name
+       index_val = str(idleState.satisfy_value)
+       column_val = idleState.hehavior_name
        ### 由  自我状态满足  带来的情绪变化状况 [ float_情绪种类，float_情绪变化强度 ]
        need_eval= map(float,caculate_edelta(csv_name,index_name,index_val,column_val)) 
 
@@ -250,16 +252,26 @@ def callback_need(need_satisfy_msg):
 #        msg_list.extend([perception_msg.person_name,attitude_msg.person_name,\
 #                                           perception_msg.person_emotion,attitude_msg.attitude,perception_msg.speech])
 #        msg_list.insert(0,perception_msg.time)
-def callback_attitude(attitude_msg):      
+def callback_attitude(attitude_set):      
        # rospy.loginfo( "I heard %s %s ",attitude_msg.person_name,attitude_msg.attitude)
-       global msg_list
-       msg_list[4]=attitude_msg.person_name
-       msg_list[6]=attitude_msg.attitude
-       # msg_list.extend([attitude_msg.person_name,attitude_msg.attitude])
+       
+       # version 1: single and attitude
+       # global msg_list
+       # msg_list[4]=attitude_msg.person_name
+       # msg_list[6]=attitude_msg.attitude
+       # # msg_list.extend([attitude_msg.person_name,attitude_msg.attitude])
+
+       # version 2: attitude set
+       global local_attitude_set
+       local_attitude_set = []
+       for attitude in attitude_set.attitudes:
+              local_attitude_set.append(attitude)
+
 
 def callback_perception(perception_msg): 
        global msg_list
 
+       # version1:  query attitude
        query = attitude_query()
        query.person_name = perception_msg.person_name
        query.IDtype  = perception_msg.IDtype 
@@ -267,6 +279,14 @@ def callback_perception(perception_msg):
        pub_query.publish(query)
        rospy.loginfo(" 发送查询Greet的社交态度\n")
 
+       # version2:  查询本地列表。默认是热情
+       msg_list[4]='none'
+       msg_list[6]='enthusiastic'
+       for attitude in local_attitude_set:
+              if attitude.person_name == perception_msg.person_name    and attitude.IDtype  == perception_msg.IDtype     and attitude.motivation  == 'Greet':
+                     msg_list[4]=attitude.person_name
+                     msg_list[6]=attitude.attitude
+                     # msg_list.extend([attitude_msg.person_name,attitude_msg.attitude])           
        # msg_list.insert(2,perception_msg.person_name)
        # msg_list.insert(4,perception_msg.person_emotion)
        # msg_list.append(perception_msg.speech)
@@ -313,8 +333,10 @@ def data_process():
               #        print("The social attitude object is different from the conversation object ! ")
               csv_name  = os.path.join(root, 'scripts/csv/attitude.csv')
               index_name = "person_emotion"
-              index_val = msg_list[5]
-              column_val = msg_list[6]
+              
+              index_val = msg_list[5]     # msg_list[5] is perception_msg.person_emotion
+              column_val = msg_list[6]    # msg_list[6] is attitude.attitude 
+              
               ## 由  社交态度  带来的情绪变化状况 [ float_情绪种类，float_情绪变化强度 ]
               global perception_eval,need_eval,attitude_eval
               attitude_eval= map(float,caculate_edelta(csv_name,index_name,index_val,column_val)) 

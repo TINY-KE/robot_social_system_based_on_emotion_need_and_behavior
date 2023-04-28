@@ -13,11 +13,10 @@ import message_filters
 from Emotion_engine import *
 from visualize_3d import *
 import PIL.Image as Image
-from social_msg.msg import attitude_msg
-from social_msg.msg import need_satisfy_msg
+from social_msg.msg import attitude_set
 from social_msg.msg import perception_msg
-from social_msg.msg import robot_status
 from social_msg.msg import attitude_query  
+from social_msg.msg import idleState
 class Watcher():
     '''
         *线程管理类，用于键盘结束多线程程序
@@ -68,10 +67,10 @@ def data_get():
         *启动模块，调用Data_processing.py中的函数，订阅三个刺激信息并作处理、发布robot_emotion_msg（进入循环）
         '''
         rospy.init_node('emotion_listener', anonymous=True,disable_signals=True)
-        t1 = message_filters.Subscriber("attitude", attitude_msg)
-        t2 = message_filters.Subscriber("need_satisfied", need_satisfy_msg)
+        t1 = message_filters.Subscriber("attitude", attitude_set)
+        t2 = message_filters.Subscriber("idleState",idleState)
         t3 = message_filters.Subscriber("perceptions", perception_msg)
-        t4 = message_filters.Subscriber("robot_status", robot_status)
+        t4 = message_filters.Subscriber("idleState", idleState)
         # ts = message_filters.ApproximateTimeSynchronizer([t1, t3], 1, 1, allow_headerless=True)
         t1.registerCallback(Data_processing.callback_attitude)
         t2.registerCallback(Data_processing.callback_need)

@@ -152,9 +152,13 @@ void BehaviorFinishedUpdate(const social_msg::idleState::ConstPtr& msg,  ros::No
             }
             else
             {
-                ROS_WARN("Timeout: Failed to receive social attitude within 0.5 seconds");
+                ROS_WARN("Timeout social attitude within 0.5 seconds");
             }   
         pub.publish(need_output);
+        std::cout <<  "    Output Need " << 0+1 << "：" << need_output.need_name << " ,Weight: " <<need_output.weight;
+        if (  need_output.person_name != "")
+            std::cout <<" ,for " <<need_output.person_name<<" as " <<need_output.IDtype;
+        std::cout<<std::endl;
     }
 }
 

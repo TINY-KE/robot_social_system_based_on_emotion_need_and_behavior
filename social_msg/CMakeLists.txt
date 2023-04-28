@@ -28,7 +28,9 @@ add_message_files( FILES
 
         #与课题124交互使用
         perception_msg.msg
-        attitude_msg.msg       
+        attitude_msg.msg  
+        attitude_set.msg  
+        # attitude_parameter.msg     
         attitude_query.msg    
 
         # 情感模块输出
