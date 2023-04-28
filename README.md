@@ -1,7 +1,7 @@
 #  robot_social_system_based_on_emotion_need_and_behavior
 
 ### 一、安装第三方库：
-1.  百度api： 
+1.  【弃用】百度api： 
     python版本2.7  
     pip install 了setuptools   
     cd ThirdParty/aip-python-sdk-4.15.13  &&  sudo python setup.py install   
@@ -28,11 +28,23 @@
 
 
 
-### 三、仿真接口：    
+### 三、运行：
++ 情感模块
+rosrun emotion_module main.py
+
++ 需求模块
+rosrun need_module need_model
+
++ 行为模块
+ 
+ 
++ 与安卓的蓝牙通信
+rosrun robot_platform platform 1
+
++ qt可视化
+roslaunch visualization  visualization.launch    
+
++ 手动的仿真输入接口
 roslaunch interface_sim interface_sim_cfg.launch
-
-
-
-#### 
 
 
