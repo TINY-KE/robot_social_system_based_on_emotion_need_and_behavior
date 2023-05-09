@@ -15,6 +15,7 @@ from social_msg.msg import perception_msg
 from social_msg.msg import robot_emotion
 from social_msg.msg import robot_status
 import sys
+import os
 
 # "/home/zhjd/ws/src/social_system/emotion_module/scripts/"+'emotion_param.csv'
 # /home/zhjd/ws/src/social_system/emotion_module/scripts/"+'emotion_param.csv
@@ -23,6 +24,8 @@ import sys
 # csv_name = "/home/zhjd/ws/src/social_system/need_module/script/"+'test(school).csv'
 sys.stdout.write( '选择刺激输入源，【1】动机生成，【2】应急行为： ' )
 str = input();
+current_folder_path = os.path.dirname(os.path.abspath(__file__))
+print("Current folder path:", current_folder_path)
 if str == 1 :
         print("Select motivation.csv")
         csv_name = "/home/zhjd/ws/src/social_system/need_module/script/"+'motivation.csv'

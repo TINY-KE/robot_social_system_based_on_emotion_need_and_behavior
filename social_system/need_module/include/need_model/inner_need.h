@@ -28,7 +28,11 @@ class inner_need{
     public:
         inner_need( ){
             /* 生成need */
-            YAML::Node inner_doc = YAML::LoadFile( "/home/zhjd/ws/src/social_system/personality_template/need/InnerNeed.yaml" );
+            std::string current_file_path = __FILE__;
+            std::string current_folder_path = current_file_path.substr(0, current_file_path.find_last_of("/\\"));
+            // std::cout << "Current folder path: " << current_folder_path << std::endl;
+            string yaml_name = "../../../personality_template/need/InnerNeed.yaml" ;
+            YAML::Node inner_doc = YAML::LoadFile( current_folder_path + "/" + yaml_name  );
             std::cout <<  "Read parameter for Inner Need !! 类型如下： " << "\n"; 
             inner_doc["Doubt_factor"] >> Doubt_factor ;
             inner_doc["Doubt_weight"] >> Doubt_weight ;

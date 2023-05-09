@@ -22,8 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
 include_directories(
  include
   ${catkin_INCLUDE_DIRS}
-  /home/zhjd/ws/devel/include/
-  /home/kod/com_ws/devel/include/
+  ${CATKIN_DEVEL_PREFIX}/include/
 )
 
 #ros massage自定义

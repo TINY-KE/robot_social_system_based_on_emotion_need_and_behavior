@@ -32,7 +32,8 @@ add_message_files( FILES
         attitude_set.msg  
         # attitude_parameter.msg     
         attitude_query.msg    
-
+        robot_status.msg
+        
         # 情感模块输出
         robot_emotion.msg
         
@@ -45,12 +46,8 @@ add_message_files( FILES
         #行为模块输出
         behavior_feedback_msg.msg
         behavior_msg.msg
-        idleState.msg
-
-        # #由课题124生成
-        # /OtherProject/perception_msg.msg
-        # /OtherProject/attitude_msg.msg
-        # /OtherProject/robot_status.msg
+        idleState.msg    
+        
         
 
 

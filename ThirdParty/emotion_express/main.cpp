@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2022-04-14 22:17:45
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2022-05-13 17:49:09
+ * @LastEditTime: 2023-05-09 10:46:26
  */
 #include<ros/ros.h>
 #include<string>
@@ -61,7 +61,7 @@ void needCallback(const social_msg::need_msg &msg){
     std::cout << "QNode::Callback_need" << std::endl;
     string emotion = msg.rob_emotion;
     string intensity = to_string(msg.rob_emotion_intensity);
-    string video_location = "/home/zhjd/ws/src/ThirdParty/emotion_express/video/" + emotion + intensity + ".mp4";
+    string video_location = "./video/" + emotion + intensity + ".mp4";
     video_transport(video_location);
 }
 
@@ -76,7 +76,7 @@ void bhvCallback(const social_msg::bhvPara &msg){
     else{
         string emotion = msg.emotion.type;
         string intensity = to_string(msg.emotion.rob_emotion_intensity);
-        string video_location = "/home/zhjd/ws/src/ThirdParty/emotion_express/video/" + emotion + intensity + ".mp4";
+        string video_location = "./video/" + emotion + intensity + ".mp4";
         video_transport(video_location);
     }
 }
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     
     // string emotion = "Calm";
     // string intensity = to_string(0);
-    // string video_location = "/home/zhjd/ws/src/ThirdParty/emotion_express/video/" + emotion + intensity + ".mp4";
+    // string video_location = "./video/" + emotion + intensity + ".mp4";
     // video_transport(video_location);
 
     pub = it.advertise("emotion_img", 10);

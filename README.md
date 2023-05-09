@@ -1,9 +1,19 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: Zhang Jiadong
+ * @Date: 2021-12-18 20:20:34
+ * @LastEditors: Zhang Jiadong
+ * @LastEditTime: 2023-05-09 11:20:18
+-->
 #  robot_social_system_based_on_emotion_need_and_behavior
+### 一、下载此package包到ROS工作空间
 
-### 一、安装第三方库：
+
+### 二、安装第三方库：
 1.  【弃用】百度api： 
     python版本2.7  
-    pip install 了setuptools   
+    pip install setuptools   
     cd ThirdParty/aip-python-sdk-4.15.13  &&  sudo python setup.py install   
     pip install requests 
     pip install numpy==1.11.2 pandas==0.23.0   
@@ -16,8 +26,7 @@
     sudo make install   
 
 
-
-### 二、visualization中qt和qtcreator的安装使用方法
+### 三、visualization中qt和qtcreator的安装使用方法
 1. qt 5.12.4:  
 	sudo apt-get install ros-kinetic-qt-*
 2. qtcreator 4.4.1  和 qtcreator-ros-plugin: 
@@ -27,8 +36,13 @@
 	https://blog.csdn.net/a347755140/article/details/117020994
 
 
+### 四、编译：
++ 首先编译所需的msg文件
+    catkin_make -DCATKIN_WHITELIST_PACKAGES="social_msg"
++ 编译其他package
+    catkin_make -DCATKIN_WHITELIST_PACKAGES=""
 
-### 三、运行：
+### 五、运行：
 + 情感模块
 rosrun emotion_module main.py
 

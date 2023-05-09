@@ -20,8 +20,8 @@ find_package(catkin REQUIRED COMPONENTS qt_build roscpp
       image_transport
       )
 
-#/home/zhjd/thirdparty/opencv3.4.10/opencv-3.4.10/build
-#set(OpenCV_DIR "/home/zhjd/thirdparty/opencv3.4.10/opencv-3.4.10/build")
+
+#set(OpenCV_DIR "/home/.../thirdparty/opencv3.4.10/opencv-3.4.10/build")
 find_package(OpenCV REQUIRED)
 #find_package(QT NAMES Qt5 COMPONENTS Widgets Multimedia REQUIRED)
 
@@ -39,8 +39,7 @@ find_package(Qt5 ${USED_QT_VERSION} REQUIRED COMPONENTS
 
 include_directories(${catkin_INCLUDE_DIRS}
       /include/msg/
-     /home/zhjd/ws/devel/include/
-     /home/kod/robot_ws/devel/include/
+      ${CATKIN_DEVEL_PREFIX}/include/
     )
 
 #ros massage自定义

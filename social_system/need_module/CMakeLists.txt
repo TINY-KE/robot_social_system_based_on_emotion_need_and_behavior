@@ -22,13 +22,13 @@ include_directories(
         include/need_model
         ${catkin_INCLUDE_DIRS}
         include
-        /home/kod/com_ws/devel/include/
-	/home/zhjd/ws/devel/include/
+	# ${CATKIN_DEVEL_PREFIX}/include/    这种方式不行
+        ${CATKIN_DEVEL_PREFIX}/include/
 )
 
 
 #yaml cpp
-# set(yaml-cpp_DIR /home/zhjd/ws/src/ThirdParty/yaml-cpp-release-0.5.1)   
+# set(yaml-cpp_DIR /home/.../ws/src/ThirdParty/yaml-cpp-release-0.5.1)   
 set(YAML_CPP_DIR "/usr/local/share/cmake/yaml-cpp")   
 MESSAGE("(1)yaml cpp dir :" ${yaml-cpp_DIR} )
 find_package(yaml-cpp REQUIRED)

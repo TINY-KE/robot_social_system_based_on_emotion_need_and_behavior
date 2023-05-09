@@ -21,8 +21,7 @@ find_package(OpenCV REQUIRED)
 include_directories(${catkin_INCLUDE_DIRS}
       ${cv_bridge_DIR}
       /include/msg/
-     /home/zhjd/ws/devel/include/
-     /home/kod/robot_ws/devel/include/
+      ${CATKIN_DEVEL_PREFIX}/include/
     )
 
 

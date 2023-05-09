@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2022-03-08 17:05:40
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2023-04-25 16:31:04
+ * @LastEditTime: 2023-05-09 10:37:06
  */
 
 #include "common_include.h"
@@ -13,7 +13,7 @@ class Emergency {
     private:
         std::vector<need> read_need_lists;
         social_msg::perception_msg per_;
-        string yaml_name = "/home/zhjd/ws/src/social_system/personality_template/need/Emergency.yaml" ;
+        string yaml_name = "../../../personality_template/need/Emergency.yaml" ;
 
     public:
         Emergency(){
@@ -21,7 +21,10 @@ class Emergency {
             read_need_parameter read;//(yaml_name);
             read_need_lists.clear();
             std::cout <<  "Read parameter for Emergency Need !! 类型如下： " << "\n"; 
-            read_need_lists = read.return_emergency_need( yaml_name );
+            std::string current_file_path = __FILE__;
+            std::string current_folder_path = current_file_path.substr(0, current_file_path.find_last_of("/\\"));
+            // std::cout << "Current folder path: " << current_folder_path << std::endl;
+            read_need_lists = read.return_emergency_need( current_folder_path + "/" + yaml_name );
         }
 
         void update( social_msg::perception_msg per ){

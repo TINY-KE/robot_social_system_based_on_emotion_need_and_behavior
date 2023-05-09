@@ -55,6 +55,11 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     ReadSettings();
     setWindowIcon(QIcon(":/images/icon.png"));
     QObject::connect(&qnode, SIGNAL(rosShutdown()), this, SLOT(close()));
+// 0.绝对路径
+  std::string current_file_path = __FILE__;
+  std::string current_folder_path = current_file_path.substr(0, current_file_path.find_last_of("/\\"));
+  mCurrent_folder_path =  QString::fromStdString(current_folder_path);
+  std::cout << "Current folder path: " << current_folder_path << std::endl;
 
 //1.picture of real xiaopang robot
     QImage *img2=new QImage; //新建一个image对象
@@ -62,7 +67,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     ui.label_xiaopang -> setPixmap(QPixmap::fromImage(*img2));
 
 //2.picture of wheel emotion image
-    QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
+    QString filename( mCurrent_folder_path + "/../../social_system/emotion_module/image/emotion_img.png");
     QImage* img=new QImage;
     if(! ( img->load(filename) ) ) //加载图像
     {
@@ -539,7 +544,7 @@ void MainWindow::updateLoggingView_emotion() {
   ui.progressBar_emotion8->setValue(int(qnode.emotion8*100));
   ui.lineEdit_emotion8->setText(QString::number(qnode.emotion8,'f',2));
   sleep(0);
-  QString filename("/home/zhjd/ws/src/social_system/emotion_module/image/emotion_img.png");
+  QString filename(mCurrent_folder_path + "/../../social_system/emotion_module/image/emotion_img.png");
   QImage* img=new QImage;
   if(! ( img->load(filename) ) ) //加载图像
   {

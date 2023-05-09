@@ -100,6 +100,8 @@ public:
 private:
 	Ui::MainWindowDesign ui;
 	QNode qnode;
+public:
+    QString mCurrent_folder_path;
 //  Emotion_image emotion_image;
 };
 

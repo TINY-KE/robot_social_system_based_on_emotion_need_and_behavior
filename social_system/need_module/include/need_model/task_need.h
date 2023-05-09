@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-09-21 21:16:50
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2023-04-25 16:47:38
+ * @LastEditTime: 2023-05-09 10:40:02
  */
 #include "task_paremeter_rw.h"
 
@@ -16,15 +16,17 @@ class task_need{
         std::vector<double> rob_emotion_;
         std::string person_emotion_;
         std::vector<double> rob_status_;
-        string yaml_name = "/home/zhjd/ws/src/social_system/personality_template/need/TaskNeed.yaml" ;
-
+        string yaml_name = "../../../personality_template/need/TaskNeed.yaml" ;
     public:
         task_need( ){
             /* 生成need */                
             read_need_parameter read;//(yaml_name);
             read_need_lists.clear();
-            std::cout <<  "Read parameter for Task Need !! 类型如下： " << "\n"; 
-            read_need_lists = read.return_task_need(yaml_name);
+            std::cout <<  "Read parameter for Task Need !! 类型如下： " << "\n";
+            std::string current_file_path = __FILE__;
+            std::string current_folder_path = current_file_path.substr(0, current_file_path.find_last_of("/\\"));
+            // std::cout << "Current folder path: " << current_folder_path << std::endl; 
+            read_need_lists = read.return_task_need(current_folder_path + "/" + yaml_name );
         }
         
         void update( social_msg::perception_msg per, double *emotion, double body[8]){

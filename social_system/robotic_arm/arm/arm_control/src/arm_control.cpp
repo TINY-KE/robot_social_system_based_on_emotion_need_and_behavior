@@ -148,8 +148,10 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "arm_control");
     ros::NodeHandle n;
-    // /home/zhjd/ws/src/social_system/robotic_arm/arm/arm_control/src/arm_control.cpp
-    string config_file = "/home/zhjd/ws/src/social_system/robotic_arm/arm/arm_control/json/arms_actions.json";
+    std::string current_file_path = __FILE__;
+    std::string current_folder_path = current_file_path.substr(0, current_file_path.find_last_of("/\\"));
+    // std::cout << "Current folder path: " << current_folder_path << std::endl;
+    string config_file = current_folder_path + "/../json/arms_actions.json";
     // string config_file = "/home/lj/Documents/Indoor-mobile-robot-with-arms/src/arm/arm_control/json/try.json";
     ArmsActionManager arms_action_manager(config_file);
     
