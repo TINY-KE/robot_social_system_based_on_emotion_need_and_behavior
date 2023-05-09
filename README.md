@@ -4,7 +4,7 @@
  * @Author: Zhang Jiadong
  * @Date: 2021-12-18 20:20:34
  * @LastEditors: Zhang Jiadong
- * @LastEditTime: 2023-05-09 11:38:53
+ * @LastEditTime: 2023-05-09 11:49:12
 -->
 #  robot_social_system_based_on_emotion_need_and_behavior
 ### 一、下载此package包到ROS工作空间
@@ -63,9 +63,11 @@ roslaunch interface_sim interface_sim_cfg.launch
 
 + 手动发布"机器人闲置状态"
     + 发送“无后续行为”的闲置状态，从而使机器人在闲置30秒后，生成“无聊”的情绪。
-  rostopic pub /idleState social_msg/idleState "{idleState: true, hehavior_name: '', person_name: '', IDtype: '', target_angle: 0.0,   target_distance: 0.0, person_emotion: '', satisfy_value: 0}" 
+    
+  "rostopic pub /idleState social_msg/idleState "{idleState: true, hehavior_name: '', person_name: '', IDtype: '', target_angle: 0.0,   target_distance: 0.0, person_emotion: '', satisfy_value: 0}" "
 
     + 发送“测温”行为结束的闲置状态，从而生成Pass放行的入校的需求，同时机器人会因为完成了”测温行为“而生成“高兴”的情绪。
+    
     rostopic pub /idleState social_msg/idleState "{idleState: false, hehavior_name: 'MeasureTempareture', person_name: 'xiaoming', IDtype: 'Student', target_angle: 0.0,
     target_distance: 0.0, person_emotion: 'happy', satisfy_value: 1}"
     
