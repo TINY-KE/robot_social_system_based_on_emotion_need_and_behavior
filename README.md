@@ -26,14 +26,22 @@
     sudo make install   
 
 
-### 三、visualization中qt和qtcreator的安装使用方法
-1. qt 5.12.4:  
+### 三、【课题四注意】visualization中qt和qtcreator的安装使用方法
+1. 安装 qt 5.12.4:  
 	sudo apt-get install ros-kinetic-qt-*
-2. qtcreator 4.4.1  和 qtcreator-ros-plugin: 
-	https://qtcreator-ros.datasys.swri.edu/downloads/installers/xenial/archived/    建议下载qtcreator-ros-xenial-480-offline-installer.run 
+2. 安装 qtcreator 4.4.1  和 qtcreator-ros-plugin: 
+	https://qtcreator-ros.datasys.swri.edu/downloads/installers/xenial/archived/    ubuntu16下建议下载qtcreator-ros-xenial-480-offline-installer.run 
 
-3. qtcreator中导入ros workspace  
+3. 在qtcreator中导入ros workspace  
 	https://blog.csdn.net/a347755140/article/details/117020994
+
+4. rosqt的学习资料
+   官方：https://ros-qtc-plugin.readthedocs.io/en/latest/_source/How-to-Install-Users.html
+   中文：https://www.ncnynl.com/archives/201903/2865.html
+
+5. 可能缺少的依赖包：
+    sudo apt-get install qtmultimedia5-dev
+    sudo apt install libqt5svg5-dev
 
 
 ### 四、编译：

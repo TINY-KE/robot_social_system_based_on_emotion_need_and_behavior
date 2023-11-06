@@ -41,7 +41,7 @@ add_message_files( FILES
 
         #需求模块输出
         need_msg.msg  
-        # need_satisfy_msg.msg  
+        need_satisfy_msg.msg  
 
         #行为模块输出
         behavior_feedback_msg.msg
@@ -58,27 +58,28 @@ add_message_files( FILES
         
 
 
-        # #需求模块输出
-        # /NeedModule/need_msg.msg  
-        # #自适应模块输入
-        # /NeedModule/need_compare.msg
-        # /NeedModule/person_emotion_assessment.msg
-        # /NeedModule/person_emotion_assessment_list.msg
+        #需求模块输出
+        need_msg.msg  
+        #自适应模块输入
+        need_compare.msg
+        person_emotion_assessment.msg
+        person_emotion_assessment_list.msg
 
 
 
-        # #行为模块输出
-        # /BehaviorModule/Arms.msg
-        # /BehaviorModule/Emotion.msg
-        # /BehaviorModule/Gaze.msg
-        # /BehaviorModule/Legs.msg
-        # /BehaviorModule/Speech.msg
+        #行为模块输出
+        Arms.msg
+        Emotion.msg
+        Gaze.msg
+        Legs.msg
+        Speech.msg
         
-        # /BehaviorModule/bhvPara.msg     #分步
-        # /BehaviorModule/bhvIssue.msg    #分步
-        # /BehaviorModule/bhvGet.msg
-        # /BehaviorModule/bhvReply.msg
-        # # NeedList.msg
+        bhvPara.msg     #分步
+        bhvIssue.msg    #分步
+        bhvGet.msg
+        bhvReply.msg
+        bhvQueue.msg
+        # NeedList.msg
 )
 generate_messages( DEPENDENCIES    roscpp  std_msgs geometry_msgs )
 
